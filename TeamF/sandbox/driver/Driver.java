@@ -25,10 +25,8 @@ public class Driver {
 		//}
 		
 		String teamName = "TeamF";
-		// Try to get a list of airports
-		System.out.println("Before getAirports!");
+        // Try to get a list of airport	
 		Airports airports = resSys.getAirports(teamName);
-		System.out.println("After getAirports!");
 		for (Airport airport : airports) {
 			System.out.println(airport.toString());
 		}
