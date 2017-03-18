@@ -19,16 +19,16 @@ public abstract class QueryClass {
 	 * 
 	 * @return the specific string query; which could be for flights, airports, or planes
 	 */
-	protected String getMyQuery() {
-		return null;
-	}
+	//protected String getMyQuery() {
+	//	return null;
+	//}
 	
 	/*
 	 * Returns the lock query string
 	 * 
 	 * @return the lock query string
 	 */
-	public String getLockQuery() {
+	private String getLockQuery() {
 		return "team=" + teamName + "&action=lockDB";
 	}
 	
@@ -37,7 +37,7 @@ public abstract class QueryClass {
 	 * 
 	 * @return the unlock query string
 	 */
-	public String getUnlockQuery() {
+	private String getUnlockQuery() {
 		return "team=" + teamName + "&action=unlockDB";
 	}
 	
@@ -47,7 +47,7 @@ public abstract class QueryClass {
 	 * 
 	 * @return true if the server was locked successfully, else false
 	 */
-	public boolean lock () {
+	protected boolean lock () {
 		URL url;
 		HttpURLConnection connection;
 
@@ -95,7 +95,7 @@ public abstract class QueryClass {
 	 * @param teamName is the name of the team holding the lock
 	 * @return true if the server was successfully unlocked.
 	 */
-	public boolean unlock () {
+	protected boolean unlock () {
 		URL url;
 		HttpURLConnection connection;
 		
@@ -143,7 +143,7 @@ public abstract class QueryClass {
 	/**
 	 * 
 	 */
-	public String doQuery() {
+	protected String doQuery(String query) {
 		
 		// Local Variables
 		URL url;
@@ -156,7 +156,7 @@ public abstract class QueryClass {
 			/**
 			 * Create an HTTP connection to the server for a GET 
 			 */			
-			url = new URL(mUrlBase + getMyQuery());
+			url = new URL(mUrlBase + query);
 			
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");

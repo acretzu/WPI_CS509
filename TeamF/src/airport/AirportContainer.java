@@ -20,14 +20,6 @@ public class AirportContainer extends XmlParser {
 		list = new ArrayList<Airport>();
 	}
 	
-	/*
-	 * Returns the specific string query to be implemented by the derived class
-	 * 
-	 * @return the specific string query; which could be for flights, airports, or planes
-	 */
-	protected String getMyQuery() {
-		return "?team=" + teamName + "&action=list&list_type=airports";
-	}
 	
 	/**
 	 *  Creates an airport from the given XML node
@@ -72,10 +64,10 @@ public class AirportContainer extends XmlParser {
 	/**
 	 * Populates the list of valid airports from the WPI server.
 	 */
-	public void parseAirportsFromSever() throws NullPointerException {
+	public void parseAirportsFromSever() throws NullPointerException {		
 		
 		// Send transaction to server and build a document from the result
-		Document docAirports = buildDocument(doQuery());
+		Document docAirports = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=airports"));
 		
 		// Create a list of nodes from the document
 		NodeList nodesAirports = docAirports.getElementsByTagName("Airport");
@@ -96,7 +88,7 @@ public class AirportContainer extends XmlParser {
 	 * 
 	 * @return The list of airports
 	 */
-	public ArrayList<Airport> getAirportList() {
+	public ArrayList<Airport> getContainer() {
 		return list;
 	}
 }
