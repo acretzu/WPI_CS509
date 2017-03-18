@@ -20,18 +20,6 @@ public class Controller {
 	private AirplaneContainer airplanes;
 	private ArrivingFlightsContainer arrFlights;
 	
-	// GUI Information
-	Boolean round_trip;
-	Integer stopovers;
-	String departure_airport;
-	String arrival_airport;
-	String departure_year;
-	String departure_month;
-	String departure_day;	
-	String arrival_year;
-	String arrival_month;
-	String arrival_day;
-	
 	public ArrayList<Airport> getAirports() {
 		airports.parseAirportsFromSever();
 		return airports.getContainer();
