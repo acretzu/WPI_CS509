@@ -7,8 +7,46 @@ import flights.ArrivingFlightsContainer;
 import flights.Flight;
 import airplane.AirplaneContainer;
 import airplane.Airplane;
+import java.util.ArrayList;
 
 public class Controller {
+	/**
+	* Class variables
+	*/
+	
+	// Containers 
+	AirportContainer airports;
+	DepartingFlightsContainer depFlights;
+	AirplaneContainer airplanes;
+	ArrivingFlightsContainer arrFlights;
+	
+	// GUI Information
+	Boolean round_trip;
+	Integer stopovers;
+	String departure_airport;
+	String arrival_airport;
+	String departure_year;
+	String departure_month;
+	String departure_day;	
+	String arrival_year;
+	String arrival_month;
+	String arrival_day;
+	
+	public ArrayList<Airport> getAirports() {
+		airports.parseAirportsFromSever();
+		return airports.getContainer();
+	}
+	
+	public ArrayList<Flight> getDepartingFlights(String airport, String date) {
+		depFlights.parseDepartingFlightsFromSever(airport, date);
+		return depFlights.getContainer();
+	}
+	
+	public ArrayList<Flight> getArrivingFlights(String airport, String date) {
+		arrFlights.parseArrivingFlightsFromSever(airport, date);
+		return arrFlights.getContainer();
+	}
+	
 	
 	public static void main(String[] args) {		
 		
@@ -24,18 +62,15 @@ public class Controller {
 		}
 		
 		// Create Departing flights
-		DepartingFlightsContainer depFlights = new DepartingFlightsContainer();
-		
+		DepartingFlightsContainer depFlights = new DepartingFlightsContainer();		
 		depFlights.parseDepartingFlightsFromSever("BOS", "2017_05_10");
 		
 		// Create airplane container
-		AirplaneContainer airplanes = new AirplaneContainer();
-		
+		AirplaneContainer airplanes = new AirplaneContainer();		
 		airplanes.parseAirplanesFromSever();
 		
 		// Create Arriving flights
-		ArrivingFlightsContainer arrFlights = new ArrivingFlightsContainer();
-		
+		ArrivingFlightsContainer arrFlights = new ArrivingFlightsContainer();		
 		arrFlights.parseArrivingFlightsFromSever("BOS", "2017_05_10");
 	}
 	
