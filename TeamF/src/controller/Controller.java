@@ -15,10 +15,10 @@ public class Controller {
 	*/
 	
 	// Containers 
-	AirportContainer airports;
-	DepartingFlightsContainer depFlights;
-	AirplaneContainer airplanes;
-	ArrivingFlightsContainer arrFlights;
+	private AirportContainer airports;
+	private DepartingFlightsContainer depFlights;
+	private AirplaneContainer airplanes;
+	private ArrivingFlightsContainer arrFlights;
 	
 	// GUI Information
 	Boolean round_trip;
