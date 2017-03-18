@@ -9,6 +9,11 @@ import airplane.AirplaneContainer;
 import airplane.Airplane;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author acretzu
+ *
+ */
 public class Controller {
 	
 	//

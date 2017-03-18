@@ -1,5 +1,6 @@
 package airport;
 
+// Imports
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -7,7 +8,11 @@ import org.w3c.dom.NodeList;
 import xml.XmlParser;
 import java.util.ArrayList;
 
-// 
+/**
+ * 
+ * @author acretzu
+ *
+ */
 public class AirportContainer extends XmlParser {
 	
 	// Class variables

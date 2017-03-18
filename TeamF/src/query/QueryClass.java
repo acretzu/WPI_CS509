@@ -1,5 +1,6 @@
 package query;
 
+// Imports
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,38 +9,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * 
+ * @author acretzu
+ *
+ */
 public abstract class QueryClass {
 	// Class variables
 	protected final String teamName = "TeamF";
 	protected final String mUrlBase = "http://cs509.cs.wpi.edu:8181/CS509.server/ReservationSystem";	
-	
-	
-	/*
-	 * Returns the specific string query to be implemented by the derived class
-	 * 
-	 * @return the specific string query; which could be for flights, airports, or planes
-	 */
-	//protected String getMyQuery() {
-	//	return null;
-	//}
-	
-	/*
-	 * Returns the lock query string
-	 * 
-	 * @return the lock query string
-	 */
-	private String getLockQuery() {
-		return "team=" + teamName + "&action=lockDB";
-	}
-	
-	/*
-	 * Returns the unlock query string
-	 * 
-	 * @return the unlock query string
-	 */
-	private String getUnlockQuery() {
-		return "team=" + teamName + "&action=unlockDB";
-	}
 	
 	
 	/**
@@ -60,7 +38,7 @@ public abstract class QueryClass {
 			
 			connection.setDoOutput(true);
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
-			writer.writeBytes(getLockQuery());
+			writer.writeBytes("team=" + teamName + "&action=lockDB");
 			writer.flush();
 			writer.close();
 			
@@ -108,7 +86,7 @@ public abstract class QueryClass {
 			connection.setDoInput(true);
 			
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
-			writer.writeBytes(getUnlockQuery());
+			writer.writeBytes("team=" + teamName + "&action=unlockDB");
 			writer.flush();
 			writer.close();
 		    
@@ -141,7 +119,9 @@ public abstract class QueryClass {
 	}
 	
 	/**
-	 * 
+	 *  Runs the query based on the query string passed in and returns the XML from the server in String format.
+	 *  
+	 *  @return XML from the server in one long String.
 	 */
 	protected String doQuery(String query) {
 		
