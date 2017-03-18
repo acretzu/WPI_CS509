@@ -21,6 +21,14 @@ public class Controller {
 	private AirplaneContainer airplanes;
 	private ArrivingFlightsContainer arrFlights;
 	
+	public Controller() {
+		// Initialize container classes
+		airports = new AirportContainer();
+		depFlights = new DepartingFlightsContainer();
+		arrFlights = new ArrivingFlightsContainer();
+		airplanes = new AirplaneContainer();
+	}
+	
 	/**
 	 * Query the server for a list of airports and returns ArrayList<Airport>
 	 * 
