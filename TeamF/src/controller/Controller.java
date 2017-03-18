@@ -10,9 +10,10 @@ import airplane.Airplane;
 import java.util.ArrayList;
 
 public class Controller {
-	/**
-	* Class variables
-	*/
+	
+	//
+	// Class variables
+	//
 	
 	// Containers 
 	private AirportContainer airports;
@@ -20,16 +21,31 @@ public class Controller {
 	private AirplaneContainer airplanes;
 	private ArrivingFlightsContainer arrFlights;
 	
+	/**
+	 * Query the server for a list of airports and returns ArrayList<Airport>
+	 * 
+	 * @return ArrayList of airports
+	 */
 	public ArrayList<Airport> getAirports() {
 		airports.parseAirportsFromSever();
 		return airports.getContainer();
 	}
 	
+	/**
+	 * Query the server for a list of departing flights and returns ArrayList<Flight>
+	 * 
+	 * @return ArrayList of departing flights
+	 */
 	public ArrayList<Flight> getDepartingFlights(String airport, String date) {
 		depFlights.parseDepartingFlightsFromSever(airport, date);
 		return depFlights.getContainer();
 	}
 	
+	/**
+	 * Query the server for a list of arriving flights and returns ArrayList<Flight>
+	 * 
+	 * @return ArrayList of arriving flights
+	 */
 	public ArrayList<Flight> getArrivingFlights(String airport, String date) {
 		arrFlights.parseArrivingFlightsFromSever(airport, date);
 		return arrFlights.getContainer();
