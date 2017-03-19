@@ -52,4 +52,15 @@ public class Airplane {
 	public int coachClass () {
 		return planeCoachClass;
 	}
+	
+	public String toString() {
+	StringBuffer sb = new StringBuffer();
+	
+	sb.append(planeManufacturer).append(", ");
+	sb.append(planeModel).append(", ");
+	sb.append("First Class: ").append(planeFirstClass);
+	sb.append("Coach Class: ").append(planeCoachClass);
+
+		return sb.toString();
+	}
 }
