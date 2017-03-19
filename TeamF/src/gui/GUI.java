@@ -268,7 +268,7 @@ public class GUI extends JFrame {
 				
 				depAirport = airports.get(depList.getSelectedIndex()).code();
 				arrAirport = airports.get(arrList.getSelectedIndex()).code();
-				
+				 
 				depFlights = controller.getDepartingFlights(depAirport, 
 						parseDate[2] + "_" + parseDate[0]+ "_" + parseDate[1]);
 				Flight testFlight = new Flight();
