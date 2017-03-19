@@ -59,7 +59,7 @@ public class Airplane {
 	sb.append(planeManufacturer).append(", ");
 	sb.append(planeModel).append(", ");
 	sb.append("First Class: ").append(planeFirstClass);
-	sb.append("Coach Class: ").append(planeCoachClass);
+	sb.append(", Coach Class: ").append(planeCoachClass);
 
 		return sb.toString();
 	}
