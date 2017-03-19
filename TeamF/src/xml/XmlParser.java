@@ -16,6 +16,11 @@ import org.xml.sax.SAXException;
 
 import query.QueryClass;
 
+/**
+ * 
+ * @author acretzu
+ *
+ */
 public class XmlParser extends QueryClass{
 	
 	/**

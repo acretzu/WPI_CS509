@@ -1,11 +1,13 @@
 package flights;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import xml.XmlParser;
 
+/**
+ * 
+ * @author acretzu
+ *
+ */
 public class FlightsContainer extends XmlParser {
 	
 	public Flight createFlight(Element elementFlight){
@@ -78,4 +80,9 @@ public class FlightsContainer extends XmlParser {
 		return flight;
 	}
 	
+
+	/**
+	 *  This class is meant to carry any common functionality for departingFlightsContainer and arrivingFlightsContainer
+	 */
+
 }

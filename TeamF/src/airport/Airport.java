@@ -1,5 +1,11 @@
 package airport;
 
+/**
+ * This class was originally constructed by Dr. Nelson to represent airports and we are shamelessly using it.
+ * 
+ * @author Blake, Nelson
+ *
+ */
 public class Airport {
 
 	/**

@@ -9,6 +9,11 @@ import airplane.AirplaneContainer;
 import airplane.Airplane;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author acretzu
+ *
+ */
 public class Controller {
 	
 	//
@@ -20,6 +25,14 @@ public class Controller {
 	private DepartingFlightsContainer depFlights;
 	private AirplaneContainer airplanes;
 	private ArrivingFlightsContainer arrFlights;
+	
+	public Controller() {
+		// Initialize container classes
+		airports = new AirportContainer();
+		depFlights = new DepartingFlightsContainer();
+		arrFlights = new ArrivingFlightsContainer();
+		airplanes = new AirplaneContainer();
+	}
 	
 	/**
 	 * Query the server for a list of airports and returns ArrayList<Airport>
