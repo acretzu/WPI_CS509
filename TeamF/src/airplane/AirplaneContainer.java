@@ -30,7 +30,7 @@ public class AirplaneContainer extends XmlParser {
 		Airplane airplane = new Airplane();
 		
 		Element elementAirplane = (Element) nodeAirplane;
-		manufac = elementAirplane.getAttributeNode(" Manufacture").getValue();
+		manufac = elementAirplane.getAttributeNode("Manufacturer").getValue();
 		mdl = elementAirplane.getAttributeNode("Model").getValue();
 		
 		Element elementClass;
@@ -53,7 +53,7 @@ public class AirplaneContainer extends XmlParser {
 	
 	public void parseAirplanesFromSever() throws NullPointerException {
 		Document docAirplanes = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=airplanes"));
-		NodeList nodesAirplanes = docAirplanes.getElementsByTagName("Airport");
+		NodeList nodesAirplanes = docAirplanes.getElementsByTagName("Airplane");
 		
 		for (int i = 0; i < nodesAirplanes.getLength(); i++) {
 			Element elementAirplane = (Element) nodesAirplanes.item(i);
