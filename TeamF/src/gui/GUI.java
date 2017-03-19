@@ -272,7 +272,7 @@ public class GUI extends JFrame {
 				depFlights = controller.getDepartingFlights(depAirport, 
 						parseDate[2] + "_" + parseDate[0]+ "_" + parseDate[1]);
 				Flight testFlight = new Flight();
-			//	testFlight = depFlights.get(1); 
+			//	testFlight = depFlights.get(1);   
 				
 			//	model.addElement(depFlights.get(0).toString());
 			//	searchResults.setModel(model);
