@@ -4,13 +4,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import airport.Airport;
 import xml.XmlParser;
+
 import java.util.ArrayList;
 
 public class AirplaneContainer extends XmlParser {
 // Class variables
 	private ArrayList<Airplane> list;
-	
 	/*
 	 * Constructor
 	 */
@@ -19,37 +21,47 @@ public class AirplaneContainer extends XmlParser {
 	}
 	
 	
-	/**
-	 * Populates the list of valid airports from the WPI server.
-	 */
-	public void parseAirplanesFromSever() throws NullPointerException {
+	private Airplane createAirplane(Node nodeAirplane) {
+		String manufac;
+		String mdl;
+		int first;
+		int coach;
 		
-		System.out.println(doQuery("?team=" + teamName + "&action=list&list_type=airplanes"));
+		Airplane airplane = new Airplane();
 		
-		/*
-		// Send transaction to server and build a document from the result
-		Document docAirports = buildDocument(doQuery());
+		Element elementAirplane = (Element) nodeAirplane;
+		manufac = elementAirplane.getAttributeNode(" Manufacture").getValue();
+		mdl = elementAirplane.getAttributeNode("Model").getValue();
 		
-		// Create a list of nodes from the document
-		NodeList nodesAirports = docAirports.getElementsByTagName("Airport");
-	
-		// Loop through each node and create an 'Airport' class from the data, then add it to the list
-		for (int i = 0; i < nodesAirports.getLength(); i++) {
-			Element elementAirport = (Element) nodesAirports.item(i);
-			Airport airport = createAirport (elementAirport);
-			
-			if (airport.isValid()) {
-				list.add(airport);
-			}
-		}
-		*/
+		Element elementClass;
+		elementClass = (Element)elementAirplane.getElementsByTagName("FirstClassSeats").item(0);
+		first = Integer.parseInt(getCharacterDataFromElement(elementClass));
+		
+		elementClass = (Element)elementAirplane.getElementsByTagName("CoachSeats").item(0);
+		coach = Integer.parseInt(getCharacterDataFromElement(elementClass));
+
+		/**
+		 * Update the Airport object with values from XML node
+		 */
+		airplane.manufacturer(manufac);
+		airplane.model(mdl);
+		airplane.firstClass(first);
+		airplane.coachClass(coach);
+		
+		return airplane;
 	}
 	
-	/**
-	 * Return a list of airports
-	 * 
-	 * @return The list of airports
-	 */
+	public void parseAirplanesFromSever() throws NullPointerException {
+		Document docAirplanes = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=airplanes"));
+		NodeList nodesAirplanes = docAirplanes.getElementsByTagName("Airport");
+		
+		for (int i = 0; i < nodesAirplanes.getLength(); i++) {
+			Element elementAirplane = (Element) nodesAirplanes.item(i);
+			Airplane airplane = createAirplane (elementAirplane);
+			list.add(airplane);
+		}
+	}
+	
 	public ArrayList<Airplane> getContainer() {
 		return list;
 	}
