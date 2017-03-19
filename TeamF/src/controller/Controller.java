@@ -79,17 +79,23 @@ public class Controller {
 		}
 		
 		// Create Departing flights
+		System.out.println("Departing Flights:");
 		DepartingFlightsContainer depFlights = new DepartingFlightsContainer();		
 		depFlights.parseDepartingFlightsFromSever("BOS", "2017_05_10");
 		for (Flight flight : depFlights.getContainer()){
 			System.out.println(flight.toString());
 		}
-//		
-//		// Create airplane container
-//		AirplaneContainer airplanes = new AirplaneContainer();		
-//		airplanes.parseAirplanesFromSever();
+		
+		// Create airplane container
+		AirplaneContainer airplanes = new AirplaneContainer();		
+		airplanes.parseAirplanesFromSever();
+		System.out.println("Airplanes:");
+		for (Airplane airplane : airplanes.getContainer()){
+			System.out.println(airplane.toString());
+		}
 		
 		// Create Arriving flights
+		System.out.println("Arriving Flights:");
 		ArrivingFlightsContainer arrFlights = new ArrivingFlightsContainer();		
 		arrFlights.parseArrivingFlightsFromSever("BOS", "2017_05_10");
 		for (Flight flight : arrFlights.getContainer()){
