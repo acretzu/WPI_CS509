@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 
+
 public class ArrivingFlightsContainer extends FlightsContainer {
 	// Class variables
 	private ArrayList<Flight> list;
@@ -24,24 +25,14 @@ public class ArrivingFlightsContainer extends FlightsContainer {
 	public void parseArrivingFlightsFromSever(String airport, String date) throws NullPointerException {
 		
 		System.out.println(doQuery("?team=" + teamName + "&action=list&list_type=arriving&airport=" + airport +"&day=" + date));
-		
-		/*
-		// Send transaction to server and build a document from the result
-		Document docAirports = buildDocument(doQuery());
-		
-		// Create a list of nodes from the document
-		NodeList nodesAirports = docAirports.getElementsByTagName("Airport");
-	
-		// Loop through each node and create an 'Airport' class from the data, then add it to the list
-		for (int i = 0; i < nodesAirports.getLength(); i++) {
-			Element elementAirport = (Element) nodesAirports.item(i);
-			Airport airport = createAirport (elementAirport);
-			
-			if (airport.isValid()) {
-				list.add(airport);
-			}
+		Document docFlights = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=arriving&airport=" + airport +"&day=" + date));
+		NodeList nodesFlights = docFlights.getElementsByTagName("Flight");
+		for (int i = 0; i < nodesFlights.getLength(); i++) {
+			Element elementFlight = (Element) nodesFlights.item(i);
+			Flight flight = this.createFlight(elementFlight);
+			list.add(flight);
 		}
-		*/
+	
 	}
 	
 	/**
@@ -52,4 +43,5 @@ public class ArrivingFlightsContainer extends FlightsContainer {
 	public ArrayList<Flight> getContainer() {
 		return list;
 	}
+	
 }

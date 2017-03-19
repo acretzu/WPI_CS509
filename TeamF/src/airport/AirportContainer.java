@@ -54,7 +54,7 @@ public class AirportContainer extends XmlParser {
 		
 		elementLatLng = (Element)elementAirport.getElementsByTagName("Longitude").item(0);
 		longitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
-
+		
 		/**
 		 * Update the Airport object with values from XML node
 		 */
