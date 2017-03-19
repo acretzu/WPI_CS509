@@ -22,8 +22,7 @@ public class DepartingFlightsContainer extends FlightsContainer {
 	 * Populates the list of valid airports from the WPI server.
 	 */
 	public void parseDepartingFlightsFromSever(String airport, String date) throws NullPointerException {
-		
-		System.out.println(doQuery("?team=" + teamName + "&action=list&list_type=departing&airport=" + airport +"&day=" + date));
+				
 		Document docFlights = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=departing&airport=" + airport +"&day=" + date));
 		NodeList nodesFlights = docFlights.getElementsByTagName("Flight");
 		for (int i = 0; i < nodesFlights.getLength(); i++) {

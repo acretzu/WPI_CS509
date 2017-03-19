@@ -28,8 +28,12 @@ public class FlightsContainer extends XmlParser {
 		 */
 		Flight flight = new Flight();
 		
+<<<<<<< HEAD
 		// The Flight element has attributes of "Airplane" , FlightTime and Number
 
+=======
+		// The Flight element has attributes of "Airplane" , FlightTime and Number
+>>>>>>> branch 'master' of https://github.com/acretzu/WPI_CS509.git
 		flight_model = elementFlight.getAttributeNode("Airplane").getValue();
 		flight_number = elementFlight.getAttributeNode("Number").getValue();
 		flight_time = elementFlight.getAttributeNode("FlightTime").getValue();
@@ -79,10 +83,14 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
+<<<<<<< HEAD
 	
 
 	/**
 	 *  This class is meant to carry any common functionality for departingFlightsContainer and arrivingFlightsContainer
 	 */
 
+=======
+	
+>>>>>>> branch 'master' of https://github.com/acretzu/WPI_CS509.git
 }

@@ -24,7 +24,6 @@ public class ArrivingFlightsContainer extends FlightsContainer {
 	 */
 	public void parseArrivingFlightsFromSever(String airport, String date) throws NullPointerException {
 		
-		System.out.println(doQuery("?team=" + teamName + "&action=list&list_type=arriving&airport=" + airport +"&day=" + date));
 		Document docFlights = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=arriving&airport=" + airport +"&day=" + date));
 		NodeList nodesFlights = docFlights.getElementsByTagName("Flight");
 		for (int i = 0; i < nodesFlights.getLength(); i++) {
