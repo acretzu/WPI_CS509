@@ -28,12 +28,11 @@ public class FlightsContainer extends XmlParser {
 		 */
 		Flight flight = new Flight();
 		
-<<<<<<< HEAD
+
 		// The Flight element has attributes of "Airplane" , FlightTime and Number
 
-=======
-		// The Flight element has attributes of "Airplane" , FlightTime and Number
->>>>>>> branch 'master' of https://github.com/acretzu/WPI_CS509.git
+
+
 		flight_model = elementFlight.getAttributeNode("Airplane").getValue();
 		flight_number = elementFlight.getAttributeNode("Number").getValue();
 		flight_time = elementFlight.getAttributeNode("FlightTime").getValue();
@@ -61,11 +60,12 @@ public class FlightsContainer extends XmlParser {
 		elementSeating = (Element)elementFlight.getElementsByTagName("Seating").item(0);
 		elementFirstClass = (Element)elementSeating.getElementsByTagName("FirstClass").item(0);
 		num_first_seats = Integer.parseInt(getCharacterDataFromElement(elementFirstClass));
-		price_first = Double.parseDouble(elementFirstClass.getAttributeNode("Price").getValue().replace("$", ""));
+		
+		price_first = Double.parseDouble(elementFirstClass.getAttributeNode("Price").getValue().replace("$", "").replace(",", ""));
 		
 		elementCoach =  (Element)elementSeating.getElementsByTagName("Coach").item(0);
 		num_coach_seats = Integer.parseInt(getCharacterDataFromElement(elementCoach));
-		price_coach = Double.parseDouble(elementCoach.getAttributeNode("Price").getValue().replace("$", ""));
+		price_coach = Double.parseDouble(elementCoach.getAttributeNode("Price").getValue().replace("$", "").replace(",", ""));
 		
 		/**
 		 * Update the Flight object with values from XML node
@@ -83,14 +83,12 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
-<<<<<<< HEAD
+
 	
 
 	/**
 	 *  This class is meant to carry any common functionality for departingFlightsContainer and arrivingFlightsContainer
 	 */
 
-=======
-	
->>>>>>> branch 'master' of https://github.com/acretzu/WPI_CS509.git
+
 }

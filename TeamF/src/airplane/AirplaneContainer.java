@@ -21,7 +21,7 @@ public class AirplaneContainer extends XmlParser {
 	}
 	
 	
-	private Airplane createAirplane(Node nodeAirplane) {
+	private Airplane createAirplane(Element nodeAirplane) {
 		String manufac;
 		String mdl;
 		int first;
@@ -30,7 +30,7 @@ public class AirplaneContainer extends XmlParser {
 		Airplane airplane = new Airplane();
 		
 		Element elementAirplane = (Element) nodeAirplane;
-		manufac = elementAirplane.getAttributeNode(" Manufacture").getValue();
+		manufac = elementAirplane.getAttributeNode("Manufacture").getValue();
 		mdl = elementAirplane.getAttributeNode("Model").getValue();
 		
 		Element elementClass;
