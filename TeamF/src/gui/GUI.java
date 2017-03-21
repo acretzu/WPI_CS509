@@ -77,7 +77,8 @@ public class GUI extends JFrame {
     ArrayList<Flight> depFlights;
     ArrayList<Airport> airports;
     
-    JScrollPane vertical;
+    
+    JScrollPane scrollPane;
 	public GUI(){
 		
 		super("User Interface");
@@ -86,8 +87,6 @@ public class GUI extends JFrame {
 		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
 		panelRb.setSize(400, 400);
-		this.setSize(300,200);
-		panel3.setSize(400, 400);
 		
 		airportNames = new  ArrayList<String>();
 		airportCodes = new ArrayList<String>();
@@ -101,20 +100,15 @@ public class GUI extends JFrame {
 		depList = new JComboBox();
 		arrList = new JComboBox();
 		searchResults = new JList();
-		vertical = new JScrollPane();
-		//searchResults.setPreferredSize(new Dimension(800, 150));
+		//searchResults.setPreferredSize(new Dimension(250, 80));
 		searchResults.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		
-		vertical.setViewportView(searchResults);
-		 vertical.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		vertical.setPreferredSize(new Dimension(800,200));
 		model = new DefaultListModel<String>();
 		searchResults.setModel(model);
 		
 		String holdName = new String();
 		for(int i = 0; i < airports.size();i++)
 		{
-			holdName = airports.get(i).name() + "/" + airports.get(i).code() + "/";
+			holdName = airports.get(i).name() + "_" + airports.get(i).code();
 			depList.addItem(holdName);
 			arrList.addItem(holdName);
 		}
@@ -126,7 +120,7 @@ public class GUI extends JFrame {
 		
     c.gridx = 0; 
     c.gridy = 5;
-   
+    panel3.add(depList, c);
     RndTripRb.setSelected(true);
     panelRb.add(RndTripRb,c);
 
@@ -193,17 +187,14 @@ public class GUI extends JFrame {
         c.gridy = 25;
         panel1.add(arrDatelb,c);
      
-       
-
-        c.gridx = 20;
         
+        c.gridx = 20;
         c.gridy = 10;
         panel1.add(depList,c);
-        
+
         c.gridy = 15;
         panel1.add(arrList,c);
         
-       
 
         c.gridy = 20;
         panel1.add(depDate,c);
@@ -217,13 +208,17 @@ public class GUI extends JFrame {
         
         
         c.gridx = 0;
-        c.gridy = 30;
-        panel3.add(vertical, c);
+        c.gridy = 15;
+        
+        scrollPane = new JScrollPane(searchResults);
+        panel3.add(scrollPane, c);
+        
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);		
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);		
+        
+        scrollPane.setPreferredSize(new Dimension(800,250));
         
         
-        
-        
-
         
         thehandler handler = new thehandler();
         this.getContentPane().add(panel1, BorderLayout.WEST);
@@ -232,6 +227,9 @@ public class GUI extends JFrame {
         
         this.getContentPane().add(panel3, BorderLayout.SOUTH);
          
+        
+
+        
         OneWayRb.addActionListener(handler);
         RndTripRb.addActionListener(handler);
         TwoStopRb.addActionListener(handler);
@@ -243,8 +241,7 @@ public class GUI extends JFrame {
         
         
 
-        this.getContentPane().add(panel3, BorderLayout.SOUTH);
-        
+      
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
       
         this.setSize(900, 500);
@@ -266,55 +263,38 @@ public class GUI extends JFrame {
 			{
 				departure =  depList.getSelectedItem().toString();
 				destination = arrList.getSelectedItem().toString();
-				System.out.println("Searching for flights from... \n" + (departure)	);
-			
+				
 				model = new DefaultListModel<String>();
 				
 				
-				String depAirport;
-				String arrAirport; 
-				String[] parseDate = new String[5];
-				String[] parseAirportName = new String[5];
+			
+				String[] parseDate;
+				String[] parseDepAirport;
+				
 				
 				parseDate = depDate.getText().split("/");
-				//depAirport = (String) depList.getSelectedItem();
-				parseAirportName = departure.split("/");//String.valueOf(depList.getSelectedItem()).split("(");
+				parseDepAirport = departure.split("_");
+				System.out.println("Searching for flights from... \n" + parseDepAirport[1]	);
 				
-				depAirport = parseAirportName[1];// airports.get(depList.getSelectedIndex()).code();
-				System.out.println(depAirport);
-				 
-				depFlights = new ArrayList<Flight>();
-				depFlights = controller.getDepartingFlights(depAirport, 
+				depFlights = controller.getDepartingFlights(parseDepAirport[1], 
 						parseDate[2] + "_" + parseDate[0]+ "_" + parseDate[1]);
-		
+			
 				searchResults.removeAll();
-				if(depFlights.size()!=0)
-				{
-				for(int i=0; i < depFlights.size(); i++ )
+				for(int i = 0; i<depFlights.size(); i++)
 				{
 					model.addElement(depFlights.get(i).toString());
-					System.out.println(	depFlights.get(i).toString());
-				
-					
+					System.out.println(depFlights.get(i).toString());
 					
 				}
-				System.out.println(depFlights.size());
+				System.out.println("Number of flights found: " + depFlights.size());
 				
-				}else
-				{
-					model.addElement("No Flights Available");
-					System.out.println(	"No Flights Available");
-					
-				}
 				searchResults.setModel(model);
-				/*else
-				{
-					model.addElement("No Flights Available");
-					System.out.println(	"No Flights Available");
-					
-				}
-
-				*/
+				
+				//	testFlight = depFlights.get(1);   
+				
+			//	model.addElement(depFlights.get(0).toString());
+			//	searchResults.setModel(model);
+				
 			}else if(event.getSource() == OneWayRb)
 			{
 				RndTripRb.setSelected(false);

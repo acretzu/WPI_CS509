@@ -21,7 +21,7 @@ public class AirplaneContainer extends XmlParser {
 	}
 	
 	
-	private Airplane createAirplane(Node nodeAirplane) {
+	private Airplane createAirplane(Element nodeAirplane) {
 		String manufac;
 		String mdl;
 		int first;

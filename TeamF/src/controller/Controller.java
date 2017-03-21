@@ -81,7 +81,7 @@ public class Controller {
 		// Create Departing flights
 		System.out.println("Departing Flights:");
 		DepartingFlightsContainer depFlights = new DepartingFlightsContainer();		
-		depFlights.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		depFlights.parseDepartingFlightsFromSever("BOS", "2017_05_14");
 		for (Flight flight : depFlights.getContainer()){
 			System.out.println(flight.toString());
 		}
@@ -93,6 +93,7 @@ public class Controller {
 		for (Airplane airplane : airplanes.getContainer()){
 			System.out.println(airplane.toString());
 		}
+
 		
 		// Create Arriving flights
 		System.out.println("Arriving Flights:");
