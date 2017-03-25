@@ -41,6 +41,9 @@ public class GUI extends JFrame {
     private JRadioButton  TwoStopRb= new JRadioButton("Two Stops");
 
     private JButton searchButton;
+    private JButton sortButton;
+    private JRadioButton  SortByPriceRb= new JRadioButton("Price");
+    private JRadioButton  SortByTravelTimeRb= new JRadioButton("Travel Time");
 	
     private JLabel deplb = new JLabel("Departure Airport    ");
     private JLabel destlb = new JLabel("Destination Airport    ");
@@ -56,7 +59,10 @@ public class GUI extends JFrame {
     private JPanel panel2 = new JPanel(new GridBagLayout());
 	
     private JPanel panel3 = new JPanel(new GridBagLayout());
+    
 	private JPanel panelRb = new JPanel(new GridBagLayout());
+	
+	private JPanel panel4 = new JPanel(new GridBagLayout());
 	
     private String tripType = "roundtrip";
     private String numStops = "1";
@@ -83,7 +89,7 @@ public class GUI extends JFrame {
 		
 		super("User Interface");
 		 searchButton = new JButton("Search");
-	       
+	     sortButton  =  new JButton("Sort");
 		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
 		panelRb.setSize(400, 400);
@@ -206,9 +212,21 @@ public class GUI extends JFrame {
         c.gridy = 10;
         panel3.add(searchButton, c);
         
+        c.gridx = 5;
+        c.gridy = 15;
+        panel4.add(sortButton, c);
+        
+        c.gridx = 10;
+        c.gridy = 15;
+        panel4.add(SortByTravelTimeRb, c);
+        
+        c.gridx = 10;
+        c.gridy = 20;
+        panel4.add(SortByPriceRb, c);
+        
         
         c.gridx = 0;
-        c.gridy = 15;
+        c.gridy = 20;
         
         scrollPane = new JScrollPane(searchResults);
         panel3.add(scrollPane, c);
@@ -218,7 +236,7 @@ public class GUI extends JFrame {
         
         scrollPane.setPreferredSize(new Dimension(800,250));
         
-        
+        SortByTravelTimeRb.setSelected(true);
         
         thehandler handler = new thehandler();
         this.getContentPane().add(panel1, BorderLayout.WEST);
@@ -226,6 +244,7 @@ public class GUI extends JFrame {
         this.getContentPane().add(panelRb, BorderLayout.CENTER);
         
         this.getContentPane().add(panel3, BorderLayout.SOUTH);
+        this.getContentPane().add(panel4, BorderLayout.EAST);
          
         
 
@@ -238,13 +257,14 @@ public class GUI extends JFrame {
         NoStopRb.addActionListener(handler);
         
         searchButton.addActionListener(handler);
-        
+        SortByPriceRb.addActionListener(handler);
+        SortByTravelTimeRb.addActionListener(handler);
         
 
       
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
       
-        this.setSize(900, 500);
+        this.setSize(950, 500);
 		
 
 	}
@@ -320,6 +340,12 @@ public class GUI extends JFrame {
 				OneStopRb.setSelected(false);
 				NoStopRb.setSelected(false);
 				numStops = "2";
+			}else if(event.getSource() == SortByTravelTimeRb)
+			{
+				SortByPriceRb.setSelected(false);
+			}else if(event.getSource() == SortByPriceRb)
+			{
+				SortByTravelTimeRb.setSelected(false);
 			}
 			
 			
