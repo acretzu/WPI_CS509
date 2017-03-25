@@ -120,4 +120,7 @@ public class Flight {
 
 		return sb.toString();
 	}
+	public String get_arr_code(){
+		return this.arr_code;
+	}
 }

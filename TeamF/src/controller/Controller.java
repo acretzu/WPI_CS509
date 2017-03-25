@@ -64,6 +64,26 @@ public class Controller {
 		return arrFlights.getContainer();
 	}
 	
+	public ArrayList<Flight> getFlightOptions(String departureAirport, 
+				String destinationAirport,
+				String date, String numStops)
+	{
+		ArrayList<Flight> depFlights;
+		depFlights = new ArrayList<Flight>();
+		ArrayList<Flight> flightOptions;
+		flightOptions = new ArrayList<Flight>();
+		
+		depFlights = getDepartingFlights(departureAirport, date);
+		
+		for (int i = 0; i < depFlights.size(); i++)
+		{
+			if (depFlights.get(i).get_arr_code().equals(destinationAirport)) // parse out the arrival airport
+				flightOptions.add(depFlights.get(i));	// add the direct flights
+		}
+		
+		return flightOptions;
+	}
+	
 	
 	public static void main(String[] args) {		
 		
