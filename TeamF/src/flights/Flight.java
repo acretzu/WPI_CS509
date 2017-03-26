@@ -123,4 +123,13 @@ public class Flight {
 	public String get_arr_code(){
 		return this.arr_code;
 	}
+	public int get_first_class(){
+		return this.num_first_seats;
+	}
+	public int get_coach(){
+		return this.num_coach_seats;
+	}
+	public String get_flight_model(){
+		return this.flight_model;
+	}
 }
