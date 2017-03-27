@@ -2,8 +2,10 @@ package flights;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Flight {
+	HashMap <String, String> codeMap = new HashMap<>();
 	 String flight_model;
 	 String flight_time;
 	 String flight_number;
@@ -127,10 +129,10 @@ public class Flight {
 	
 	public void convertToLocalDate(String dateStr){
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm ");
-		df.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+//		df.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 	}
 	private String getTimeZoneFromAirportCode(String code){
-		
+		return "";
 	}
 	public static void main(String args[]){
 		
