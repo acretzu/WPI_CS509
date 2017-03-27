@@ -126,6 +126,7 @@ public class Flight {
 		
 		return sb.toString();
 	}
+<<<<<<< HEAD
 	
 	public void convertToLocalDate(String dateStr){
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm ");
@@ -136,5 +137,18 @@ public class Flight {
 	}
 	public static void main(String args[]){
 		
+=======
+	public String get_arr_code(){
+		return this.arr_code;
+	}
+	public int get_first_class(){
+		return this.num_first_seats;
+	}
+	public int get_coach(){
+		return this.num_coach_seats;
+	}
+	public String get_flight_model(){
+		return this.flight_model;
+>>>>>>> branch 'master' of https://github.com/acretzu/WPI_CS509.git
 	}
 }

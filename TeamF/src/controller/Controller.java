@@ -64,6 +64,70 @@ public class Controller {
 		return arrFlights.getContainer();
 	}
 	
+	/*
+	 * check if there are seats left on a given flight
+	 */
+	public Boolean seatsLeft(Flight currentFlight, Boolean firstClass)
+	{
+		int seats, seatsBooked;
+		String model;
+		Airplane plane = new Airplane();
+		model = currentFlight.get_flight_model();
+		plane = airplanes.getAirplaneModelFromContainer(model);
+		
+		if (firstClass)
+		{
+			seatsBooked = currentFlight.get_first_class();
+			seats = plane.firstClass();
+		}
+		else
+		{
+			seatsBooked = currentFlight.get_coach();
+			seats = plane.coachClass();
+		}
+		
+		if ((seats - seatsBooked) > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Query the server for a list of flights and returns ArrayList<ArrayList<Flight>> of 
+	 *   flights with up to specified number of stopovers matching inputs
+	 * @return ArrayList of arriving flights
+	 */
+	public ArrayList<ArrayList<Flight>> getFlightOptions(String departureAirport,
+				String destinationAirport, String date, String numStops,
+				Boolean firstClass)
+	{
+		ArrayList<ArrayList<Flight>> flightOptions;
+		flightOptions = new ArrayList<ArrayList<Flight>>();
+		ArrayList<Flight> depFlights;
+		depFlights = new ArrayList<Flight>();
+		int count = 0;
+		
+		//info for second leg
+		ArrayList<String> secondAirports;
+		secondAirports = new ArrayList<String>();
+		
+		depFlights = getDepartingFlights(departureAirport, date);
+		
+		for (int i = 0; i < depFlights.size(); i++)
+		{
+			if (depFlights.get(i).get_arr_code().equals(destinationAirport)
+					&& seatsLeft(depFlights.get(i), firstClass))// parse out the arrival airport
+			{
+				flightOptions.add(new ArrayList<Flight>());
+				flightOptions.get(count).add(depFlights.get(i));	// add the direct flights
+				count++;
+			}
+			else if (Integer.valueOf(numStops) > 0)  // this will add duplicates
+				secondAirports.add(depFlights.get(i).get_arr_code()); // lousy method
+		}
+		
+		return flightOptions;
+	}
 	
 	public static void main(String[] args) {		
 		
