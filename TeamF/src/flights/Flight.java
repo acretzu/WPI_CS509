@@ -1,4 +1,7 @@
 package flights;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Flight {
 	 String flight_model;
@@ -89,6 +92,7 @@ public class Flight {
 	}
 	public void set_dep_time(String d_time){
 		this.dep_time = d_time;
+		
 	}
 	public void set_arr_code(String a_code){
 		this.arr_code = a_code;
@@ -117,7 +121,18 @@ public class Flight {
 		sb.append("Arrival ").append("(AirportCode: " + arr_code + "; " + "ArrivalTime: " + arr_time + "), ");
 		sb.append("SeatingFirstClass ").append("(RemainingSeats: " + num_first_seats + "; " + "Price:" + "$"+ price_first + "), ");
 		sb.append("SeatingCoach ").append("(RemainingSeats: " + num_coach_seats + "; " + "Price:" + "$"+ price_coach + ") ");
-
+		
 		return sb.toString();
+	}
+	
+	public void convertToLocalDate(String dateStr){
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm ");
+		df.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+	}
+	private String getTimeZoneFromAirportCode(String code){
+		
+	}
+	public static void main(String args[]){
+		
 	}
 }
