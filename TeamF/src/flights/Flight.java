@@ -120,6 +120,9 @@ public class Flight {
 
 		return sb.toString();
 	}
+	public String get_dep_code(){
+		return this.dep_code;
+	}
 	public String get_arr_code(){
 		return this.arr_code;
 	}
@@ -131,5 +134,11 @@ public class Flight {
 	}
 	public String get_flight_model(){
 		return this.flight_model;
+	}
+	public String get_arr_time(){
+		return this.arr_time;
+	}
+	public String get_dep_time(){
+		return this.dep_time;
 	}
 }
