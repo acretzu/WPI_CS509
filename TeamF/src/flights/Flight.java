@@ -1,11 +1,15 @@
 package flights;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Calendar;
+
 
 public class Flight {
-	HashMap <String, String> codeMap = new HashMap<>();
 	 String flight_model;
 	 String flight_time;
 	 String flight_number;
@@ -17,6 +21,8 @@ public class Flight {
 	 double price_first;
 	 int num_coach_seats;
 	 double price_coach;
+	 Date dep_local_time;
+	 Date arr_local_time;
 	 
 	 public Flight(){
 		 flight_model = "";
@@ -75,10 +81,7 @@ public class Flight {
 				return false;
 			return true;
 	}
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 	
 	public void set_flight_model(String model){
 		this.flight_model = model;
@@ -126,18 +129,48 @@ public class Flight {
 		
 		return sb.toString();
 	}
-<<<<<<< HEAD
+	public void converAllTimeToLocal(){
+		arrTimeStringToDate(this.arr_time);
+		depTimeStringToDate(this.dep_time);
+		long arr_offset = getOffSetTime(this.arr_code);
+		long dep_offset = getOffSetTime(this.dep_code);
+		long p = 3600000;
+		this.arr_local_time.setTime(this.arr_local_time.getTime() + p * arr_offset);
+		this.dep_local_time.setTime(this.dep_local_time.getTime() + p * dep_offset);
+	}
 	
-	public void convertToLocalDate(String dateStr){
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm ");
-//		df.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+	private void arrTimeStringToDate(String dateStr){
+		dateStr = dateStr.replaceAll("\\s", "/");
+		System.out.println(dateStr);
+		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.US);
+		try {
+			Date localDate = df.parse(dateStr);
+			this.arr_local_time = localDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
-	private String getTimeZoneFromAirportCode(String code){
-		return "";
+	private void depTimeStringToDate(String dateStr){
+		dateStr = dateStr.replaceAll("\\s", "/");
+		System.out.println(dateStr);
+		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.forLanguageTag("english"));
+		try {
+			Date localDate = df.parse(dateStr);
+			this.dep_local_time = localDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
-	public static void main(String args[]){
-		
-=======
+	private int getOffSetTime(String coder){
+		HashMap<String, Integer> map = new HashMap<>();
+		AirportCodeTimeZone p = new AirportCodeTimeZone();
+		try {
+			map = p.readFile(p.file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return map.get(coder);
+	}
 	public String get_arr_code(){
 		return this.arr_code;
 	}
@@ -147,8 +180,9 @@ public class Flight {
 	public int get_coach(){
 		return this.num_coach_seats;
 	}
+	
 	public String get_flight_model(){
 		return this.flight_model;
->>>>>>> branch 'master' of https://github.com/acretzu/WPI_CS509.git
 	}
+		
 }
