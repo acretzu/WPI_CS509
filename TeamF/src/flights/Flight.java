@@ -21,6 +21,8 @@ public class Flight {
 	 double price_first;
 	 int num_coach_seats;
 	 double price_coach;
+	 Date arr_local_time;
+	 Date dep_local_time;
 	 
 	 public Flight(){
 		 flight_model = "";
