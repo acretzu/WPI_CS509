@@ -1,4 +1,13 @@
 package flights;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Calendar;
+
 
 public class Flight {
 	 String flight_model;
@@ -70,10 +79,7 @@ public class Flight {
 				return false;
 			return true;
 	}
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 	
 	public void set_flight_model(String model){
 		this.flight_model = model;
@@ -89,6 +95,7 @@ public class Flight {
 	}
 	public void set_dep_time(String d_time){
 		this.dep_time = d_time;
+		
 	}
 	public void set_arr_code(String a_code){
 		this.arr_code = a_code;
@@ -117,7 +124,73 @@ public class Flight {
 		sb.append("Arrival ").append("(AirportCode: " + arr_code + "; " + "ArrivalTime: " + arr_time + "), ");
 		sb.append("SeatingFirstClass ").append("(RemainingSeats: " + num_first_seats + "; " + "Price:" + "$"+ price_first + "), ");
 		sb.append("SeatingCoach ").append("(RemainingSeats: " + num_coach_seats + "; " + "Price:" + "$"+ price_coach + ") ");
-
+		
 		return sb.toString();
 	}
+	public void converAllTimeToLocal(){
+		arrTimeStringToDate(this.arr_time);
+		depTimeStringToDate(this.dep_time);
+		long arr_offset = getOffSetTime(this.arr_code);
+		long dep_offset = getOffSetTime(this.dep_code);
+		long p = 3600000;
+		this.arr_local_time.setTime(this.arr_local_time.getTime() + p * arr_offset);
+		this.dep_local_time.setTime(this.dep_local_time.getTime() + p * dep_offset);
+	}
+	
+	private void arrTimeStringToDate(String dateStr){
+		dateStr = dateStr.replaceAll("\\s", "/");
+		System.out.println(dateStr);
+		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.US);
+		try {
+			Date localDate = df.parse(dateStr);
+			this.arr_local_time = localDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	private void depTimeStringToDate(String dateStr){
+		dateStr = dateStr.replaceAll("\\s", "/");
+		System.out.println(dateStr);
+		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.forLanguageTag("english"));
+		try {
+			Date localDate = df.parse(dateStr);
+			this.dep_local_time = localDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	private int getOffSetTime(String coder){
+		HashMap<String, Integer> map = new HashMap<>();
+		AirportCodeTimeZone p = new AirportCodeTimeZone();
+		try {
+			map = p.readFile(p.file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return map.get(coder);
+	}
+	public String get_arr_code(){
+		return this.arr_code;
+	}
+	public String get_dep_code(){
+		return this.dep_code;
+	}
+	public int get_first_class(){
+		return this.num_first_seats;
+	}
+	public int get_coach(){
+		return this.num_coach_seats;
+	}
+	public String get_arr_time(){
+		return this.arr_time;
+	}
+	public String get_dep_time(){
+		return this.dep_time;
+	}
+	
+	public String get_flight_model(){
+		return this.flight_model;
+	}
+	
+		
 }
