@@ -9,6 +9,7 @@ import java.awt.Container;
 import javax.swing.*;//JOptionPane;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -22,6 +23,8 @@ import airplane.AirplaneContainer;
 import airplane.Airplane;
 import java.util.ArrayList;
 import airport.Airport;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
 public class GUI extends JFrame {
@@ -261,6 +264,7 @@ public class GUI extends JFrame {
         SortByTravelTimeRb.setSelected(true);
         
         thehandler handler = new thehandler();
+       // thelistener listener = new thelistener();
         this.getContentPane().add(panel1, BorderLayout.WEST);
         //this.getContentPane().add(panel2, BorderLayout.EAST);
         this.getContentPane().add(panelRb, BorderLayout.CENTER);
@@ -283,6 +287,22 @@ public class GUI extends JFrame {
         SortByPriceRb.addActionListener(handler);
         SortByTravelTimeRb.addActionListener(handler);
 
+        searchResults.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()){
+                    JList source = (JList)event.getSource();
+                    String selected = source.getSelectedValue().toString();
+                    flightDetailModel = new DefaultListModel<String>();
+    				flightDetailModel.addElement("Departing Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_code());
+    				flightDetailModel.addElement("Departing Time:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_time());
+    				flightDetailModel.addElement("Arriving Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_code());
+    				flightDetailModel.addElement("Arriving Time:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_time());
+    				
+    				System.out.println("Selection Made: " + searchResults.getSelectedValue());
+    				flightDetails.setModel(flightDetailModel);
+                }
+            }
+        });
       
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
       
@@ -290,7 +310,7 @@ public class GUI extends JFrame {
 		
 
 	}
-	
+
 	private class thehandler implements ActionListener{
 		
 		public void actionPerformed(ActionEvent event){
@@ -409,6 +429,5 @@ public class GUI extends JFrame {
 		
 	}
 
-	
-	
+
 }
