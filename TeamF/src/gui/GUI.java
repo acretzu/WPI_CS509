@@ -44,7 +44,9 @@ public class GUI extends JFrame {
     private JButton sortButton;
     private JRadioButton  SortByPriceRb= new JRadioButton("Price");
     private JRadioButton  SortByTravelTimeRb= new JRadioButton("Travel Time");
-	
+    private JButton detailsButton;
+    
+    
     private JLabel deplb = new JLabel("Departure Airport    ");
     private JLabel destlb = new JLabel("Destination Airport    ");
     private JLabel depDatelb = new JLabel("Departure Date    ");
@@ -78,7 +80,10 @@ public class GUI extends JFrame {
     JComboBox depList ;
 	JComboBox arrList ;
     JList searchResults;
+    JList flightDetails;
+    
     DefaultListModel<String> model;
+    DefaultListModel<String> flightDetailModel;
     
     ArrayList<Flight> depFlights;
     ArrayList<Airport> airports;
@@ -90,6 +95,7 @@ public class GUI extends JFrame {
 		super("User Interface");
 		 searchButton = new JButton("Search");
 	     sortButton  =  new JButton("Sort");
+	     detailsButton = new JButton("Details");
 		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
 		panelRb.setSize(400, 400);
@@ -106,10 +112,13 @@ public class GUI extends JFrame {
 		depList = new JComboBox();
 		arrList = new JComboBox();
 		searchResults = new JList();
+		flightDetails = new JList();
+		
 		//searchResults.setPreferredSize(new Dimension(250, 80));
 		searchResults.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		model = new DefaultListModel<String>();
 		searchResults.setModel(model);
+		flightDetails.setModel(model);
 		
 		String holdName = new String();
 		for(int i = 0; i < airports.size();i++)
@@ -208,9 +217,18 @@ public class GUI extends JFrame {
         c.gridy = 25;
         panel1.add(arrDate,c);
 
+        /////////////////PANEL 3
         c.gridx = 0;
         c.gridy = 10;
         panel3.add(searchButton, c);
+        c.gridx = 120;
+        c.gridy = 10;
+        panel3.add(detailsButton, c);
+        c.gridx = 120;
+        c.gridy = 20;
+        panel3.add(flightDetails, c);
+        
+        
         
         c.gridx = 5;
         c.gridy = 15;
@@ -230,6 +248,10 @@ public class GUI extends JFrame {
         
         scrollPane = new JScrollPane(searchResults);
         panel3.add(scrollPane, c);
+        flightDetails.setPreferredSize(new Dimension(200,200));
+        
+       
+
         
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);		
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);		
@@ -257,14 +279,14 @@ public class GUI extends JFrame {
         NoStopRb.addActionListener(handler);
         
         searchButton.addActionListener(handler);
+        detailsButton.addActionListener(handler);
         SortByPriceRb.addActionListener(handler);
         SortByTravelTimeRb.addActionListener(handler);
-        
 
       
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
       
-        this.setSize(950, 500);
+        this.setSize(1150, 500);
 		
 
 	}
@@ -291,7 +313,6 @@ public class GUI extends JFrame {
 				String[] parseDate;
 				String[] parseDepAirport;
 				
-				
 				parseDate = depDate.getText().split("/");
 				parseDepAirport = departure.split("_");
 				System.out.println("Searching for flights from... \n" + parseDepAirport[1]	);
@@ -302,7 +323,12 @@ public class GUI extends JFrame {
 				searchResults.removeAll();
 				for(int i = 0; i<depFlights.size(); i++)
 				{
-					model.addElement(depFlights.get(i).toString());
+					model.addElement("Flight Number:   " 
+							+ depFlights.get(i).get_dep_code()
+							+ "Departing time:  " 
+							+ depFlights.get(i).get_dep_time() 
+							+ "Arriving time:  " + 
+							depFlights.get(i).get_dep_time());
 					System.out.println(depFlights.get(i).toString());
 					
 				}
@@ -346,6 +372,16 @@ public class GUI extends JFrame {
 			}else if(event.getSource() == SortByPriceRb)
 			{
 				SortByTravelTimeRb.setSelected(false);
+			}if(event.getSource() == detailsButton)
+			{
+				flightDetailModel = new DefaultListModel<String>();
+				flightDetailModel.addElement("Departing Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_code());
+				flightDetailModel.addElement("Departing Time:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_time());
+				flightDetailModel.addElement("Arriving Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_code());
+				flightDetailModel.addElement("Arriving Time:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_time());
+				
+				System.out.println("Selection Made: " + searchResults.getSelectedValue());
+				flightDetails.setModel(flightDetailModel);
 			}
 			
 			
