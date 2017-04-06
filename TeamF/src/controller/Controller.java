@@ -160,7 +160,7 @@ public class Controller {
 	 *   The airplane container in controller should be instantiated first
 	 * @return ArrayList of arriving flights
 	 */
-	public ArrayList<ArrayList<Flight>> getFlightOptions(String departureAirport,
+	public ArrayList<ArrayList<Flight>> getFlightOptionsByDeparting(String departureAirport,
 				String destinationAirport, String date, String numStops,
 				Boolean firstClass)
 	{
@@ -215,6 +215,15 @@ public class Controller {
 			depFlightsSecond.addAll(getDepartingFlights(dayTwoAirports.get(j), tomorrow)); // query for all the second legs
 		}
 		
+		// in case any other queries need to be made
+		ArrayList<String> thirdAirports;
+		ArrayList<String> dayTwoThirdAirports;
+		thirdAirports = new ArrayList<String>();
+		dayTwoThirdAirports = new ArrayList<String>();
+		ArrayList<ArrayList<Flight>> twoLegs;
+		twoLegs = new ArrayList<ArrayList<Flight>>(); // for two leg flights with valid stopovers that do not arrive at the right destination
+		int index = 0;
+		
 		for (i = 0; i < depFlightsFirst.size(); i++) // for one stopover
 		{
 			// all first leg flights
@@ -236,6 +245,55 @@ public class Controller {
 						flightOptions.get(count).add(depFlightsSecond.get(j));	// and second legs to a single entry
 						count++;
 					}
+					else if (Integer.valueOf(numStops).equals(2)) // set up for third flight
+					{
+						// create a new array space for this combo 
+						twoLegs.add(new ArrayList<Flight>());
+						twoLegs.get(index).add(depFlightsFirst.get(i));
+						twoLegs.get(index).add(depFlightsSecond.get(j));
+						index++;
+						
+						if (doSameDay(depFlightsSecond.get(j).get_arr_time(), date) &&
+								!secondAirports.contains(depFlightsSecond.get(j).get_arr_code()) &&
+								!thirdAirports.contains(depFlightsSecond.get(j).get_arr_code()))
+							thirdAirports.add(depFlightsSecond.get(j).get_arr_code());
+						if (goToNextDay(depFlightsSecond.get(j).get_arr_time(), date) &&
+								!dayTwoAirports.contains(depFlightsSecond.get(j).get_arr_code()) && 
+								!dayTwoThirdAirports.contains(depFlightsSecond.get(j).get_arr_code()))
+							dayTwoThirdAirports.add(depFlightsSecond.get(j).get_arr_code());
+						// check if more queries need to be done
+					}
+				}
+			}
+		}
+		
+		if (Integer.valueOf(numStops) == 1)
+			return flightOptions;
+		
+		for (j = 0; j < thirdAirports.size(); j++)
+		{
+			depFlightsSecond.addAll(getDepartingFlights(thirdAirports.get(j), date)); // query for all the second legs
+		}
+		for (j = 0; j < dayTwoThirdAirports.size(); j++)
+		{
+			depFlightsSecond.addAll(getDepartingFlights(dayTwoThirdAirports.get(j), tomorrow)); // query for all the second legs
+		}
+		
+		for (i = 0; i < twoLegs.size(); i++)
+		{
+			if (twoLegs.get(i).get(1).get_arr_code().equals(destinationAirport)) // get(1) is the current location?
+				continue; // already in the list
+			
+			for (j = 0; j < depFlightsSecond.size(); j++)
+			{
+				if (!depFlightsSecond.get(j).get_arr_code().equals(destinationAirport))
+					continue; // doesn't end at the right airport -- move on
+				if (flightCanBeStopover(twoLegs.get(i).get(1), depFlightsSecond.get(j)))
+				{
+					flightOptions.add(new ArrayList<Flight>());
+					flightOptions.get(count).addAll(twoLegs.get(i));
+					flightOptions.get(count).add(depFlightsSecond.get(j));
+					count++;
 				}
 			}
 		}
