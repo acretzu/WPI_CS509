@@ -25,6 +25,8 @@ public class Controller {
 	private DepartingFlightsContainer depFlights;
 	private AirplaneContainer airplanes;
 	private ArrivingFlightsContainer arrFlights;
+	private Double minimumLayoverTime;
+	private Double maximumLayoverTime;
 	
 	public Controller() {
 		// Initialize container classes
@@ -72,8 +74,23 @@ public class Controller {
 		airplanes.parseAirplanesFromSever();
 	}
 	
+	public void setLayoverRange(Double minimum, Double maximum)
+	{
+		minimumLayoverTime = minimum;
+		maximumLayoverTime = maximum;
+	}
+	
 	/*
 	 * check if there are seats left on a given flight
+	 * 
+	 * 
+	 * @param Flight currentFlight -- The flight we are examining for available seats
+	 * 
+	 * @param Boolean firstClass -- true if the class of seat we are looking for is first class
+	 * 	-- false if it is Coach
+	 * 
+	 * @return Boolean -- true if there is an available seat on the current flight in the requested class
+	 * 	-- false otherwise
 	 */
 	public Boolean seatsLeft(Flight currentFlight, Boolean firstClass)
 	{
@@ -100,6 +117,20 @@ public class Controller {
 			return false;
 	}
 	
+	/*
+	 * checks to see if two flights lie within the layover time range
+	 * <p>
+	 * 	looks at two flights that are landing and taking off from the same airport
+	 * 	to see if the departing flight leaves within the acceptable layover times 
+	 * 	based on the arriving flights landing time.
+	 * 
+	 *  @param Flight arriving -- the flight incoming into current airport
+	 *  
+	 *  @param Flight departing -- the flight leaving the current airport
+	 *  
+	 *  @return -- Boolean -- true if the departing flight takes off within 
+	 *  	the layover range from the arriving flight's landing. False if not
+	 */
 	public Boolean flightCanBeStopover(Flight arriving, Flight departing)
 	{
 		String[] arr_time = arriving.get_arr_time().split("[ :]"),
@@ -116,7 +147,7 @@ public class Controller {
 		
 		if (!(departing.get_dep_code().equals(arriving.get_arr_code())))
 			return false; // not at the right airport
-		if (time_between >= 0.5 && time_between <= 4)
+		if (time_between >= minimumLayoverTime && time_between <= maximumLayoverTime) // want to change these to variables that can be set by the GUI
 			return true; // valid stopover time
 		return false;
 	}
@@ -158,6 +189,7 @@ public class Controller {
 	 * Query the server for a list of flights and returns ArrayList<ArrayList<Flight>> of 
 	 *   flights with up to specified number of stopovers matching inputs
 	 *   The airplane container in controller should be instantiated first
+	 *   The layover range should be instantiated first
 	 * @return ArrayList of arriving flights
 	 */
 	public ArrayList<ArrayList<Flight>> getFlightOptionsByDeparting(String departureAirport,
@@ -290,6 +322,7 @@ public class Controller {
 					continue; // doesn't end at the right airport -- move on
 				if (flightCanBeStopover(twoLegs.get(i).get(1), depFlightsSecond.get(j)))
 				{
+					// third leg is valid and brings us to destination -- add to list
 					flightOptions.add(new ArrayList<Flight>());
 					flightOptions.get(count).addAll(twoLegs.get(i));
 					flightOptions.get(count).add(depFlightsSecond.get(j));
