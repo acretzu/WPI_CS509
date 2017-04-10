@@ -193,6 +193,8 @@ public class Flight {
 	public String get_flight_model(){
 		return this.flight_model;
 	}
-	
+	public String get_flight_number(){
+		return this.flight_number;
+	}
 		
 }
