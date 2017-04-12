@@ -15,7 +15,7 @@ public class UserInput {
 	boolean firstClass = false;
 	boolean economyClass = true;
 	public ArrayList<String> flightList = new ArrayList<String>();
-	public void setTripType(String type)
+	public void setTripType(String type) 
 	{
 		tripType = type;
 	}
