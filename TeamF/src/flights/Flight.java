@@ -124,8 +124,8 @@ public class Flight {
 		sb.append("FlightTime: " + flight_time).append(", ");
 		sb.append("Departure ").append("(AirportCode: ").append(dep_code).append("; " + "DepartureTime: "+ dep_time + "), ");
 		sb.append("Arrival ").append("(AirportCode: " + arr_code + "; " + "ArrivalTime: " + arr_time + "), ");
-		sb.append("SeatingFirstClass ").append("(RemainingSeats: " + num_first_seats + "; " + "Price:" + "$"+ price_first + "), ");
-		sb.append("SeatingCoach ").append("(RemainingSeats: " + num_coach_seats + "; " + "Price:" + "$"+ price_coach + ") ");
+		sb.append("SeatingFirstClass ").append("(SeatsReserved: " + num_first_seats + "; " + "Price:" + "$"+ price_first + "), ");
+		sb.append("SeatingCoach ").append("(SeatsReserved: " + num_coach_seats + "; " + "Price:" + "$"+ price_coach + ") ");
 		
 		return sb.toString();
 	}
