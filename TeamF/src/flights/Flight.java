@@ -196,5 +196,11 @@ public class Flight {
 	public String get_flight_number(){
 		return this.flight_number;
 	}
-		
+	public double get_first_price(){
+		return this.price_first;
+	}
+	public double get_coach_price(){
+		return this.price_coach;
+	}
+			
 }
