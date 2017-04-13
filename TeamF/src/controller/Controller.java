@@ -8,7 +8,6 @@ import flights.Flight;
 import airplane.AirplaneContainer;
 import airplane.Airplane;
 import java.util.ArrayList;
-
 /**
  * 
  * @author acretzu
@@ -109,6 +108,5 @@ public class Controller {
 		for (Flight flight : arrFlights.getContainer()){
 			System.out.println(flight.toString());
 		}
-	}
-	
+	}	
 }
