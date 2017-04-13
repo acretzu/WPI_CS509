@@ -389,7 +389,7 @@ public class GUI extends JFrame {
 				flightDetails.clearSelection();
 				model = new DefaultListModel<String>();
 				
-				
+				 
 			
 				String[] parseDepDate;
 				String[] parseDepAirport;
