@@ -77,21 +77,24 @@ public class Controller {
 		AirportContainer airports = new AirportContainer();
 		
 		// Parse the list of airports from the server
-		airports.parseAirportsFromSever();
-		
+		//airports.parseAirportsFromSever();
+		/*
 		// Print them out
 		for (Airport airport : airports.getContainer()) {
 			System.out.println(airport.toString());
 		}
+		*/
 		
 		// Create Departing flights
 		System.out.println("Departing Flights:");
 		DepartingFlightsContainer depFlights = new DepartingFlightsContainer();		
 		depFlights.parseDepartingFlightsFromSever("BOS", "2017_05_14");
 		for (Flight flight : depFlights.getContainer()){
-			System.out.println(flight.toString());
+			if(flight.get_flight_number().equals("3487"))
+				System.out.println(flight.toString());
 		}
-		
+		/*
+
 		// Create airplane container
 		AirplaneContainer airplanes = new AirplaneContainer();		
 		airplanes.parseAirplanesFromServer();
@@ -108,5 +111,7 @@ public class Controller {
 		for (Flight flight : arrFlights.getContainer()){
 			System.out.println(flight.toString());
 		}
-	}	
+		*/
+	}
+	
 }
