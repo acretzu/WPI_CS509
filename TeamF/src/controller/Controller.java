@@ -8,7 +8,6 @@ import flights.Flight;
 import airplane.AirplaneContainer;
 import airplane.Airplane;
 import java.util.ArrayList;
-
 /**
  * 
  * @author acretzu
@@ -95,6 +94,7 @@ public class Controller {
 				System.out.println(flight.toString());
 		}
 		/*
+
 		// Create airplane container
 		AirplaneContainer airplanes = new AirplaneContainer();		
 		airplanes.parseAirplanesFromServer();
