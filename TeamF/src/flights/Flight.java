@@ -189,7 +189,20 @@ public class Flight {
 	public String get_dep_time(){
 		return this.dep_time;
 	}
-	
+	public String get_arr_time_only(){
+		int length = this.arr_time.split(" ").length;
+		return this.arr_time.split(" ")[length - 1] +" " + this.arr_time.split(" ")[length - 2];
+	}
+	public String get_arr_day_only(){
+		return this.arr_time.split(" ")[0] + " " +this.arr_time.split(" ")[1] + " " +this.arr_time.split(" ")[2];
+	}
+	public String get_dep_time_only(){
+		int length = this.dep_time.split(" ").length;
+		return this.dep_time.split(" ")[length - 1] +" " + this.dep_time.split(" ")[length - 2];
+	}
+	public String get_dep_day_only(){
+		return this.dep_time.split(" ")[0] + " " +this.dep_time.split(" ")[1] + " " +this.dep_time.split(" ")[2];
+	}
 	public String get_flight_model(){
 		return this.flight_model;
 	}
