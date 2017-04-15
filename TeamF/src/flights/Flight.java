@@ -52,6 +52,7 @@ public class Flight {
 		 price_first = Integer.parseInt(p_first);
 		 num_coach_seats = Integer.parseInt(n_coach);
 		 price_coach = Integer.parseInt(p_coach);
+		 converAllTimeToLocal();
 	 }
 	 
 	 public Flight(String f_model, String f_time, String f_number, 
@@ -73,6 +74,7 @@ public class Flight {
 		 price_first = p_first;
 		 num_coach_seats = n_coach;
 		 price_coach = p_coach;
+		 converAllTimeToLocal();
 	 }
 	 
 	 public boolean isValidCode (String code) {
@@ -194,5 +196,11 @@ public class Flight {
 		return this.flight_model;
 	}
 	
-		
+	public Date get_arr_time_local(){
+		return this.arr_local_time;
+	}
+	
+	public Date get_dep_time_local(){
+		return this.dep_local_time;
+	}
 }

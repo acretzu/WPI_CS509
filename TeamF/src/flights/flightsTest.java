@@ -15,6 +15,7 @@ public class flightsTest {
 		f.dep_time = "2017 May 10 17:33 GMT";
 		f.converAllTimeToLocal();
 		System.out.println(f.dep_local_time);
+		System.out.println(f.arr_local_time);
 	}
 	
 	@Test
