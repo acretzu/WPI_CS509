@@ -74,7 +74,7 @@ public class Flight {
 		 price_first = p_first;
 		 num_coach_seats = n_coach;
 		 price_coach = p_coach;
-		 converAllTimeToLocal();
+		 
 	 }
 	 
 	 public boolean isValidCode (String code) {
@@ -197,10 +197,12 @@ public class Flight {
 	}
 	
 	public Date get_arr_time_local(){
+		converAllTimeToLocal();
 		return this.arr_local_time;
 	}
 	
 	public Date get_dep_time_local(){
+		converAllTimeToLocal();
 		return this.dep_local_time;
 	}
 }
