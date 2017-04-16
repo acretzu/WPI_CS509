@@ -1,5 +1,7 @@
 package flights;
 
+import java.util.ArrayList;
+
 import org.w3c.dom.Element;
 import xml.XmlParser;
 
@@ -83,15 +85,22 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
-	public static double get_total_price(Flight[] flights){
+	public static double get_total_price(ArrayList<Flight> flights, boolean firstClass){
 		double total_coach_price = 0.0;
 		double total_first_price = 0.0;
 		double res = 0.0;
-		for (Flight flight : flights){
-			total_coach_price = total_coach_price + flight.get_coach_price();
-			total_first_price = total_first_price + flight.get_first_price();
+		for (int i = 0; i < flights.size(); i++){
+			total_coach_price = total_coach_price + flights.get(i).get_coach_price();
+			total_first_price = total_first_price + flights.get(i).get_first_price();
 		}
-		return res = total_coach_price + total_first_price;
+		if(firstClass)
+		{
+			return res = total_first_price;
+		}else
+		{
+			return res =  total_coach_price;
+		}
+		
 	}
 	
 
