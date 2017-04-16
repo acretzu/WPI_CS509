@@ -83,7 +83,7 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
-	public double get_total_price(Flight[] flights){
+	public static double get_total_price(Flight[] flights){
 		double total_coach_price = 0.0;
 		double total_first_price = 0.0;
 		double res = 0.0;
