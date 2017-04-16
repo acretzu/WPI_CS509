@@ -33,6 +33,8 @@ import Trip.Trip;
 
 public class GUI extends JFrame {
 	
+	sorting.SortingClass sorts= new sorting.SortingClass();
+	
 	
 	public UserInput userInput = new UserInput();
 	//GUI object initialisation 
