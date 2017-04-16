@@ -600,7 +600,7 @@ public class GUI extends JFrame {
 			flightDepDetails.setModel(flightDetailModel);
 		}else
 		{
-			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
+			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
 			flightRetDetails.setModel(flightDetailModel);
 		}
 		
