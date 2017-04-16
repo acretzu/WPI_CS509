@@ -43,8 +43,8 @@ public abstract class QueryClass {
 			writer.close();
 			
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to lock database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			//System.out.println("\nSending 'POST' to lock database");
+			System.out.println(("Lock Response Code : " + responseCode));
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -55,7 +55,7 @@ public abstract class QueryClass {
 			}
 			in.close();
 			
-			System.out.println(response.toString());
+			//System.out.println(response.toString());
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -91,8 +91,8 @@ public abstract class QueryClass {
 			writer.close();
 		    
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to unlock database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			//System.out.println("\nSending 'POST' to unlock database");
+			System.out.println(("Unlock Response Code : " + responseCode));
 
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
