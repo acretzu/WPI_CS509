@@ -30,7 +30,7 @@ import javax.swing.event.ListSelectionListener;
 import sorting.SortingClass;
 
 import Trip.Trip;
-
+import flights.FlightsContainer;
 public class GUI extends JFrame {
 	
 	sorting.SortingClass sort= new sorting.SortingClass();
@@ -126,9 +126,12 @@ public class GUI extends JFrame {
     
     boolean firstClass;
     boolean sortByPrice;
+    boolean sortByTime;
+    
 	int numberOfStops;
-	ArrayList<String> reserveDepFlightList = new ArrayList<String>();
-	ArrayList<String> reserveRetFlightList = new ArrayList<String>();
+	ArrayList<Flight> reserveDepFlightList = new ArrayList<Flight>();
+	ArrayList<Flight> reserveRetFlightList = new ArrayList<Flight>();
+	flights.FlightsContainer flightContrainer = new flights.FlightsContainer();
 	
 	
 	public GUI(){
@@ -138,6 +141,8 @@ public class GUI extends JFrame {
 		
 		firstClass = false;
 		sortByPrice = false;
+		sortByTime = true;
+		
 		numberOfStops = 1;
 		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
@@ -518,11 +523,14 @@ public class GUI extends JFrame {
 			{
 				SortByTravelTimeRb.setSelected(true);
 				SortByPriceRb.setSelected(false);
+				sortByPrice = false;
+				sortByTime = true;
 			}else if(event.getSource() == SortByPriceRb)
 			{
 				SortByPriceRb.setSelected(true);
 				SortByTravelTimeRb.setSelected(false);
-				
+				sortByPrice = true;
+				sortByTime = false;
 			}else if(event.getSource() == FirstClassRb) 
 			{
 				EconomyClassRb.setSelected(false);
@@ -624,8 +632,8 @@ public class GUI extends JFrame {
 		String PlaneType = "Plane type: ";
 		String FlightTime = "Flight time: ";
 		String FlightNumber = "Flight number: ";
-		reserveDepFlightList =  new ArrayList<String>();
-		reserveRetFlightList =  new ArrayList<String>();
+		reserveDepFlightList =  new ArrayList<Flight>();
+		reserveRetFlightList =  new ArrayList<Flight>();
 		
 		for(int j = 0; j < flightList.get(flightListIndex).size(); j++)
 		{
@@ -646,19 +654,25 @@ public class GUI extends JFrame {
 			 flightDetailModel.addElement("      ");
 			 if(!populateReturnDetailsList)
 			 {  
-				 reserveDepFlightList.add(flightList.get(flightListIndex).get(j).get_flight_number());
+				 reserveDepFlightList.add(flightList.get(flightListIndex).get(j));
 			 }else
 			 {
-				 reserveRetFlightList.add(flightList.get(flightListIndex).get(j).get_flight_number());		 
+				 reserveRetFlightList.add(flightList.get(flightListIndex).get(j));		 
 			 }
 		}
+		
+		
 	
 		if(!populateReturnDetailsList)
 		{
+			flightDetailModel.addElement("Total price: " + Double.toString(FlightsContainer.get_total_price(reserveDepFlightList, firstClass)));
+			
 			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
 			flightDepDetails.setModel(flightDetailModel);
 		}else
 		{
+			flightDetailModel.addElement("Total price: " + Double.toString(FlightsContainer.get_total_price(reserveRetFlightList, firstClass)));
+			
 			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
 			flightRetDetails.setModel(flightDetailModel);
 		}
