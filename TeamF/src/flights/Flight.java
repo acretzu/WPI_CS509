@@ -52,6 +52,7 @@ public class Flight {
 		 price_first = Integer.parseInt(p_first);
 		 num_coach_seats = Integer.parseInt(n_coach);
 		 price_coach = Integer.parseInt(p_coach);
+		 converAllTimeToLocal();
 	 }
 	 
 	 public Flight(String f_model, String f_time, String f_number, 
@@ -219,6 +220,14 @@ public class Flight {
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
-		
+	public Date get_arr_time_local(){
+		converAllTimeToLocal();
+		return this.arr_local_time;
+	}
+	
+	public Date get_dep_time_local(){
+		converAllTimeToLocal();
+		return this.dep_local_time;
+	}	
 
 }
