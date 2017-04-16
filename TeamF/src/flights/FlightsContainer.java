@@ -22,7 +22,7 @@ public class FlightsContainer extends XmlParser {
 		 double price_first;
 		 int num_coach_seats;
 		 double price_coach;
-		
+		 
 		/**
 		 * Instantiate an empty Flight object
 		 */
@@ -83,7 +83,16 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
-
+	public double get_total_price(Flight[] flights){
+		double total_coach_price = 0.0;
+		double total_first_price = 0.0;
+		double res = 0.0;
+		for (Flight flight : flights){
+			total_coach_price = total_coach_price + flight.get_coach_price();
+			total_first_price = total_first_price + flight.get_first_price();
+		}
+		return res = total_coach_price + total_first_price;
+	}
 	
 
 	/**
