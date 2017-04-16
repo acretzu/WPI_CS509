@@ -184,6 +184,12 @@ public class Flight {
 	public int get_coach(){
 		return this.num_coach_seats;
 	}
+	public double get_coach_price(){
+		return this.price_coach;
+	}
+	public double get_firstClass_price(){
+		return this.price_first;
+	}
 	public String get_arr_time(){
 		return this.arr_time;
 	}
@@ -210,10 +216,6 @@ public class Flight {
 	public String get_flight_number(){
 		return this.flight_number;
 	}
-	
-	public double get_coach_price(){
-		return this.price_coach;
-	}
 	public double get_first_price(){
 		return this.price_first;
 	}
@@ -229,5 +231,4 @@ public class Flight {
 		converAllTimeToLocal();
 		return this.dep_local_time;
 	}	
-
 }
