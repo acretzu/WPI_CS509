@@ -52,7 +52,7 @@ public class Flight {
 		 price_first = Integer.parseInt(p_first);
 		 num_coach_seats = Integer.parseInt(n_coach);
 		 price_coach = Integer.parseInt(p_coach);
-		 converAllTimeToLocal();
+		
 	 }
 	 
 	 public Flight(String f_model, String f_time, String f_number, 
