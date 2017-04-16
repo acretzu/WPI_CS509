@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 
 import airport.AirportContainer;
 import controller.Controller;
@@ -21,44 +22,61 @@ import flights.ArrivingFlightsContainer;
 import flights.Flight;
 import airplane.AirplaneContainer;
 import airplane.Airplane;
+import userinput.UserInput;
 import java.util.ArrayList;
 import airport.Airport;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import sorting.SortingClass;
 
+import Trip.Trip;
 
 public class GUI extends JFrame {
 	
+	sorting.SortingClass sorts= new sorting.SortingClass();
+	
+	
+	public UserInput userInput = new UserInput();
+	//GUI object initialisation 
     private JTextField desField = new JTextField("BOS");
     private JTextField depField = new JTextField("SFO");
-    private JTextField depDate = new JTextField("05/15/2017");
-    private JTextField arrDate = new JTextField("12/27/2017");
+    private JTextField depDateTF = new JTextField("05/15/2017");
+    private JTextField retDateTF = new JTextField("05/16/2017");
     private JTextField depTimeMin = new JTextField("12:00pm");
     private JTextField depTimeMax = new JTextField("1:00pm");
     private JTextField arrTimeMin = new JTextField("12:00pm");
     private JTextField arrTimeMax = new JTextField("2:00pm");
+     
     private JRadioButton RndTripRb = new JRadioButton("Round Trip");
     private JRadioButton OneWayRb = new JRadioButton("One Way");
     private JRadioButton  NoStopRb= new JRadioButton("None-stop");
     private JRadioButton  OneStopRb= new JRadioButton("One Stop");
     private JRadioButton  TwoStopRb= new JRadioButton("Two Stops");
-
-    private JButton searchButton;
-    private JButton sortButton;
+    private JRadioButton  FirstClassRb= new JRadioButton("First Class");
+    private JRadioButton  EconomyClassRb= new JRadioButton("Economy Class");
     private JRadioButton  SortByPriceRb= new JRadioButton("Price");
     private JRadioButton  SortByTravelTimeRb= new JRadioButton("Travel Time");
-    private JButton detailsButton;
+    
+    
+    private JButton searchButton = new JButton("Search");
+    private JButton sortButton =  new JButton("Sort");
+    private JButton detailsButton = new JButton("Details");;
+    private JLabel depFlightsLabel = new JLabel("Departure Flights");
+    private JLabel retFlightsLabel = new JLabel("Return Flights");
+    
     
     
     private JLabel deplb = new JLabel("Departure Airport    ");
     private JLabel destlb = new JLabel("Destination Airport    ");
-    private JLabel depDatelb = new JLabel("Departure Date    ");
-    private JLabel arrDatelb = new JLabel("Return Date    ");
+    private JLabel depDateTFlb = new JLabel("Departure Date    ");
+    private JLabel retDateTFlb = new JLabel("Return Date    ");
     private JLabel depTimeMinlb = new JLabel("Dept. Time Min ");
     private JLabel depTimeMaxlb = new JLabel("Dept. Time Max   ");
     private JLabel arrTimeMinlb = new JLabel("Arr. Time  Min  ");
     private JLabel arrTimeMaxlb = new JLabel("Arr. Time  Max  ");
 	
+    
+    //panel1 holds dept/arr airport and dept/return date controls 
     private JPanel panel1 = new JPanel(new GridBagLayout());
 	
     private JPanel panel2 = new JPanel(new GridBagLayout());
@@ -69,36 +87,58 @@ public class GUI extends JFrame {
 	
 	private JPanel panel4 = new JPanel(new GridBagLayout());
 	
-    private String tripType = "roundtrip";
+    private boolean roundTrip = true;
     private String numStops = "1";
 	
     
     Controller controller = new Controller();
-   
-    private String[] userInput;
+    Trip trip = new Trip();
+   // private String[] userInput;
    
     private ArrayList<String> airportNames;
     private ArrayList<String> airportCodes;
    
     JComboBox depList ;
 	JComboBox arrList ;
-    JList searchResults;
-    JList flightDetails;
+    JList searchResultsDep;
+    JList searchResultsRet;
+    JList flightDepDetails;
+    JList flightRetDetails;
     
-    DefaultListModel<String> model;
+    DefaultListModel<String> modelDep;
+    DefaultListModel<String> modelRet;
+    DefaultListModel<String> flightDepDetailModel;
+    DefaultListModel<String> flightRetDetailModel;
     DefaultListModel<String> flightDetailModel;
     
     ArrayList<Flight> depFlights;
     ArrayList<Airport> airports;
+    ArrayList<ArrayList<Flight>> flightListDep = new ArrayList<ArrayList<Flight>>();
+    ArrayList<ArrayList<Flight>> flightListRet = new ArrayList<ArrayList<Flight>>();
+	
     
+    JScrollPane searchResultsDepScrollPane;
+    JScrollPane searchResultsRetScrollPane;
     
-    JScrollPane scrollPane;
+    JScrollPane detailsRetScrollPane;
+    JScrollPane detailsDepScrollPane;
+    
+    Boolean firstClass;
+	int numberOfStops;
+	
+	public class sorts extends sorting.SortingClass
+	{
+		
+	}
+	sorting.SortingClass s = new sorts();
+	
 	public GUI(){
 		
+		
 		super("User Interface");
-		 searchButton = new JButton("Search");
-	     sortButton  =  new JButton("Sort");
-	     detailsButton = new JButton("Details");
+		
+		firstClass = false;
+		numberOfStops = 1;
 		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
 		panelRb.setSize(400, 400);
@@ -114,14 +154,21 @@ public class GUI extends JFrame {
 		
 		depList = new JComboBox();
 		arrList = new JComboBox();
-		searchResults = new JList();
-		flightDetails = new JList();
+		searchResultsDep = new JList();
+		searchResultsRet = new JList();
+		flightDepDetails = new JList();
+		flightRetDetails = new JList();
+		//searchResultsDep.setPreferredSize(new Dimension(250, 80));
+		searchResultsDep.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		
-		//searchResults.setPreferredSize(new Dimension(250, 80));
-		searchResults.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		model = new DefaultListModel<String>();
-		searchResults.setModel(model);
-		flightDetails.setModel(model);
+		modelDep = new DefaultListModel<String>();
+		modelRet = new DefaultListModel<String>();
+		
+		searchResultsDep.setModel(modelDep);
+		searchResultsRet.setModel(modelRet);
+		
+		flightDepDetails.setModel(modelDep);
+		flightRetDetails.setModel(modelRet);
 		
 		String holdName = new String();
 		for(int i = 0; i < airports.size();i++)
@@ -155,7 +202,15 @@ public class GUI extends JFrame {
     c.gridx = 0; 
     c.gridy = 25;
     panelRb.add(TwoStopRb,c);
-        
+    
+    c.gridx = 0; 
+    c.gridy = 30;
+    panelRb.add(FirstClassRb,c);
+    
+    c.gridx = 0; 
+    c.gridy = 35;
+    panelRb.add(EconomyClassRb,c);
+    EconomyClassRb.setSelected(true);
     //////////Panel2        
         
         c.anchor=GridBagConstraints.WEST;//left align components after this point
@@ -199,11 +254,11 @@ public class GUI extends JFrame {
      
         c.gridx = 0; 
         c.gridy = 20;
-        panel1.add(depDatelb,c);
+        panel1.add(depDateTFlb,c);
      
         c.gridx = 0; 
         c.gridy = 25;
-        panel1.add(arrDatelb,c);
+        panel1.add(retDateTFlb,c);
      
         
         c.gridx = 20;
@@ -215,21 +270,31 @@ public class GUI extends JFrame {
         
 
         c.gridy = 20;
-        panel1.add(depDate,c);
+        panel1.add(depDateTF,c);
 
         c.gridy = 25;
-        panel1.add(arrDate,c);
+        panel1.add(retDateTF,c);
 
         /////////////////PANEL 3
         c.gridx = 0;
-        c.gridy = 10;
+        c.gridy = 0;
         panel3.add(searchButton, c);
-        c.gridx = 120;
-        c.gridy = 10;
-        panel3.add(detailsButton, c);
+        
+        c.gridx = 0;
+        c.gridy = 1;
+        panel3.add(depFlightsLabel, c);
+        
+        
+        c.gridx = 0;
+        c.gridy = 21;
+        panel3.add(retFlightsLabel, c);
+        
         c.gridx = 120;
         c.gridy = 20;
-        panel3.add(flightDetails, c);
+        panel3.add(flightDepDetails, c);
+        
+        c.gridy = 25;
+        panel3.add(flightRetDetails, c);
         
         
         
@@ -249,22 +314,41 @@ public class GUI extends JFrame {
         c.gridx = 0;
         c.gridy = 20;
         
-        scrollPane = new JScrollPane(searchResults);
-        panel3.add(scrollPane, c);
-        flightDetails.setPreferredSize(new Dimension(200,200));
+        searchResultsDepScrollPane = new JScrollPane(searchResultsDep);
+        panel3.add(searchResultsDepScrollPane, c);
         
+        searchResultsRetScrollPane = new JScrollPane(searchResultsRet);
+        c.gridy = 25;
+        panel3.add(searchResultsRetScrollPane, c);
+        
+        detailsDepScrollPane = new JScrollPane(flightDepDetails);
+        detailsRetScrollPane = new JScrollPane(flightRetDetails);
+        
+        c.gridx = 5;
+        c.gridy = 20;
+        
+        panel3.add(detailsDepScrollPane, c);
+        
+        searchResultsDepScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);		
+        searchResultsDepScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);		
+        searchResultsDepScrollPane.setPreferredSize(new Dimension(400,250));
+        detailsDepScrollPane.setPreferredSize(new Dimension(400,250));
+        
+        c.gridy = 25;
+        panel3.add(detailsRetScrollPane, c);
+        detailsRetScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);		
+        detailsRetScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);		
        
+        detailsRetScrollPane.setPreferredSize(new Dimension(400,250));
 
-        
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);		
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);		
-        
-        scrollPane.setPreferredSize(new Dimension(800,250));
+        searchResultsRetScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);		
+        searchResultsRetScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);		
+        searchResultsRetScrollPane.setPreferredSize(new Dimension(400,250));
+
         
         SortByTravelTimeRb.setSelected(true);
         
         thehandler handler = new thehandler();
-       // thelistener listener = new thelistener();
         this.getContentPane().add(panel1, BorderLayout.WEST);
         //this.getContentPane().add(panel2, BorderLayout.EAST);
         this.getContentPane().add(panelRb, BorderLayout.CENTER);
@@ -286,27 +370,61 @@ public class GUI extends JFrame {
         detailsButton.addActionListener(handler);
         SortByPriceRb.addActionListener(handler);
         SortByTravelTimeRb.addActionListener(handler);
-
-        searchResults.addListSelectionListener(new ListSelectionListener() {
+        FirstClassRb.addActionListener(handler);
+        EconomyClassRb.addActionListener(handler);
+        
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setSize(1150, 800);
+        
+        
+        searchResultsDep.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()){
-                    JList source = (JList)event.getSource();
-                    String selected = source.getSelectedValue().toString();
-                    flightDetailModel = new DefaultListModel<String>();
-    				flightDetailModel.addElement("Departing Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_code());
-    				flightDetailModel.addElement("Departing Time:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_time());
-    				flightDetailModel.addElement("Arriving Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_code());
-    				flightDetailModel.addElement("Arriving Time:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_time());
-    				
-    				System.out.println("Selection Made: " + searchResults.getSelectedValue());
-    				flightDetails.setModel(flightDetailModel);
+               
+            	
+            	if (!event.getValueIsAdjusting()){
+             
+            		JList source = (JList)event.getSource();
+            		if(!searchResultsDep.isSelectionEmpty())
+                    {
+                    
+	            		String selected = source.getSelectedValue().toString();
+	                    flightDetailModel = new DefaultListModel<String>();
+	    				
+	                    
+	                    int selectionIndex = searchResultsDep.getSelectedIndex();
+	                	
+	                    populateDetailsList(flightListDep, selectionIndex, false);
+	                    
+                    }
+    	
+                }
+            }
+        });
+        searchResultsRet.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+               
+            	
+            	if (!event.getValueIsAdjusting()){
+             
+            		JList source = (JList)event.getSource();
+            		if(!searchResultsRet.isSelectionEmpty())
+                    {
+                    
+	            		String selected = source.getSelectedValue().toString();
+	                    flightDetailModel = new DefaultListModel<String>();
+	    				
+	                    
+	                    int selectionIndex = searchResultsRet.getSelectedIndex();
+	                	
+	                    populateDetailsList(flightListRet, selectionIndex, true);
+	                    
+                    }
+    	
                 }
             }
         });
       
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-      
-        this.setSize(1150, 500);
+       
 		
 
 	}
@@ -314,120 +432,180 @@ public class GUI extends JFrame {
 	private class thehandler implements ActionListener{
 		
 		public void actionPerformed(ActionEvent event){
-			String departure = "";
-			String destination = "";
-			
-			if(event.getSource() == depField)
-				departure=String.format("field 1: %s", event.getActionCommand());
-			else if(event.getSource() == desField)
-				destination=String.format("field 2: %s", event.getActionCommand());
-			else if (event.getSource() == searchButton) 
+		
+			if (event.getSource() == searchButton) 
 			{
-				departure =  depList.getSelectedItem().toString();
-				destination = arrList.getSelectedItem().toString();
-				
-				model = new DefaultListModel<String>();
-				
-				
+				searchResultsDep.clearSelection();
+				flightDepDetails.clearSelection();
+				modelDep = new DefaultListModel<String>();
+				modelRet = new DefaultListModel<String>();
+				searchResultsDep.setModel(modelDep);
+				searchResultsRet.setModel(modelDep);
 			
-				String[] parseDate;
+				String[] parseArrAirport;
+				String destinationAirport;
+				String depdate;
+				
+				String[] parseDepDate;
 				String[] parseDepAirport;
+				String departureAirport;
+				parseDepDate = depDateTF.getText().split("/");
+				parseDepAirport = depList.getSelectedItem().toString().split("_");
+				departureAirport = parseDepAirport[1];
+				depdate = parseDepDate[2] + "_" + parseDepDate[0] + "_"+ parseDepDate[1];
 				
-				parseDate = depDate.getText().split("/");
-				parseDepAirport = departure.split("_");
-				System.out.println("Searching for flights from... \n" + parseDepAirport[1]	);
 				
-				depFlights = controller.getDepartingFlights(parseDepAirport[1], 
-						parseDate[2] + "_" + parseDate[0]+ "_" + parseDate[1]);
+				String[] parseRetDate;
+				String retdate;
+				parseRetDate = retDateTF.getText().split("/");
+				parseArrAirport = arrList.getSelectedItem().toString().split("_");
+				destinationAirport = parseArrAirport[1];
+				retdate = parseRetDate[2] + "_" + parseRetDate[0] + "_"+ parseRetDate[1];
+				
+				System.out.println("Searching for flights from... \n" + departureAirport
+						+ " tp " +  destinationAirport);
 			
-				searchResults.removeAll();
-				for(int i = 0; i<depFlights.size(); i++)
+				flightListDep = trip.getFlightOptionsByDeparting(departureAirport,
+						destinationAirport, depdate, Integer.toString(numberOfStops),
+						firstClass);
+				sorting.SortingClass sorts;
+				populateSeachResultsList(flightListDep, false);
+				
+				if(roundTrip)
 				{
-					model.addElement("Flight Number:   " 
-							+ depFlights.get(i).get_dep_code()
-							+ "Departing time:  " 
-							+ depFlights.get(i).get_dep_time() 
-							+ "Arriving time:  " + 
-							depFlights.get(i).get_dep_time());
-					System.out.println(depFlights.get(i).toString());
-					
+						flightListRet = trip.getFlightOptionsByDeparting(destinationAirport,
+								departureAirport, retdate, Integer.toString(numberOfStops),
+								firstClass);
+						populateSeachResultsList(flightListRet, true);
 				}
-				System.out.println("Number of flights found: " + depFlights.size());
 				
-				searchResults.setModel(model);
-				
-				//	testFlight = depFlights.get(1);   
-				
-			//	model.addElement(depFlights.get(0).toString());
-			//	searchResults.setModel(model);
-				
+
 			}else if(event.getSource() == OneWayRb)
 			{
+				OneWayRb.setSelected(true);
 				RndTripRb.setSelected(false);
-				tripType = "oneway";
+				roundTrip = false;
+				
 			}else if(event.getSource() == RndTripRb)
 			{
 				OneWayRb.setSelected(false);
-				tripType = "roundtrip";
-				
+				RndTripRb.setSelected(true);
+				roundTrip = true;
 			}else if(event.getSource() == NoStopRb)
 			{
+				NoStopRb.setSelected(true);
 				OneStopRb.setSelected(false);
 				TwoStopRb.setSelected(false);
-				numStops = "0";
+				numberOfStops = 0;
 				
 			}else if(event.getSource() == OneStopRb)
 			{
+				OneStopRb.setSelected(true);
 				NoStopRb.setSelected(false);
 				TwoStopRb.setSelected(false);
-				numStops = "1";
+				numberOfStops = 1;
 			}else if(event.getSource() == TwoStopRb)
 			{
+				TwoStopRb.setSelected(true);
 				OneStopRb.setSelected(false);
 				NoStopRb.setSelected(false);
-				numStops = "2";
+				numberOfStops = 2;
 			}else if(event.getSource() == SortByTravelTimeRb)
 			{
+				SortByTravelTimeRb.setSelected(true);
 				SortByPriceRb.setSelected(false);
 			}else if(event.getSource() == SortByPriceRb)
 			{
+				SortByPriceRb.setSelected(true);
 				SortByTravelTimeRb.setSelected(false);
-			}if(event.getSource() == detailsButton)
+				
+			}else if(event.getSource() == FirstClassRb) 
 			{
-				flightDetailModel = new DefaultListModel<String>();
-				flightDetailModel.addElement("Departing Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_code());
-				flightDetailModel.addElement("Departing Time:" + depFlights.get(searchResults.getSelectedIndex()).get_dep_time());
-				flightDetailModel.addElement("Arriving Airport:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_code());
-				flightDetailModel.addElement("Arriving Time:" + depFlights.get(searchResults.getSelectedIndex()).get_arr_time());
-				
-				System.out.println("Selection Made: " + searchResults.getSelectedValue());
-				flightDetails.setModel(flightDetailModel);
+				EconomyClassRb.setSelected(false);
+				FirstClassRb.setSelected(true);
+				firstClass = true;
+			}else if(event.getSource() == EconomyClassRb)
+			{
+				FirstClassRb.setSelected(false);
+				EconomyClassRb.setSelected(true);
+				firstClass = false;
 			}
-			
-			
-			
-				
-		
 			
 		}
-			}
-	public String[] getUserInput()
+	}
+	private void populateSeachResultsList(ArrayList<ArrayList<Flight>> flightList, boolean populateReturnList)
 	{
-		userInput[0] = desField.getText();
-		userInput[1] = depField.getText();
-		userInput[2] = depDate.getText();
-		userInput[3] = arrDate.getText();
-		userInput[4] = depTimeMin.getText();
-		userInput[5] = depTimeMax.getText();
-		userInput[6] = arrTimeMin.getText();
-		userInput[7] = arrTimeMax.getText();
-		userInput[8] = tripType;
-		userInput[9] = numStops;
-
+		int stopNumber=0;
+		String buitFlightString="";
+		modelDep = new DefaultListModel<String>(); 
+		modelRet = new DefaultListModel<String>(); 
 		
-		return userInput;
+		for(int i = 0; i<flightList.size(); i++)
+		{
+			
+			stopNumber = flightList.get(i).size()-1;
+			{
+				buitFlightString = buitFlightString + "  Depart: " + flightList.get(i).get(0).get_dep_code() +
+						"  at " + flightList.get(i).get(0).get_dep_time() +
+						"  Arrive: " + flightList.get(i).get(stopNumber).get_arr_code() + 
+						"  at " + flightList.get(i).get(stopNumber).get_arr_time() + " with " + numberOfStops + " stops";
+			for(int j = 0; j < flightList.get(i).size(); j++)
+			{
+			//	System.out.println(flightList.get(i).get(j).toString());
+			}
+			}
+			if(!populateReturnList)
+			{
+				modelDep.addElement(buitFlightString);
+			}else
+			{
+				modelRet.addElement(buitFlightString);
+			}
+			buitFlightString = "";
+			//System.out.println("\n next flight");
+	
+		}
+		if(!populateReturnList)
+		{
+			searchResultsDep.removeAll();
+			searchResultsDep.setModel(modelDep);
+			System.out.println("Number of departing flights found " 
+			+ Integer.toString(flightList.size()) + "\n");
+		}else
+		{
+			searchResultsRet.removeAll();
+			searchResultsRet.setModel(modelRet);
+			System.out.println("Number of return flirghts found " 
+					+ Integer.toString(flightList.size()) + "\n");
+		}
 		
 	}
 
+	private void populateDetailsList(ArrayList<ArrayList<Flight>>  flightList, int flightListIndex, boolean populateReturnDetailsList)
+	{
+		String buitFlightString  = "";
+		for(int j = 0; j < flightList.get(flightListIndex).size(); j++)
+		{
+			buitFlightString = buitFlightString + "  Depart: " + flightList.get(flightListIndex).get(j).get_dep_code() +
+					"  at " + flightList.get(flightListIndex).get(j).get_dep_time() +
+					"  Arrive: " + flightList.get(flightListIndex).get(j).get_arr_code() + 
+					"  at " + flightList.get(flightListIndex).get(j).get_arr_time();
+		
+			flightDetailModel.addElement(buitFlightString);
+			buitFlightString = "";
+			
+		}
+	
+		if(!populateReturnDetailsList)
+		{
+			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
+			flightDepDetails.setModel(flightDetailModel);
+		}else
+		{
+			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
+			flightRetDetails.setModel(flightDetailModel);
+		}
+		
+	}
 
 }

@@ -74,7 +74,6 @@ public class Flight {
 		 price_first = p_first;
 		 num_coach_seats = n_coach;
 		 price_coach = p_coach;
-		 
 	 }
 	 
 	 public boolean isValidCode (String code) {
@@ -126,8 +125,8 @@ public class Flight {
 		sb.append("FlightTime: " + flight_time).append(", ");
 		sb.append("Departure ").append("(AirportCode: ").append(dep_code).append("; " + "DepartureTime: "+ dep_time + "), ");
 		sb.append("Arrival ").append("(AirportCode: " + arr_code + "; " + "ArrivalTime: " + arr_time + "), ");
-		sb.append("SeatingFirstClass ").append("(RemainingSeats: " + num_first_seats + "; " + "Price:" + "$"+ price_first + "), ");
-		sb.append("SeatingCoach ").append("(RemainingSeats: " + num_coach_seats + "; " + "Price:" + "$"+ price_coach + ") ");
+		sb.append("SeatingFirstClass ").append("(SeatsReserved: " + num_first_seats + "; " + "Price:" + "$"+ price_first + "), ");
+		sb.append("SeatingCoach ").append("(SeatsReserved: " + num_coach_seats + "; " + "Price:" + "$"+ price_coach + ") ");
 		
 		return sb.toString();
 	}
@@ -185,17 +184,44 @@ public class Flight {
 	public int get_coach(){
 		return this.num_coach_seats;
 	}
+	public double get_coach_price(){
+		return this.price_coach;
+	}
+	public double get_firstClass_price(){
+		return this.price_first;
+	}
 	public String get_arr_time(){
 		return this.arr_time;
 	}
 	public String get_dep_time(){
 		return this.dep_time;
 	}
-	
+	public String get_arr_time_only(){
+		int length = this.arr_time.split(" ").length;
+		return this.arr_time.split(" ")[length - 1] +" " + this.arr_time.split(" ")[length - 2];
+	}
+	public String get_arr_day_only(){
+		return this.arr_time.split(" ")[0] + " " +this.arr_time.split(" ")[1] + " " +this.arr_time.split(" ")[2];
+	}
+	public String get_dep_time_only(){
+		int length = this.dep_time.split(" ").length;
+		return this.dep_time.split(" ")[length - 1] +" " + this.dep_time.split(" ")[length - 2];
+	}
+	public String get_dep_day_only(){
+		return this.dep_time.split(" ")[0] + " " +this.dep_time.split(" ")[1] + " " +this.dep_time.split(" ")[2];
+	}
 	public String get_flight_model(){
 		return this.flight_model;
 	}
-	
+	public String get_flight_number(){
+		return this.flight_number;
+	}
+	public double get_first_price(){
+		return this.price_first;
+	}
+	public double get_flight_time(){
+		return Double.parseDouble(this.flight_time);
+	}
 	public Date get_arr_time_local(){
 		converAllTimeToLocal();
 		return this.arr_local_time;
@@ -204,5 +230,5 @@ public class Flight {
 	public Date get_dep_time_local(){
 		converAllTimeToLocal();
 		return this.dep_local_time;
-	}
+	}	
 }

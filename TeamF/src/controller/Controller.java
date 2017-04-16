@@ -71,7 +71,7 @@ public class Controller {
 		//AirplaneContainer 
 		airplanes = new AirplaneContainer();
 		// Parse the list of airports from the server
-		airplanes.parseAirplanesFromSever();
+		airplanes.parseAirplanesFromServer();
 	}
 	
 	public void setLayoverRange(Double minimum, Double maximum)
@@ -360,7 +360,7 @@ public class Controller {
 		
 		// Create airplane container
 		AirplaneContainer airplanes = new AirplaneContainer();		
-		airplanes.parseAirplanesFromSever();
+		airplanes.parseAirplanesFromServer();
 		System.out.println("Airplanes:");
 		for (Airplane airplane : airplanes.getContainer()){
 			System.out.println(airplane.toString());

@@ -51,7 +51,7 @@ public class AirplaneContainer extends XmlParser {
 		return airplane;
 	}
 	
-	public void parseAirplanesFromSever() throws NullPointerException {
+	public void parseAirplanesFromServer() throws NullPointerException {
 		Document docAirplanes = buildDocument(doQuery("?team=" + teamName + "&action=list&list_type=airplanes"));
 		NodeList nodesAirplanes = docAirplanes.getElementsByTagName("Airplane");
 		
