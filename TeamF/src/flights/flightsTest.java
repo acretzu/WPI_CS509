@@ -14,8 +14,9 @@ public class flightsTest {
 		f.arr_time = "2017 May 10 18:52 GMT";
 		f.dep_time = "2017 May 10 17:33 GMT";
 		
-		//System.out.println(f.get_arr_time_local());
+		System.out.println(f.get_arr_time_local());
 		System.out.println(f.get_dep_time_local());
+		
 	}
 	
 	@Test

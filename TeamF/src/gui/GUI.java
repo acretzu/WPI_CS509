@@ -645,7 +645,7 @@ public class GUI extends JFrame {
 			 flightDetailModel.addElement(FlightNumber);
 			 flightDetailModel.addElement("      ");
 			 if(!populateReturnDetailsList)
-			 { 
+			 {  
 				 reserveDepFlightList.add(flightList.get(flightListIndex).get(j).get_flight_number());
 			 }else
 			 {
