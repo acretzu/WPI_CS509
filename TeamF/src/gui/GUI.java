@@ -132,7 +132,7 @@ public class GUI extends JFrame {
 	ArrayList<Flight> reserveDepFlightList = new ArrayList<Flight>();
 	ArrayList<Flight> reserveRetFlightList = new ArrayList<Flight>();
 	flights.FlightsContainer flightContrainer = new flights.FlightsContainer();
-	
+	reservation.Reservation reserve = new reservation.Reservation();
 	
 	public GUI(){
 		
@@ -569,7 +569,14 @@ public class GUI extends JFrame {
 				
 			}else if(event.getSource() == reserveButton)
 			{
-				
+				if(firstClass)
+				{
+					reserve.reserveFirstClass(getReserveFlightList());
+				}
+				else
+				{
+					reserve.reserveCoach(getReserveFlightList());
+				}
 			}
 			
 			
@@ -621,7 +628,11 @@ public class GUI extends JFrame {
 		}
 		
 	}
-
+/*
+ * 
+ * This method populates flight details object 
+ * 
+ */
 	private void populateDetailsList(ArrayList<ArrayList<Flight>>  flightList, 
 			int flightListIndex,boolean populateReturnDetailsList)
 	{
@@ -632,6 +643,9 @@ public class GUI extends JFrame {
 		String PlaneType = "Plane type: ";
 		String FlightTime = "Flight time: ";
 		String FlightNumber = "Flight number: ";
+		String NumberOfFistClassSeats = "Number of first class seats left: ";
+		String NumberOfCouachSeats = "Number of coach seats left: ";
+						
 		reserveDepFlightList =  new ArrayList<Flight>();
 		reserveRetFlightList =  new ArrayList<Flight>();
 		
@@ -643,7 +657,7 @@ public class GUI extends JFrame {
 			 flightDetailModel.addElement(TimeDep);
 			 Arive = "Arrive: " + flightList.get(flightListIndex).get(j).get_arr_code();
 			 flightDetailModel.addElement(Arive);
-			 TimeArr = "at: " + flightList.get(flightListIndex).get(j).get_arr_time();
+			 TimeArr = "at: " + flightList.get(flightListIndex).get(j).get_arr_time_local();
 			 flightDetailModel.addElement(TimeArr);
 			 PlaneType = "Plane type: " + flightList.get(flightListIndex).get(j).get_flight_model();
 			 flightDetailModel.addElement(PlaneType);
@@ -661,8 +675,6 @@ public class GUI extends JFrame {
 			 }
 		}
 		
-		
-	
 		if(!populateReturnDetailsList)
 		{
 			flightDetailModel.addElement("Total price: " + Double.toString(FlightsContainer.get_total_price(reserveDepFlightList, firstClass)));
@@ -677,6 +689,20 @@ public class GUI extends JFrame {
 			flightRetDetails.setModel(flightDetailModel);
 		}
 		
+	}
+	private ArrayList<String> getReserveFlightList()
+	{
+		ArrayList<String> reserveList = new ArrayList<String>();
+		for(int i = 0; i < reserveDepFlightList.size(); i++ )
+		{
+			reserveList.add(reserveDepFlightList.get(i).get_flight_number());
+		}
+		for(int i = 0; i < reserveRetFlightList.size(); i++ )
+		{
+			reserveList.add(reserveRetFlightList.get(i).get_flight_number());
+		}
+				
+		return reserveList;
 	}
 
 }
