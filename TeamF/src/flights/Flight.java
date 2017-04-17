@@ -52,6 +52,7 @@ public class Flight {
 		 price_first = Integer.parseInt(p_first);
 		 num_coach_seats = Integer.parseInt(n_coach);
 		 price_coach = Integer.parseInt(p_coach);
+		
 	 }
 	 
 	 public Flight(String f_model, String f_time, String f_number, 
@@ -183,6 +184,12 @@ public class Flight {
 	public int get_coach(){
 		return this.num_coach_seats;
 	}
+	public double get_coach_price(){
+		return this.price_coach;
+	}
+	public double get_firstClass_price(){
+		return this.price_first;
+	}
 	public String get_arr_time(){
 		return this.arr_time;
 	}
@@ -209,16 +216,19 @@ public class Flight {
 	public String get_flight_number(){
 		return this.flight_number;
 	}
-	
-	public double get_coach_price(){
-		return this.price_coach;
-	}
 	public double get_first_price(){
 		return this.price_first;
 	}
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
-		
-
+	public Date get_arr_time_local(){
+		converAllTimeToLocal();
+		return this.arr_local_time;
+	}
+	
+	public Date get_dep_time_local(){
+		converAllTimeToLocal();
+		return this.dep_local_time;
+	}	
 }

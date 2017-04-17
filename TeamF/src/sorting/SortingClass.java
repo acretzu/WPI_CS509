@@ -10,7 +10,7 @@ import java.util.Comparator;
  * @author hmanso02
  *
  */
-public abstract class SortingClass {
+public class SortingClass {
 	
 	/**
 	 *  Takes in a list of lists of coach flights and sorts them by price 
@@ -18,7 +18,7 @@ public abstract class SortingClass {
 	 * @param ArrayList of lists of flights 
 	 * @return ArrayList of lists of flights
 	 */
-	protected ArrayList<ArrayList<Flight>> sortedFlights_Coach_Price (ArrayList<ArrayList<Flight>> flights){
+	public ArrayList<ArrayList<Flight>> sortedFlights_Coach_Price (ArrayList<ArrayList<Flight>> flights){
 		Collections.sort(flights, new Comparator<ArrayList<Flight>>() {
 			@Override
 			public int compare(ArrayList<Flight> arg0, ArrayList<Flight> arg1) {
@@ -49,7 +49,7 @@ public abstract class SortingClass {
 	 * @param ArrayList of lists of flights 
 	 * @return ArrayList of lists of flights
 	 */
-	protected ArrayList<ArrayList<Flight>> sortedFlights_FirstClass_Price (ArrayList<ArrayList<Flight>> flights){
+	public ArrayList<ArrayList<Flight>> sortedFlights_FirstClass_Price (ArrayList<ArrayList<Flight>> flights){
 		Collections.sort(flights, new Comparator<ArrayList<Flight>>() {
 			@Override
 			public int compare(ArrayList<Flight> arg0, ArrayList<Flight> arg1) {
@@ -80,7 +80,7 @@ public abstract class SortingClass {
 	 * @param ArrayList of lists of flights 
 	 * @return ArrayList of lists of flights
 	 */	
-	protected ArrayList<ArrayList<Flight>> sortedFlight_FlightTime (ArrayList<ArrayList<Flight>> flights){
+	public ArrayList<ArrayList<Flight>> sortedFlight_FlightTime (ArrayList<ArrayList<Flight>> flights){
 		Collections.sort(flights, new Comparator<ArrayList<Flight>>() {
 			@Override
 			public int compare(ArrayList<Flight> arg0, ArrayList<Flight> arg1) {
@@ -104,4 +104,24 @@ public abstract class SortingClass {
 		});
 		return flights;
 	}
+	
+	public static double get_total_price(ArrayList<Flight> flights, boolean firstClass){
+		double total_coach_price = 0.0;
+		double total_first_price = 0.0;
+		double res = 0.0;
+		for (int i = 0; i < flights.size(); i++){
+			total_coach_price = total_coach_price + flights.get(i).get_coach_price();
+			total_first_price = total_first_price + flights.get(i).get_first_price();
+		}
+		if(firstClass)
+		{
+			return res = total_first_price;
+		}else
+		{
+			return res =  total_coach_price;
+		}
+		
+	}
+	
+	
 }

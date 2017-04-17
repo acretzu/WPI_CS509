@@ -1,5 +1,7 @@
 package flights;
 
+import java.util.ArrayList;
+
 import org.w3c.dom.Element;
 import xml.XmlParser;
 
@@ -22,7 +24,7 @@ public class FlightsContainer extends XmlParser {
 		 double price_first;
 		 int num_coach_seats;
 		 double price_coach;
-		
+		 
 		/**
 		 * Instantiate an empty Flight object
 		 */
@@ -83,7 +85,7 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
-
+	
 	
 
 	/**
