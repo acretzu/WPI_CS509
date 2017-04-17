@@ -399,7 +399,6 @@ public class GUI extends JFrame {
 	            		String selected = source.getSelectedValue().toString();
 	                    flightDetailModel = new DefaultListModel<String>();
 	    				
-	                    
 	                    int selectionIndex = searchResultsDep.getSelectedIndex();
 	                	
 	                    populateDetailsList(flightListDep, selectionIndex, false);
@@ -588,19 +587,27 @@ public class GUI extends JFrame {
 		String buitFlightString="";
 		modelDep = new DefaultListModel<String>(); 
 		modelRet = new DefaultListModel<String>(); 
+		String stopNumberS = "";
+		double totalPrice = 0;
+		String totalPriceS = "";
+		
 		for(int i = 0; i<flightList.size(); i++)
 		{
 			
 			stopNumber = flightList.get(i).size()-1;
-			{
-				buitFlightString = buitFlightString + "  Depart: " + flightList.get(i).get(0).get_dep_code() +
-						"  at " + flightList.get(i).get(0).get_dep_time() +
-						"  Arrive: " + flightList.get(i).get(stopNumber).get_arr_code() + 
-						"  at " + flightList.get(i).get(stopNumber).get_arr_time() + " with " + numberOfStops + " stops";
+			stopNumberS = Integer.toString(flightList.get(i).size()-1);
+			totalPrice = FlightsContainer.get_total_price( flightList.get(i), firstClass);
+			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
+				
+				
+				buitFlightString = "Number of stops: " + stopNumberS +
+						" Total Price: " + totalPriceS +
+						"  Leave at... " + 
+						"  Arrive at... " +
+						" Total travel time...";
 			for(int j = 0; j < flightList.get(i).size(); j++)
 			{
 			//	System.out.println(flightList.get(i).get(j).toString());
-			}
 			}
 			if(!populateReturnList)
 			{
@@ -610,9 +617,11 @@ public class GUI extends JFrame {
 				modelRet.addElement(buitFlightString);
 			}
 			buitFlightString = "";
-			//System.out.println("\n next flight");
-	
 		}
+		
+		//System.out.println("\n next flight");
+	
+		
 		if(!populateReturnList)
 		{
 			searchResultsDep.removeAll();
