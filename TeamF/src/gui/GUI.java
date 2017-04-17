@@ -596,7 +596,7 @@ public class GUI extends JFrame {
 			
 			stopNumber = flightList.get(i).size()-1;
 			stopNumberS = Integer.toString(flightList.get(i).size()-1);
-			totalPrice = FlightsContainer.get_total_price( flightList.get(i), firstClass);
+			totalPrice = sort.get_total_price( flightList.get(i), firstClass);
 			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
 				
 				
@@ -686,13 +686,13 @@ public class GUI extends JFrame {
 		
 		if(!populateReturnDetailsList)
 		{
-			flightDetailModel.addElement("Total price: " + Double.toString(FlightsContainer.get_total_price(reserveDepFlightList, firstClass)));
+			flightDetailModel.addElement("Total price: " + Double.toString(sort.get_total_price(reserveDepFlightList, firstClass)));
 			
 			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
 			flightDepDetails.setModel(flightDetailModel);
 		}else
 		{
-			flightDetailModel.addElement("Total price: " + Double.toString(FlightsContainer.get_total_price(reserveRetFlightList, firstClass)));
+			flightDetailModel.addElement("Total price: " + Double.toString(sort.get_total_price(reserveRetFlightList, firstClass)));
 			
 			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
 			flightRetDetails.setModel(flightDetailModel);
