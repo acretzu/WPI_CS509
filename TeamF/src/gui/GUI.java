@@ -30,10 +30,10 @@ import javax.swing.event.ListSelectionListener;
 import sorting.SortingClass;
 
 import Trip.Trip;
-
+import flights.FlightsContainer;
 public class GUI extends JFrame {
 	
-	sorting.SortingClass sorts= new sorting.SortingClass();
+	sorting.SortingClass sort= new sorting.SortingClass();
 	
 	
 	public UserInput userInput = new UserInput();
@@ -60,6 +60,7 @@ public class GUI extends JFrame {
     
     private JButton searchButton = new JButton("Search");
     private JButton sortButton =  new JButton("Sort");
+    private JButton reserveButton =  new JButton("Reserve");
     private JButton detailsButton = new JButton("Details");;
     private JLabel depFlightsLabel = new JLabel("Departure Flights");
     private JLabel retFlightsLabel = new JLabel("Return Flights");
@@ -123,14 +124,15 @@ public class GUI extends JFrame {
     JScrollPane detailsRetScrollPane;
     JScrollPane detailsDepScrollPane;
     
-    Boolean firstClass;
+    boolean firstClass;
+    boolean sortByPrice;
+    boolean sortByTime;
+    
 	int numberOfStops;
-	
-	public class sorts extends sorting.SortingClass
-	{
-		
-	}
-	sorting.SortingClass s = new sorts();
+	ArrayList<Flight> reserveDepFlightList = new ArrayList<Flight>();
+	ArrayList<Flight> reserveRetFlightList = new ArrayList<Flight>();
+	flights.FlightsContainer flightContrainer = new flights.FlightsContainer();
+	reservation.Reservation reserve = new reservation.Reservation();
 	
 	public GUI(){
 		
@@ -138,6 +140,9 @@ public class GUI extends JFrame {
 		super("User Interface");
 		
 		firstClass = false;
+		sortByPrice = false;
+		sortByTime = true;
+		
 		numberOfStops = 1;
 		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
@@ -296,7 +301,9 @@ public class GUI extends JFrame {
         c.gridy = 25;
         panel3.add(flightRetDetails, c);
         
-        
+        c.gridx = 0;
+        c.gridy = 30;
+        panel3.add(reserveButton, c);
         
         c.gridx = 5;
         c.gridy = 15;
@@ -372,6 +379,8 @@ public class GUI extends JFrame {
         SortByTravelTimeRb.addActionListener(handler);
         FirstClassRb.addActionListener(handler);
         EconomyClassRb.addActionListener(handler);
+        sortButton.addActionListener(handler);
+        reserveButton.addActionListener(handler);
         
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1150, 800);
@@ -390,7 +399,6 @@ public class GUI extends JFrame {
 	            		String selected = source.getSelectedValue().toString();
 	                    flightDetailModel = new DefaultListModel<String>();
 	    				
-	                    
 	                    int selectionIndex = searchResultsDep.getSelectedIndex();
 	                	
 	                    populateDetailsList(flightListDep, selectionIndex, false);
@@ -514,11 +522,14 @@ public class GUI extends JFrame {
 			{
 				SortByTravelTimeRb.setSelected(true);
 				SortByPriceRb.setSelected(false);
+				sortByPrice = false;
+				sortByTime = true;
 			}else if(event.getSource() == SortByPriceRb)
 			{
 				SortByPriceRb.setSelected(true);
 				SortByTravelTimeRb.setSelected(false);
-				
+				sortByPrice = true;
+				sortByTime = false;
 			}else if(event.getSource() == FirstClassRb) 
 			{
 				EconomyClassRb.setSelected(false);
@@ -529,7 +540,44 @@ public class GUI extends JFrame {
 				FirstClassRb.setSelected(false);
 				EconomyClassRb.setSelected(true);
 				firstClass = false;
+			}else if(event.getSource() == sortButton)
+			{
+				if(sortByPrice && !firstClass)
+				{
+					flightListDep = sort.sortedFlights_Coach_Price(flightListDep);
+					populateSeachResultsList(flightListDep, false);
+					
+					flightListRet = sort.sortedFlights_Coach_Price(flightListRet);
+					populateSeachResultsList(flightListRet, true);
+					
+				}else if(sortByPrice && firstClass)
+				{
+					flightListDep = sort.sortedFlights_FirstClass_Price(flightListDep);
+					populateSeachResultsList(flightListDep, false);
+					
+					flightListRet = sort.sortedFlights_FirstClass_Price(flightListRet);
+					populateSeachResultsList(flightListRet, true);
+				}else 
+				{
+					flightListDep = sort.sortedFlight_FlightTime(flightListDep);
+					populateSeachResultsList(flightListDep, false);
+					
+					flightListRet = sort.sortedFlight_FlightTime(flightListRet);
+					populateSeachResultsList(flightListRet, true);
+				}
+				
+			}else if(event.getSource() == reserveButton)
+			{
+				if(firstClass)
+				{
+					reserve.reserveFirstClass(getReserveFlightList());
+				}
+				else
+				{
+					reserve.reserveCoach(getReserveFlightList());
+				}
 			}
+			
 			
 		}
 	}
@@ -539,20 +587,27 @@ public class GUI extends JFrame {
 		String buitFlightString="";
 		modelDep = new DefaultListModel<String>(); 
 		modelRet = new DefaultListModel<String>(); 
+		String stopNumberS = "";
+		double totalPrice = 0;
+		String totalPriceS = "";
 		
 		for(int i = 0; i<flightList.size(); i++)
 		{
 			
 			stopNumber = flightList.get(i).size()-1;
-			{
-				buitFlightString = buitFlightString + "  Depart: " + flightList.get(i).get(0).get_dep_code() +
-						"  at " + flightList.get(i).get(0).get_dep_time() +
-						"  Arrive: " + flightList.get(i).get(stopNumber).get_arr_code() + 
-						"  at " + flightList.get(i).get(stopNumber).get_arr_time() + " with " + numberOfStops + " stops";
+			stopNumberS = Integer.toString(flightList.get(i).size()-1);
+			totalPrice = sort.get_total_price( flightList.get(i), firstClass);
+			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
+				
+				
+				buitFlightString = "Number of stops: " + stopNumberS +
+						" Total Price: " + totalPriceS +
+						"  Leave at... " + 
+						"  Arrive at... " +
+						" Total travel time...";
 			for(int j = 0; j < flightList.get(i).size(); j++)
 			{
 			//	System.out.println(flightList.get(i).get(j).toString());
-			}
 			}
 			if(!populateReturnList)
 			{
@@ -562,9 +617,11 @@ public class GUI extends JFrame {
 				modelRet.addElement(buitFlightString);
 			}
 			buitFlightString = "";
-			//System.out.println("\n next flight");
-	
 		}
+		
+		//System.out.println("\n next flight");
+	
+		
 		if(!populateReturnList)
 		{
 			searchResultsDep.removeAll();
@@ -580,32 +637,81 @@ public class GUI extends JFrame {
 		}
 		
 	}
-
-	private void populateDetailsList(ArrayList<ArrayList<Flight>>  flightList, int flightListIndex, boolean populateReturnDetailsList)
+/*
+ * 
+ * This method populates flight details object 
+ * 
+ */
+	private void populateDetailsList(ArrayList<ArrayList<Flight>>  flightList, 
+			int flightListIndex,boolean populateReturnDetailsList)
 	{
-		String buitFlightString  = "";
+		String Depart = "Depart: ";
+		String TimeDep = "at: ";
+		String Arive = "Arrive: ";
+		String TimeArr = "at: ";
+		String PlaneType = "Plane type: ";
+		String FlightTime = "Flight time: ";
+		String FlightNumber = "Flight number: ";
+		String NumberOfFistClassSeats = "Number of first class seats left: ";
+		String NumberOfCouachSeats = "Number of coach seats left: ";
+						
+		reserveDepFlightList =  new ArrayList<Flight>();
+		reserveRetFlightList =  new ArrayList<Flight>();
+		
 		for(int j = 0; j < flightList.get(flightListIndex).size(); j++)
 		{
-			buitFlightString = buitFlightString + "  Depart: " + flightList.get(flightListIndex).get(j).get_dep_code() +
-					"  at " + flightList.get(flightListIndex).get(j).get_dep_time() +
-					"  Arrive: " + flightList.get(flightListIndex).get(j).get_arr_code() + 
-					"  at " + flightList.get(flightListIndex).get(j).get_arr_time();
-		
-			flightDetailModel.addElement(buitFlightString);
-			buitFlightString = "";
-			
+			 Depart = "Depart: " + flightList.get(flightListIndex).get(j).get_dep_code();
+			 flightDetailModel.addElement(Depart);
+			 TimeDep = "at: " + flightList.get(flightListIndex).get(j).get_dep_time_local();
+			 flightDetailModel.addElement(TimeDep);
+			 Arive = "Arrive: " + flightList.get(flightListIndex).get(j).get_arr_code();
+			 flightDetailModel.addElement(Arive);
+			 TimeArr = "at: " + flightList.get(flightListIndex).get(j).get_arr_time_local();
+			 flightDetailModel.addElement(TimeArr);
+			 PlaneType = "Plane type: " + flightList.get(flightListIndex).get(j).get_flight_model();
+			 flightDetailModel.addElement(PlaneType);
+			 FlightTime = "Flight time: " + flightList.get(flightListIndex).get(j).get_flight_time();
+			 flightDetailModel.addElement(FlightTime);
+			 FlightNumber = "Flight number: " + flightList.get(flightListIndex).get(j).get_flight_number();
+			 flightDetailModel.addElement(FlightNumber);
+			 flightDetailModel.addElement("      ");
+			 if(!populateReturnDetailsList)
+			 {  
+				 reserveDepFlightList.add(flightList.get(flightListIndex).get(j));
+			 }else
+			 {
+				 reserveRetFlightList.add(flightList.get(flightListIndex).get(j));		 
+			 }
 		}
-	
+		
 		if(!populateReturnDetailsList)
 		{
+			flightDetailModel.addElement("Total price: " + Double.toString(sort.get_total_price(reserveDepFlightList, firstClass)));
+			
 			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
 			flightDepDetails.setModel(flightDetailModel);
 		}else
 		{
+			flightDetailModel.addElement("Total price: " + Double.toString(sort.get_total_price(reserveRetFlightList, firstClass)));
+			
 			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
 			flightRetDetails.setModel(flightDetailModel);
 		}
 		
+	}
+	private ArrayList<String> getReserveFlightList()
+	{
+		ArrayList<String> reserveList = new ArrayList<String>();
+		for(int i = 0; i < reserveDepFlightList.size(); i++ )
+		{
+			reserveList.add(reserveDepFlightList.get(i).get_flight_number());
+		}
+		for(int i = 0; i < reserveRetFlightList.size(); i++ )
+		{
+			reserveList.add(reserveRetFlightList.get(i).get_flight_number());
+		}
+				
+		return reserveList;
 	}
 
 }

@@ -13,11 +13,10 @@ public class flightsTest {
 		f.dep_code = "SAN";
 		f.arr_time = "2017 May 10 18:52 GMT";
 		f.dep_time = "2017 May 10 17:33 GMT";
-		
+		System.out.println(f.get_dep_time_local());
 		
 		
 	}
-	
 	@Test
 	public void testRead(){
 		HashMap<String, Integer> map = new HashMap<>();
