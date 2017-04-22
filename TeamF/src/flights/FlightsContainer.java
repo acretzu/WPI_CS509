@@ -85,12 +85,7 @@ public class FlightsContainer extends XmlParser {
 		flight.set_coach_price(price_coach);
 		return flight;
 	}
-	
-	
 
-	/**
-	 *  This class is meant to carry any common functionality for departingFlightsContainer and arrivingFlightsContainer
-	 */
 
 
 }

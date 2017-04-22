@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Calendar;
+
+import org.joda.time.DateTime;
+
 
 
 public class Flight {
@@ -222,13 +224,15 @@ public class Flight {
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
-	public Date get_arr_time_local(){
+	public DateTime get_arr_time_local(){
 		converAllTimeToLocal();
-		return this.arr_local_time;
+		DateTime arrLocalTime = new DateTime(this.arr_local_time);
+		return arrLocalTime;
 	}
 	
-	public Date get_dep_time_local(){
+	public DateTime get_dep_time_local(){
 		converAllTimeToLocal();
-		return this.dep_local_time;
+		DateTime depLocalTime = new DateTime(this.dep_local_time);
+		return depLocalTime;
 	}	
 }
