@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
-
+import javax.swing.JOptionPane;
 import airport.AirportContainer;
 import controller.Controller;
 import flights.DepartingFlightsContainer;
@@ -479,7 +479,6 @@ public class GUI extends JFrame {
 				modelRet = new DefaultListModel<String>();
 				searchResultsDep.setModel(modelDep);
 				searchResultsRet.setModel(modelDep);
-				disableAllSearchControls();
 				String[] parseArrAirport;
 				String destinationAirport;
 				String depdate;
@@ -499,6 +498,21 @@ public class GUI extends JFrame {
 				parseArrAirport = arrList.getSelectedItem().toString().split("_");
 				destinationAirport = parseArrAirport[1];
 				retdate = parseRetDate[2] + "_" + parseRetDate[0] + "_"+ parseRetDate[1];
+				
+				if(!isDateValid(parseRetDate) || !isDateValid(parseDepDate))
+				{
+					return;
+				}
+				if(departureAirport.equals(destinationAirport))
+				{
+					JOptionPane.showMessageDialog(null,"Departure airport is the same\n"
+															+ "as arrival airport",
+															"Error",JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				
+				disableAllSearchControls();
 				
 				System.out.println("Searching for flights from... \n" + departureAirport
 						+ " tp " +  destinationAirport);
@@ -699,14 +713,25 @@ public class GUI extends JFrame {
 		
 		if(!populateReturnList)
 		{
+			
 			searchResultsDep.removeAll();
-			searchResultsDep.setModel(modelDep);
+			if(modelDep.isEmpty())
+			{
+				modelDep.addElement("No flights found");
+			}
+			searchResultsDep.setModel(modelDep);	
 			System.out.println("Number of departing flights found " 
 			+ Integer.toString(flightList.size()) + "\n");
 		}else
 		{
 			searchResultsRet.removeAll();
+			if(modelDep.isEmpty())
+			{
+				modelRet.addElement("No flights found");
+			}
 			searchResultsRet.setModel(modelRet);
+			
+			
 			System.out.println("Number of return flirghts found " 
 					+ Integer.toString(flightList.size()) + "\n");
 		}
@@ -832,5 +857,34 @@ public class GUI extends JFrame {
 		searchResultsRet.setModel(new  DefaultListModel<String>());
 		flightDepDetails.setModel(new  DefaultListModel<String>());
 		flightRetDetails.setModel(new  DefaultListModel<String>());
+	}
+	
+	private boolean isDateValid(String[] checkDate)
+	{
+		int date = Integer.parseInt(checkDate[1]);
+		int month = Integer.parseInt(checkDate[0]);
+		int year = Integer.parseInt(checkDate[2]);
+		
+		if(year!=2017)
+		{
+			JOptionPane.showMessageDialog(null,"Year must be 2017\n",
+					"Error",JOptionPane.WARNING_MESSAGE);
+			return false;
+
+		}else if(month != 5)
+		{
+			JOptionPane.showMessageDialog(null,"Month must be 5",
+					"Error",JOptionPane.WARNING_MESSAGE);
+			return false;
+
+		}if(date > 31 || date < 1)
+		{
+			JOptionPane.showMessageDialog(null,"Date must be between 1 and 30",
+					"Error",JOptionPane.WARNING_MESSAGE);
+			return false;
+
+		}
+		
+		return true;
 	}
 }
