@@ -505,8 +505,8 @@ public class GUI extends JFrame {
 				}
 				if(departureAirport.equals(destinationAirport))
 				{
-					JOptionPane.showMessageDialog(null,"Departure airport is the same\n"
-															+ "as arrival airport",
+					JOptionPane.showMessageDialog(null,"Departure airport can not be \n"
+							+ " the same as arrival airport",
 															"Error",JOptionPane.WARNING_MESSAGE);
 					return;
 				}
@@ -528,6 +528,7 @@ public class GUI extends JFrame {
 							destinationAirport, depdate, Integer.toString(numberOfStops),
 							firstClass);
 				}
+				
 				sorting.SortingClass sorts;
 				populateSeachResultsList(flightListDep, false);
 				
@@ -544,8 +545,22 @@ public class GUI extends JFrame {
 								departureAirport, retdate, Integer.toString(numberOfStops),
 								firstClass);
 					}
-						populateSeachResultsList(flightListRet, true);
+					populateSeachResultsList(flightListRet, true);
+					
+					if(flightListDep.isEmpty() || flightListRet.isEmpty())
+					{
+						modelDep.removeAllElements();
+						modelDep.addElement("No round trip flights found");
+						searchResultsDep.setModel(modelDep);
+						
+						modelRet.removeAllElements();
+						modelRet.addElement("No round trip flights found");
+						searchResultsRet.setModel(modelRet);
+						
+						
+					}
 				}
+				
 				
 
 			}else if(event.getSource() == OneWayRb)
@@ -673,7 +688,7 @@ public class GUI extends JFrame {
 	private void populateSeachResultsList(ArrayList<ArrayList<Flight>> flightList, boolean populateReturnList)
 	{
 		int stopNumber=0;
-		String buitFlightString="";
+		String builtFlightString="";
 		modelDep = new DefaultListModel<String>(); 
 		modelRet = new DefaultListModel<String>(); 
 		String stopNumberS = "";
@@ -689,7 +704,7 @@ public class GUI extends JFrame {
 			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
 				
 				
-				buitFlightString = "Stops #: " + stopNumberS +
+				builtFlightString = "Stops #: " + stopNumberS +
 						" Total Price: " + totalPriceS +
 						"  Leave at... " + 
 						"  Arrive at... " +
@@ -700,12 +715,12 @@ public class GUI extends JFrame {
 			}
 			if(!populateReturnList)
 			{
-				modelDep.addElement(buitFlightString);
+				modelDep.addElement(builtFlightString);
 			}else
 			{
-				modelRet.addElement(buitFlightString);
+				modelRet.addElement(builtFlightString);
 			}
-			buitFlightString = "";
+			builtFlightString = "";
 		}
 		
 		//System.out.println("\n next flight");
@@ -713,7 +728,6 @@ public class GUI extends JFrame {
 		
 		if(!populateReturnList)
 		{
-			
 			searchResultsDep.removeAll();
 			if(modelDep.isEmpty())
 			{
@@ -725,12 +739,11 @@ public class GUI extends JFrame {
 		}else
 		{
 			searchResultsRet.removeAll();
-			if(modelDep.isEmpty())
+			if(modelRet.isEmpty())
 			{
 				modelRet.addElement("No flights found");
 			}
 			searchResultsRet.setModel(modelRet);
-			
 			
 			System.out.println("Number of return flirghts found " 
 					+ Integer.toString(flightList.size()) + "\n");
