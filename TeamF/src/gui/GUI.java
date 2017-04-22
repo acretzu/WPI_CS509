@@ -31,12 +31,18 @@ import sorting.SortingClass;
 
 import Trip.Trip;
 import flights.FlightsContainer;
+/**
+ * 
+ * @author Ilya Lifshits
+ * @version 1.0
+ * @since 2017-02-15
+ * 
+ *
+ */
 public class GUI extends JFrame {
 	
 	sorting.SortingClass sort= new sorting.SortingClass();
 	
-	
-	public UserInput userInput = new UserInput();
 	//GUI object initialisation 
     private JTextField desField = new JTextField("BOS");
     private JTextField depField = new JTextField("SFO");
@@ -56,9 +62,12 @@ public class GUI extends JFrame {
     private JRadioButton  EconomyClassRb= new JRadioButton("Economy Class");
     private JRadioButton  SortByPriceRb= new JRadioButton("Price");
     private JRadioButton  SortByTravelTimeRb= new JRadioButton("Travel Time");
-    
-    
+    private JRadioButton  SearchByArrDate = new JRadioButton("Search by Arrival Date");
+    private JRadioButton  SearchByDepDate = new JRadioButton("Search by Departure Date");
+     
+   
     private JButton searchButton = new JButton("Search");
+    private JButton clearSearchButton = new JButton("Restart Search");
     private JButton sortButton =  new JButton("Sort");
     private JButton reserveButton =  new JButton("Reserve");
     private JButton detailsButton = new JButton("Details");;
@@ -79,13 +88,9 @@ public class GUI extends JFrame {
     
     //panel1 holds dept/arr airport and dept/return date controls 
     private JPanel panel1 = new JPanel(new GridBagLayout());
-	
-    private JPanel panel2 = new JPanel(new GridBagLayout());
-	
-    private JPanel panel3 = new JPanel(new GridBagLayout());
-    
-	private JPanel panelRb = new JPanel(new GridBagLayout());
-	
+	private JPanel panel2 = new JPanel(new GridBagLayout());
+	private JPanel panel3 = new JPanel(new GridBagLayout());
+    private JPanel panelRb = new JPanel(new GridBagLayout());
 	private JPanel panel4 = new JPanel(new GridBagLayout());
 	
     private boolean roundTrip = true;
@@ -121,8 +126,8 @@ public class GUI extends JFrame {
     JScrollPane searchResultsDepScrollPane;
     JScrollPane searchResultsRetScrollPane;
     
-    JScrollPane detailsRetScrollPane;
     JScrollPane detailsDepScrollPane;
+    JScrollPane detailsRetScrollPane;
     
     boolean firstClass;
     boolean sortByPrice;
@@ -258,7 +263,7 @@ public class GUI extends JFrame {
         panel1.add(destlb,c);
      
         c.gridx = 0; 
-        c.gridy = 20;
+        c.gridy = 22;
         panel1.add(depDateTFlb,c);
      
         c.gridx = 0; 
@@ -274,9 +279,20 @@ public class GUI extends JFrame {
         panel1.add(arrList,c);
         
 
-        c.gridy = 20;
+        c.gridx = 0;
+        c.gridy = 21;
+        SearchByDepDate.setSelected(true);
+        panel1.add(SearchByDepDate,c);
+        
+        c.gridx = 20;
+        c.gridy = 21;
+        panel1.add(SearchByArrDate,c);
+        SearchByArrDate.setSelected(false);
+        
+        c.gridy = 22;
         panel1.add(depDateTF,c);
-
+        c.gridx = 25;
+        c.gridx = 20;
         c.gridy = 25;
         panel1.add(retDateTF,c);
 
@@ -285,8 +301,14 @@ public class GUI extends JFrame {
         c.gridy = 0;
         panel3.add(searchButton, c);
         
+        
         c.gridx = 0;
         c.gridy = 1;
+        clearSearchButton.setEnabled(false);
+        panel3.add(clearSearchButton, c);
+        
+        c.gridx = 0;
+        c.gridy = 3;
         panel3.add(depFlightsLabel, c);
         
         
@@ -381,9 +403,11 @@ public class GUI extends JFrame {
         EconomyClassRb.addActionListener(handler);
         sortButton.addActionListener(handler);
         reserveButton.addActionListener(handler);
-        
+        SearchByDepDate.addActionListener(handler);
+        SearchByArrDate.addActionListener(handler);
+        clearSearchButton.addActionListener(handler);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(1150, 800);
+        this.setSize(1150, 850);
         
         
         searchResultsDep.addListSelectionListener(new ListSelectionListener() {
@@ -437,6 +461,12 @@ public class GUI extends JFrame {
 
 	}
 
+	/**
+	 * 
+	 * @author Ilya Lifshits
+	 * 
+	 *
+	 */
 	private class thehandler implements ActionListener{
 		
 		public void actionPerformed(ActionEvent event){
@@ -449,7 +479,7 @@ public class GUI extends JFrame {
 				modelRet = new DefaultListModel<String>();
 				searchResultsDep.setModel(modelDep);
 				searchResultsRet.setModel(modelDep);
-			
+				disableAllSearchControls();
 				String[] parseArrAirport;
 				String destinationAirport;
 				String depdate;
@@ -473,17 +503,33 @@ public class GUI extends JFrame {
 				System.out.println("Searching for flights from... \n" + departureAirport
 						+ " tp " +  destinationAirport);
 			
-				flightListDep = trip.getFlightOptionsByDeparting(departureAirport,
+				if(SearchByDepDate.isSelected())
+				{
+					flightListDep = trip.getFlightOptionsByDeparting(departureAirport,
 						destinationAirport, depdate, Integer.toString(numberOfStops),
 						firstClass);
+				}else
+				{
+					flightListDep = trip.getFlightOptionsByArrival(departureAirport,
+							destinationAirport, depdate, Integer.toString(numberOfStops),
+							firstClass);
+				}
 				sorting.SortingClass sorts;
 				populateSeachResultsList(flightListDep, false);
 				
 				if(roundTrip)
 				{
+					if(SearchByDepDate.isSelected())
+					{
 						flightListRet = trip.getFlightOptionsByDeparting(destinationAirport,
 								departureAirport, retdate, Integer.toString(numberOfStops),
 								firstClass);
+					}else
+					{
+						flightListRet = trip.getFlightOptionsByArrival(destinationAirport,
+								departureAirport, retdate, Integer.toString(numberOfStops),
+								firstClass);
+					}
 						populateSeachResultsList(flightListRet, true);
 				}
 				
@@ -493,12 +539,21 @@ public class GUI extends JFrame {
 				OneWayRb.setSelected(true);
 				RndTripRb.setSelected(false);
 				roundTrip = false;
+				searchResultsRet.setVisible(false);
+				flightRetDetails.setVisible(false);
+				searchResultsRet.setEnabled(false);
+				flightRetDetails.setEnabled(false);
 				
 			}else if(event.getSource() == RndTripRb)
 			{
 				OneWayRb.setSelected(false);
 				RndTripRb.setSelected(true);
 				roundTrip = true;
+				searchResultsRet.setVisible(true);
+				flightRetDetails.setVisible(true);
+				searchResultsRet.setEnabled(true);
+				flightRetDetails.setEnabled(true);
+				
 			}else if(event.getSource() == NoStopRb)
 			{
 				NoStopRb.setSelected(true);
@@ -576,11 +631,31 @@ public class GUI extends JFrame {
 				{
 					reserve.reserveCoach(getReserveFlightList());
 				}
+			}else if(event.getSource() == SearchByArrDate)
+			{
+				depDateTFlb.setText("Arrival Date");
+				SearchByDepDate.setSelected(false);
+			}else if(event.getSource() == SearchByDepDate)
+			{
+				depDateTFlb.setText("Departure Date");
+				SearchByArrDate.setSelected(false);
+			}else if(event.getSource() == clearSearchButton)
+			{
+				enableAllSearchControls();
+				clearSearchResults();
+				
 			}
 			
 			
 		}
 	}
+	/**
+	 * populates GUI departurelist or returnlist object with summary of each flight in flightList
+	 * from search results
+	 * @param flightList list of flights to populate departureList or returnList
+	 * @param populateReturnList true if returnList is to be populated,
+	 * false if departureList is to be populated
+	 */
 	private void populateSeachResultsList(ArrayList<ArrayList<Flight>> flightList, boolean populateReturnList)
 	{
 		int stopNumber=0;
@@ -600,7 +675,7 @@ public class GUI extends JFrame {
 			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
 				
 				
-				buitFlightString = "Number of stops: " + stopNumberS +
+				buitFlightString = "Stops #: " + stopNumberS +
 						" Total Price: " + totalPriceS +
 						"  Leave at... " + 
 						"  Arrive at... " +
@@ -713,5 +788,49 @@ public class GUI extends JFrame {
 				
 		return reserveList;
 	}
-
+	
+	private void disableAllSearchControls()
+	{
+		RndTripRb.setEnabled(false);
+		OneWayRb.setEnabled(false);
+		NoStopRb.setEnabled(false);
+		OneStopRb.setEnabled(false);
+		TwoStopRb.setEnabled(false);
+		FirstClassRb.setEnabled(false);
+		EconomyClassRb.setEnabled(false);
+		depDateTF.setEnabled(false);
+		retDateTF.setEnabled(false);
+		searchButton.setEnabled(false);
+		depList.setEnabled(false);
+		arrList.setEnabled(false);
+		SearchByArrDate.setEnabled(false);
+		SearchByDepDate.setEnabled(false);
+		clearSearchButton.setEnabled(true);
+	}
+	private void enableAllSearchControls()
+	{
+		RndTripRb.setEnabled(true);
+		OneWayRb.setEnabled(true);
+		NoStopRb.setEnabled(true);
+		OneStopRb.setEnabled(true);
+		TwoStopRb.setEnabled(true);
+		FirstClassRb.setEnabled(true);
+		EconomyClassRb.setEnabled(true);
+		depDateTF.setEnabled(true);
+		retDateTF.setEnabled(true);
+		searchButton.setEnabled(true);
+		depList.setEnabled(true);
+		arrList.setEnabled(true);
+		SearchByArrDate.setEnabled(true);
+		SearchByDepDate.setEnabled(true);
+		clearSearchButton.setEnabled(false);
+		
+	}
+	private void clearSearchResults()
+	{
+		searchResultsDep.setModel(new  DefaultListModel<String>());
+		searchResultsRet.setModel(new  DefaultListModel<String>());
+		flightDepDetails.setModel(new  DefaultListModel<String>());
+		flightRetDetails.setModel(new  DefaultListModel<String>());
+	}
 }
