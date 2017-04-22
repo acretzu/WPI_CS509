@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 
@@ -138,8 +140,8 @@ public class Flight {
 		long arr_offset = getOffSetTime(this.arr_code);
 		long dep_offset = getOffSetTime(this.dep_code);
 		long p = 3600000;
-		this.arr_local_time.setTime(this.arr_local_time.getTime() + p * arr_offset);
-		this.dep_local_time.setTime(this.dep_local_time.getTime() + p * dep_offset);
+		this.arr_local_time.setTime(this.arr_local_time.getTime() + p * (arr_offset + 1));
+		this.dep_local_time.setTime(this.dep_local_time.getTime() + p * (dep_offset + 1));
 	}
 	
 	private void arrTimeStringToDate(String dateStr){
@@ -224,15 +226,44 @@ public class Flight {
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
+	/**
+	 * Get this flight's local arrival time 
+	 * 
+	 * 
+	 * @return DateTime (joda time), so you can use getHourOfDay()to get hour, and e.t.c
+	 */
 	public DateTime get_arr_time_local(){
 		converAllTimeToLocal();
 		DateTime arrLocalTime = new DateTime(this.arr_local_time);
 		return arrLocalTime;
 	}
-	
+	/**
+	 * Get this flight's local departure time 
+	 * 
+	 * 
+	 * @return DateTime (joda time), so you can use getHourOfDay()to get hour, and e.t.c
+	 */
 	public DateTime get_dep_time_local(){
 		converAllTimeToLocal();
 		DateTime depLocalTime = new DateTime(this.dep_local_time);
 		return depLocalTime;
-	}	
+	}
+	/**
+	 * print the departure time with format 
+	 * ("yyyy/MM/dd/hh:mm:ss a")
+	 * for example: 2015/01/15/02:33:01 am
+	 */
+	public void print_dep_local_time(){
+		DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy/MM/dd/hh:mm:ss a");
+		System.out.println(dtfOut.print(this.get_dep_time_local()));
+	}
+	/**
+	 * print the arrival time with format 
+	 * ("yyyy/MM/dd/hh:mm:ss a")
+	 * for example: 2015/01/15/02:33:01 am
+	 */
+	public void print_arr_local_time(){
+		DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy/MM/dd/hh:mm:ss a");
+		System.out.println(dtfOut.print(this.get_arr_time_local()));
+	}
 }
