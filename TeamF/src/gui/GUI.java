@@ -314,7 +314,6 @@ public class GUI extends JFrame {
         c.gridy = 3;
         panel3.add(depFlightsLabel, c);
         
-        
         c.gridx = 0;
         c.gridy = 21;
         panel3.add(retFlightsLabel, c);
@@ -520,8 +519,10 @@ public class GUI extends JFrame {
 	{
 		String Depart = "Depart: ";
 		String TimeDep = "at: ";
+		String DateDep = "on: ";
 		String Arive = "Arrive: ";
 		String TimeArr = "at: ";
+		String DateArr = "on: ";
 		String PlaneType = "Plane type: ";
 		String FlightTime = "Flight time: ";
 		String FlightNumber = "Flight number: ";
@@ -538,11 +539,20 @@ public class GUI extends JFrame {
 			 TimeDep = "at: " + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getHourOfDay())
 					 +":" + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getMinuteOfHour());
 			 flightDetailModel.addElement(TimeDep);
+			 DateDep = "on: " + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getMonthOfYear())
+					 + "/" + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getDayOfMonth()) 
+					 +  "/" + flightList.get(flightListIndex).get(j).get_dep_time_local().getYear(); 		 
+			 flightDetailModel.addElement(DateDep);
 			 Arive = "Arrive: " + flightList.get(flightListIndex).get(j).get_arr_code();
 			 flightDetailModel.addElement(Arive);
 			 TimeArr = "at: " + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getHourOfDay())
 					 + ":" + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getMinuteOfHour());
 			 flightDetailModel.addElement(TimeArr);
+			 DateArr = "on: " + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getMonthOfYear())
+				 + "/" + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getDayOfMonth()) 
+				 +  "/" + flightList.get(flightListIndex).get(j).get_arr_time_local().getYear(); 		 
+				 flightDetailModel.addElement(DateDep);
+		
 			 PlaneType = "Plane type: " + flightList.get(flightListIndex).get(j).get_flight_model();
 			 flightDetailModel.addElement(PlaneType);
 			 FlightTime = "Flight time: " + flightList.get(flightListIndex).get(j).get_flight_time_hour_min();
@@ -561,13 +571,13 @@ public class GUI extends JFrame {
 		
 		if(!populateReturnDetailsList)
 		{
-			flightDetailModel.addElement("Total price: $" + Double.toString(sort.get_total_price(DepFlightTrip, firstClass)));
+			flightDetailModel.addElement("Total price: $" + Double.toString(Math.round(sort.get_total_price(DepFlightTrip, firstClass)*100D)/100D));
 			
 			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
 			flightDepDetails.setModel(flightDetailModel);
 		}else
 		{
-			flightDetailModel.addElement("Total price: $" + Double.toString(sort.get_total_price(RetFlightTrip, firstClass)));
+			flightDetailModel.addElement("Total price: $" + Double.toString(Math.round(sort.get_total_price(RetFlightTrip, firstClass)*100D)/100D));
 			
 			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
 			flightRetDetails.setModel(flightDetailModel);
