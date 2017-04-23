@@ -5,6 +5,8 @@ import flights.Flight;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import org.joda.time.DateTime;
 /**
  * 
  * @author hmanso02
@@ -87,16 +89,22 @@ public class SortingClass {
 				// TODO Auto-generated method stub
 				double sum0 = 0;
 				double sum1 = 0;
+				DateTime latestArr1 = arg0.get(0).get_arr_time_local();
+				DateTime latestArr2 = arg1.get(0).get_arr_time_local();
 				for (int i = 0; i < arg0.size(); i++) {
-				    sum0 = arg0.get(i).get_flight_time() + sum0;
+				    if(arg0.get(i).get_arr_time_local().compareTo(latestArr1) > 0){
+				    	latestArr1 = arg0.get(i).get_arr_time_local();
+				    }
 				}
 				for (int i = 0; i < arg1.size(); i++) {
-				    sum1 = arg1.get(i).get_flight_time() + sum1;
+					if(arg1.get(i).get_arr_time_local().compareTo(latestArr2) > 0){
+				    	latestArr2 = arg1.get(i).get_arr_time_local();
+				    }
 				}
-		        if (sum0 > sum1) {
+		        if (latestArr1.compareTo(latestArr2) > 0) {
 		             return 1;
 		         }
-		        else if (sum0 < sum1) {
+		        else if (latestArr1.compareTo(latestArr2) < 0) {
 		            return -1;
 		        }
 				return 0;
