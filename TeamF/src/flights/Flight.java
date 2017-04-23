@@ -166,7 +166,7 @@ public class Flight {
 			e.printStackTrace();
 		}
 	}
-	private int getOffSetTime(String coder){
+	public int getOffSetTime(String coder){
 		HashMap<String, Integer> map = new HashMap<>();
 		AirportCodeTimeZone p = new AirportCodeTimeZone();
 		try {
@@ -226,6 +226,36 @@ public class Flight {
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
+	public String get_flight_time_hour_min(){
+		Double flightTime = Double.parseDouble(this.flight_time);
+		String flight_time_string;
+		int flight_time_hours;
+		int flight_time_min;
+		
+		flight_time_hours = (int) (flightTime / 60);
+		flight_time_min = (int) (flightTime % 60);
+		flight_time_string = getFormated(flight_time_hours) + ":" + getFormated(flight_time_min);
+		
+		return flight_time_string;
+	}
+	/**
+	 * 
+	 * @param convertInt integer to be converted to string 
+	 * @return formatedTime integer converted to string with 0 added at the front if less than 10
+	 */
+	private String getFormated(int convertInt)
+	{
+		String formatedTime;
+		
+		if(convertInt < 10)
+		{
+			formatedTime = "0" + Integer.toString(convertInt);
+		}else
+		{
+			formatedTime = Integer.toString(convertInt);
+		}
+		return formatedTime;
+	} 
 	/**
 	 * Get this flight's local arrival time 
 	 * 

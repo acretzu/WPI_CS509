@@ -96,9 +96,6 @@ public class Trip {
 		if (Integer.valueOf(dep_time[2]) > Integer.valueOf(arr_time[2]))
 			dep_time_num += 24;
 		time_between = dep_time_num - arr_time_num;
-		/*
-		 * year, month, day, hour, minute, time type
-		 */
 		
 		if (!(departing.get_dep_code().equals(arriving.get_arr_code())))
 			return false; // not at the right airport
@@ -223,6 +220,104 @@ public class Trip {
 		return (parsed[0] + "_" + parsed[1] + "_" +parsed[2]);
 	}
 	
+	private int getDepDayInt(Flight current)
+	{
+		int day;
+		String[] parseDate = current.get_dep_day_only().split(" ");
+		day = Integer.valueOf(parseDate[2]);		
+		return day;
+	}
+	
+	private int getDepHourInt(Flight current)
+	{
+		int hour;
+		String[] parseTime = current.get_dep_time_only().split("[ :]");
+		hour = Integer.valueOf(parseTime[1]);
+		return hour;
+	}
+	
+	/*
+	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
+	 * 
+	 * 
+	 */
+	private ArrayList<Flight> getFlightsFromLocalDayDeparting(ArrayList<Flight> options, String date)
+	{
+		ArrayList<Flight> rightDayList;
+		rightDayList = new ArrayList<Flight>();
+		String[] parsed = date.split("_");
+		int hourOffset = (options.get(0).getOffSetTime(options.get(0).get_dep_code()) + 1),
+				day = Integer.valueOf(parsed[2]), GMTDay, GMTHour;
+		
+		for (int i = 0; i < options.size(); i++) // add to list if departs during the local day
+		{
+			GMTDay = getDepDayInt(options.get(i));
+			GMTHour = getDepHourInt(options.get(i));
+
+			if (GMTDay == day) 
+			{
+				if (GMTHour <= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+			else if (GMTDay == (day - 1))
+			{
+				if (GMTHour >= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+		}
+		
+		return rightDayList;
+	}
+	
+	private int getArrDayInt(Flight current)
+	{
+		int day;
+		String[] parseDate = current.get_arr_day_only().split(" ");
+		day = Integer.valueOf(parseDate[2]);		
+		return day;
+	}
+	
+	private int getArrHourInt(Flight current)
+	{
+		int hour;
+		String[] parseTime = current.get_arr_time_only().split("[ :]");
+		hour = Integer.valueOf(parseTime[1]);
+		return hour;
+	}
+	
+	/*
+	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
+	 * 
+	 * 
+	 */
+	private ArrayList<Flight> getFlightsFromLocalDayArriving(ArrayList<Flight> options, String date)
+	{
+		ArrayList<Flight> rightDayList;
+		rightDayList = new ArrayList<Flight>();
+		String[] parsed = date.split("_");
+		int hourOffset = (options.get(0).getOffSetTime(options.get(0).get_arr_code()) + 1),
+				day = Integer.valueOf(parsed[2]), GMTDay, GMTHour;
+		
+		for (int i = 0; i < options.size(); i++) // add to list if departs during the local day
+		{
+			GMTDay = getArrDayInt(options.get(i));
+			GMTHour = getArrHourInt(options.get(i));
+
+			if (GMTDay == day) 
+			{
+				if (GMTHour <= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+			else if (GMTDay == (day - 1))
+			{
+				if (GMTHour >= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+		}
+		
+		return rightDayList;
+	}
+	
 	/*
 	 * Query the server for a list of flights leaving on a given day
 	 *  and then return a list of Flights with seats left
@@ -286,112 +381,121 @@ public class Trip {
 	{
 		setFirstClass(firstClass);
 		
-		ArrayList<ArrayList<Flight>> flightOptions;  // return data
+		ArrayList<ArrayList<Flight>> flightOptions, optionsToBuildFrom,  // return data and a placeholder list to keep track of options that are not complete yet
+			optionsToBuildFromNew;
+		ArrayList<String> queryAirports, queryAirportsNextDay, alreadyQueried, alreadyQueriedNextDay, queryAirportsYesterday, alreadyQueriedYesterday;
+		ArrayList<Flight> currentOptions;
+		String tomorrow = nextDay(date), yesterday = previousDay(date);
+		int i, j, k;
+		
 		flightOptions = new ArrayList<ArrayList<Flight>>();
-		ArrayList<Flight> depFlightsFirst, depFlightsSecond;
-		depFlightsFirst = new ArrayList<Flight>();
-		ArrayList<ArrayList<Flight>> twoLegs;
-		int i, j; // count keeps track of the number of results, while i and j are for loops
-		ArrayList<String> secondAirports,  dayTwoAirports, thirdAirports, dayTwoThirdAirports;
-		secondAirports = new ArrayList<String>();
-		dayTwoAirports = new ArrayList<String>();
-		String tomorrow = nextDay(date);
+		optionsToBuildFrom = new ArrayList<ArrayList<Flight>> ();
+		optionsToBuildFromNew = new ArrayList<ArrayList<Flight>> ();
+		queryAirports = new ArrayList<String>();
+		queryAirportsNextDay = new ArrayList<String>();
+		alreadyQueried = new ArrayList<String>();
+		alreadyQueriedNextDay = new ArrayList<String>();
+		queryAirportsYesterday = new ArrayList<String>(); // account for GMT to local transition
+		alreadyQueriedYesterday = new ArrayList<String>();
+		currentOptions = new ArrayList<Flight>();
 		
-		depFlightsFirst.addAll(getDepartingFlights(departureAirport, date));
+		queryAirports.add(departureAirport);
+		alreadyQueriedNextDay.add(departureAirport); // dont need to query for a flight that leaves at the departure airport the day after the target
 		
-		for (i = 0; i < depFlightsFirst.size(); i++) {
-			if (depFlightsFirst.get(i).get_arr_code().equals(destinationAirport)) { // parse out the arrival airport
-				flightOptions.add(new ArrayList<Flight>());
-				flightOptions.get(flightOptions.size() - 1).add(depFlightsFirst.get(i));	// add the direct flights to the end of the list
-			}
-			else if (Integer.valueOf(numStops) > 0)
-			{
-				if (doSameDay(depFlightsFirst.get(i).get_arr_time(), date, true) &&
-						!(secondAirports.contains(depFlightsFirst.get(i).get_arr_code())))
-					secondAirports.add(depFlightsFirst.get(i).get_arr_code());
-				if (goToNextDay(depFlightsFirst.get(i).get_arr_time(), date) &&
-						!dayTwoAirports.contains(depFlightsFirst.get(i).get_arr_code()))
-					dayTwoAirports.add(depFlightsFirst.get(i).get_arr_code());
-			}
-		}
-		
-		if (Integer.valueOf(numStops) == 0)
-			return flightOptions;
-		
-		depFlightsSecond = new ArrayList<Flight>();
-		
-		for (j = 0; j < secondAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(secondAirports.get(j), date)); // query for all the second legs
-		}
-		for (j = 0; j < dayTwoAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(dayTwoAirports.get(j), tomorrow)); // query for all the second legs
-		}
-		
-		thirdAirports = new ArrayList<String>();
-		dayTwoThirdAirports = new ArrayList<String>();
-		twoLegs = new ArrayList<ArrayList<Flight>>(); // for two leg flights with valid stopovers that do not arrive at the right destination
-		
-		for (i = 0; i < depFlightsFirst.size(); i++) // for first stopover
+		for (i = 0; i <= Integer.valueOf(numStops); i++) // breadth first loop -- num stops should never be greater than 2
 		{
-			if (depFlightsFirst.get(i).get_arr_code().equals(destinationAirport))
-				continue; // already in the options list
-			
-			for (j = 0; j < depFlightsSecond.size(); j++)
+			for (j = 0; j < queryAirports.size(); j++) // get a list of flights on the target date from current list of airports that need querying
 			{
-				if (flightCanBeStopover(depFlightsFirst.get(i), depFlightsSecond.get(j)))
+				currentOptions.addAll(getDepartingFlights(queryAirports.get(j), date));
+				alreadyQueried.add(queryAirports.get(j));
+			}
+			for (j = 0; j < queryAirportsNextDay.size(); j++) // get a list of flights on that depart the day after target date from the required list of airports
+			{
+				currentOptions.addAll(getDepartingFlights(queryAirportsNextDay.get(j), tomorrow));
+				alreadyQueriedNextDay.add(queryAirportsNextDay.get(j));
+			}
+			for (j = 0; j < queryAirportsYesterday.size(); j++)
+			{
+				currentOptions.addAll(getDepartingFlights(queryAirportsYesterday.get(j), yesterday));
+				alreadyQueriedYesterday.add(queryAirportsYesterday.get(j));
+			}
+			
+			queryAirports.clear(); // clear to prep for next query
+			queryAirportsNextDay.clear();
+			queryAirportsYesterday.clear();
+			
+			if (i == 0)
+				currentOptions = getFlightsFromLocalDayDeparting(currentOptions, date);
+			
+			// go through current list
+			for (j = 0; j < currentOptions.size(); j++)
+			{
+				if (i == 0) // first stop special case
 				{
-					if (depFlightsSecond.get(j).get_arr_code().equals(departureAirport))
-						continue; // dont want to go back to the first airport
-					if (depFlightsSecond.get(j).get_arr_code().equals(destinationAirport))// parse out the arrival airport
+					if (currentOptions.get(j).get_arr_code().equals(destinationAirport))
 					{
 						flightOptions.add(new ArrayList<Flight>());
-						flightOptions.get(flightOptions.size() - 1).add(depFlightsFirst.get(i));	// add the first     -- why does this give flights from the wrong airport...?
-						flightOptions.get(flightOptions.size() - 1).add(depFlightsSecond.get(j));	// and second legs to a single entry
+						flightOptions.get(flightOptions.size() - 1).add(currentOptions.get(j)); // this is a valid result
 					}
-					else if (Integer.valueOf(numStops).equals(2)) // set up for third flight
+					else
 					{
-						// create a new array space for this combo 
-						twoLegs.add(new ArrayList<Flight>());
-						twoLegs.get(twoLegs.size() - 1).add(depFlightsFirst.get(i));
-						twoLegs.get(twoLegs.size() - 1).add(depFlightsSecond.get(j));
-						
-						if (doSameDay(depFlightsSecond.get(j).get_arr_time(), date, true) &&
-								!secondAirports.contains(depFlightsSecond.get(j).get_arr_code()) &&
-								!thirdAirports.contains(depFlightsSecond.get(j).get_arr_code()))
-							thirdAirports.add(depFlightsSecond.get(j).get_arr_code());
-						if (goToNextDay(depFlightsSecond.get(j).get_arr_time(), date) &&
-								!dayTwoAirports.contains(depFlightsSecond.get(j).get_arr_code()) && 
-								!dayTwoThirdAirports.contains(depFlightsSecond.get(j).get_arr_code()))
-							dayTwoThirdAirports.add(depFlightsSecond.get(j).get_arr_code());
-						// check if more queries need to be done
+						optionsToBuildFromNew.add(new ArrayList<Flight>());
+						optionsToBuildFromNew.get(optionsToBuildFromNew.size() - 1).add(currentOptions.get(j));
 					}
+					continue;
+				}
+				for (k = 0; k < optionsToBuildFrom.size(); k++) // next stop
+				{
+					if (!flightCanBeStopover(optionsToBuildFrom.get(k).get(optionsToBuildFrom.get(k).size() - 1), currentOptions.get(j)))
+						continue;
+					
+					if (currentOptions.get(j).get_arr_code().equals(destinationAirport)) // valid result
+					{
+						flightOptions.add(new ArrayList<Flight>());
+						flightOptions.get(flightOptions.size() - 1).addAll(optionsToBuildFrom.get(k));
+						flightOptions.get(flightOptions.size() - 1).add(currentOptions.get(j));
+						continue;
+					}
+					optionsToBuildFromNew.add(new ArrayList<Flight>());
+					optionsToBuildFromNew.get(optionsToBuildFromNew.size() - 1).addAll(optionsToBuildFrom.get(k));
+					optionsToBuildFromNew.get(optionsToBuildFromNew.size() - 1).add(currentOptions.get(j));
 				}
 			}
-		}
-		
-		if (Integer.valueOf(numStops) == 1)
-			return flightOptions;
-
-		for (j = 0; j < thirdAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(thirdAirports.get(j), date)); // query for all the second legs
-		}
-		for (j = 0; j < dayTwoThirdAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(dayTwoThirdAirports.get(j), tomorrow)); // query for all the second legs
-		}
-		
-		for (i = 0; i < twoLegs.size(); i++) {
-			if (twoLegs.get(i).get(1).get_arr_code().equals(destinationAirport)) // get(1) is the current location?
-				continue; // already in the list
 			
-			for (j = 0; j < depFlightsSecond.size(); j++) {
-				if (!depFlightsSecond.get(j).get_arr_code().equals(destinationAirport))
-					continue; // doesn't end at the right airport -- move on
-				if (flightCanBeStopover(twoLegs.get(i).get(1), depFlightsSecond.get(j))) { // third leg is valid and brings us to destination -- add to list
-					flightOptions.add(new ArrayList<Flight>());
-					flightOptions.get(flightOptions.size() - 1).addAll(twoLegs.get(i));
-					flightOptions.get(flightOptions.size() - 1).add(depFlightsSecond.get(j));
+			if (Integer.valueOf(numStops) == i)
+				return flightOptions;
+
+			// else prep for next query
+			optionsToBuildFrom.clear();
+			optionsToBuildFrom.addAll(optionsToBuildFromNew);
+			optionsToBuildFromNew.clear();
+			
+			// build the list of airports to query from
+			for (j = 0; j < optionsToBuildFrom.size(); j++)
+			{
+				if (doSameDay(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_time(), date, true) &&
+						!alreadyQueried.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()) &&
+						!queryAirports.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()))
+				{
+					queryAirports.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());  // add airport to list that will need to be queried on next run
+				}
+				if (goToNextDay(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_time(), date) &&
+						!alreadyQueriedNextDay.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()) &&
+						!queryAirportsNextDay.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()))
+				{
+					queryAirportsNextDay.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());  // add airport to list that will need to be queried on next run
+				}
+				//experimental
+				if (doSameDay(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_time(), yesterday, true) && // adjust for GMT offset
+						!alreadyQueriedYesterday.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() -1).get_arr_code()) &&
+						!queryAirportsYesterday.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()))
+				{
+					queryAirportsYesterday.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());
 				}
 			}
+			
+			if (i == 0)
+				currentOptions.clear(); // wont reuse any of these as they already start at the departure
 		}
 		return flightOptions;
 	}
@@ -438,7 +542,9 @@ public class Trip {
 		currentOptions = new ArrayList<Flight>();
 		
 		queryAirports.add(destinationAirport);
-		alreadyQueriedPreviousDay.add(destinationAirport); // dont need to query for a flight that arrives at the destination airport the day before the target
+		//alreadyQueriedPreviousDay.add(destinationAirport); // dont need to query for a flight that arrives at the destination airport the day before the target
+		queryAirportsPreviousDay.add(destinationAirport);
+		
 		
 		for (i = 0; i <= Integer.valueOf(numStops); i++) // breadth first loop -- num stops should never be greater than 2
 		{
@@ -455,6 +561,9 @@ public class Trip {
 			
 			queryAirports.clear(); // clear to prep for next query
 			queryAirportsPreviousDay.clear();
+			
+			if (i == 0)
+				currentOptions = getFlightsFromLocalDayArriving(currentOptions, date); // take the two GMT days queried and translate to one local day
 			
 			// go through current list
 			for (j = 0; j < currentOptions.size(); j++)
@@ -519,114 +628,6 @@ public class Trip {
 			if (i == 0)
 				currentOptions.clear(); // wont reuse any of these as they already end at the destination
 		}
-		/*ArrayList<Flight> arrFlightsFirst, arrFlightsSecond;
-		arrFlightsFirst = new ArrayList<Flight>();
-		ArrayList<ArrayList<Flight>> twoLegs;
-		int i, j; // count keeps track of the number of results, while i and j are for loops
-		ArrayList<String> secondAirports,  previousDayAirports, thirdAirports, previousDayThirdAirports;
-		secondAirports = new ArrayList<String>();
-		previousDayAirports = new ArrayList<String>();
-		String tomorrow = nextDay(date);
-		
-		arrFlightsFirst.addAll(getArrivingFlights(destinationAirport, date));
-		
-		for (i = 0; i < arrFlightsFirst.size(); i++) {
-			if (arrFlightsFirst.get(i).get_dep_code().equals(departureAirport)) {
-				flightOptions.add(new ArrayList<Flight>());
-				flightOptions.get(flightOptions.size() - 1).add(arrFlightsFirst.get(i));	// add the direct flights to the end of the list
-			}
-			else if (Integer.valueOf(numStops) > 0)
-			{
-				if (doSameDay(arrFlightsFirst.get(i).get_dep_time(), date, false) &&
-						!(secondAirports.contains(arrFlightsFirst.get(i).get_dep_code())))
-					secondAirports.add(arrFlightsFirst.get(i).get_arr_code());
-				if (goToPreviousDay(arrFlightsFirst.get(i).get_arr_time(), date) &&
-						!dayTwoAirports.contains(depFlightsFirst.get(i).get_arr_code()))
-					dayTwoAirports.add(depFlightsFirst.get(i).get_arr_code());
-			}
-		}
-		
-		if (Integer.valueOf(numStops) == 0)
-			return flightOptions;
-		
-		depFlightsSecond = new ArrayList<Flight>();
-		
-		for (j = 0; j < secondAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(secondAirports.get(j), date)); // query for all the second legs
-		}
-		for (j = 0; j < dayTwoAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(dayTwoAirports.get(j), tomorrow)); // query for all the second legs
-		}
-		
-		thirdAirports = new ArrayList<String>();
-		dayTwoThirdAirports = new ArrayList<String>();
-		twoLegs = new ArrayList<ArrayList<Flight>>(); // for two leg flights with valid stopovers that do not arrive at the right destination
-		
-		for (i = 0; i < depFlightsFirst.size(); i++) // for first stopover
-		{
-			if (depFlightsFirst.get(i).get_arr_code().equals(destinationAirport))
-				continue; // already in the options list
-			
-			for (j = 0; j < depFlightsSecond.size(); j++)
-			{
-				if (flightCanBeStopover(depFlightsFirst.get(i), depFlightsSecond.get(j)))
-				{
-					if (depFlightsSecond.get(j).get_arr_code().equals(departureAirport))
-						continue; // dont want to go back to the first airport
-					if (depFlightsSecond.get(j).get_arr_code().equals(destinationAirport))// parse out the arrival airport
-					{
-						flightOptions.add(new ArrayList<Flight>());
-						flightOptions.get(flightOptions.size() - 1).add(depFlightsFirst.get(i));	// add the first     -- why does this give flights from the wrong airport...?
-						flightOptions.get(flightOptions.size() - 1).add(depFlightsSecond.get(j));	// and second legs to a single entry
-					}
-					else if (Integer.valueOf(numStops).equals(2)) // set up for third flight
-					{
-						// create a new array space for this combo 
-						twoLegs.add(new ArrayList<Flight>());
-						twoLegs.get(twoLegs.size() - 1).add(depFlightsFirst.get(i));
-						twoLegs.get(twoLegs.size() - 1).add(depFlightsSecond.get(j));
-						
-						if (doSameDay(depFlightsSecond.get(j).get_arr_time(), date, false) &&
-								!secondAirports.contains(depFlightsSecond.get(j).get_arr_code()) &&
-								!thirdAirports.contains(depFlightsSecond.get(j).get_arr_code()))
-							thirdAirports.add(depFlightsSecond.get(j).get_arr_code());
-						if (goToNextDay(depFlightsSecond.get(j).get_arr_time(), date) &&
-								!dayTwoAirports.contains(depFlightsSecond.get(j).get_arr_code()) && 
-								!dayTwoThirdAirports.contains(depFlightsSecond.get(j).get_arr_code()))
-							dayTwoThirdAirports.add(depFlightsSecond.get(j).get_arr_code());
-						// check if more queries need to be done
-					}
-				}
-			}
-		}
-		
-		if (Integer.valueOf(numStops) == 1)
-			return flightOptions;
-		int queryAgainDayOne = 0;
-		int queryAgainDayTwo = 0;
-		for (j = 0; j < thirdAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(thirdAirports.get(j), date)); // query for all the second legs
-			queryAgainDayOne++;
-		}
-		for (j = 0; j < dayTwoThirdAirports.size(); j++) {
-			depFlightsSecond.addAll(getDepartingFlights(dayTwoThirdAirports.get(j), tomorrow)); // query for all the second legs
-			queryAgainDayTwo++;
-		}
-		
-		for (i = 0; i < twoLegs.size(); i++) {
-			if (twoLegs.get(i).get(1).get_arr_code().equals(destinationAirport)) // get(1) is the current location?
-				continue; // already in the list
-			
-			for (j = 0; j < depFlightsSecond.size(); j++) {
-				if (!depFlightsSecond.get(j).get_arr_code().equals(destinationAirport))
-					continue; // doesn't end at the right airport -- move on
-				if (flightCanBeStopover(twoLegs.get(i).get(1), depFlightsSecond.get(j))) { // third leg is valid and brings us to destination -- add to list
-					flightOptions.add(new ArrayList<Flight>());
-					flightOptions.get(flightOptions.size() - 1).addAll(twoLegs.get(i));
-					flightOptions.get(flightOptions.size() - 1).add(depFlightsSecond.get(j));
-				}
-			}
-		}*/
 		return flightOptions;
 	}
 }

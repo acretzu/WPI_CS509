@@ -5,6 +5,9 @@ import flights.Flight;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 /**
  * 
  * @author hmanso02
@@ -85,18 +88,30 @@ public class SortingClass {
 			@Override
 			public int compare(ArrayList<Flight> arg0, ArrayList<Flight> arg1) {
 				// TODO Auto-generated method stub
-				double sum0 = 0;
-				double sum1 = 0;
+				DateTime earliestDep1 = arg0.get(0).get_dep_time_local();
+				DateTime earliestDep2 = arg1.get(0).get_dep_time_local();
+				DateTime latestArr1 = arg0.get(0).get_arr_time_local();
+				DateTime latestArr2 = arg1.get(0).get_arr_time_local();
 				for (int i = 0; i < arg0.size(); i++) {
-				    sum0 = arg0.get(i).get_flight_time() + sum0;
+				    if(arg0.get(i).get_arr_time_local().compareTo(latestArr1) > 0){
+				    	latestArr1 = arg0.get(i).get_arr_time_local();
+				    }
+				    if(arg0.get(i).get_dep_time_local().compareTo(earliestDep1) < 0){
+				    	earliestDep1 = arg0.get(i).get_dep_time_local();
+				    }
 				}
 				for (int i = 0; i < arg1.size(); i++) {
-				    sum1 = arg1.get(i).get_flight_time() + sum1;
+					if(arg1.get(i).get_arr_time_local().compareTo(latestArr2) > 0){
+				    	latestArr2 = arg1.get(i).get_arr_time_local();
+				    }
+					if(arg1.get(i).get_dep_time_local().compareTo(earliestDep2) < 0){
+						earliestDep2 = arg1.get(i).get_dep_time_local();
+				    }
 				}
-		        if (sum0 > sum1) {
+		        if (Integer.parseInt(Seconds.secondsBetween(earliestDep1, latestArr1).toString()) > Integer.parseInt(Seconds.secondsBetween(earliestDep2, latestArr2).toString())) {
 		             return 1;
 		         }
-		        else if (sum0 < sum1) {
+		        else if (Integer.parseInt(Seconds.secondsBetween(earliestDep1, latestArr1).toString()) < Integer.parseInt(Seconds.secondsBetween(earliestDep2, latestArr2).toString())) {
 		            return -1;
 		        }
 				return 0;
