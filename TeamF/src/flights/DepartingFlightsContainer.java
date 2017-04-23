@@ -6,6 +6,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Yupeng Su
+ *
+ */
 public class DepartingFlightsContainer extends FlightsContainer {
 	// Class variables
 	private ArrayList<Flight> list;
