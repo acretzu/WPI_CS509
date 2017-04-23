@@ -146,7 +146,7 @@ public class Flight {
 	
 	private void arrTimeStringToDate(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
-		System.out.println(dateStr);
+//		System.out.println(dateStr);
 		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.US);
 		try {
 			Date localDate = df.parse(dateStr);
@@ -157,7 +157,7 @@ public class Flight {
 	}
 	private void depTimeStringToDate(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
-		System.out.println(dateStr);
+//		System.out.println(dateStr);
 		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.forLanguageTag("english"));
 		try {
 			Date localDate = df.parse(dateStr);
@@ -255,7 +255,7 @@ public class Flight {
 	 */
 	public void print_dep_local_time(){
 		DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy/MM/dd/hh:mm:ss a");
-		System.out.println(dtfOut.print(this.get_dep_time_local()));
+		System.out.print(dtfOut.print(this.get_dep_time_local()));
 	}
 	/**
 	 * print the arrival time with format 
@@ -264,6 +264,11 @@ public class Flight {
 	 */
 	public void print_arr_local_time(){
 		DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy/MM/dd/hh:mm:ss a");
-		System.out.println(dtfOut.print(this.get_arr_time_local()));
+		System.out.print(dtfOut.print(this.get_arr_time_local()));
+	}
+	
+	public void print_flight_time(){
+		DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy/MM/dd/hh:mm:ss a");
+		System.out.println(dtfOut.print(this.get_dep_time_local())  + "  " + dtfOut.print(this.get_arr_time_local()));
 	}
 }
