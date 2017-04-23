@@ -226,6 +226,18 @@ public class Flight {
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
+	public String get_flight_time_hour_min(){
+		Double flightTime = Double.parseDouble(this.flight_time);
+		String flight_time_string;
+		int flight_time_hours;
+		String flight_time_min;
+		
+		flight_time_hours = (int) (flightTime / 60);
+		flight_time_min = Integer.toString((int) (flightTime % 60));
+		flight_time_string = flight_time_hours + ":" + flight_time_min;
+		
+		return flight_time_string;
+	}
 	/**
 	 * Get this flight's local arrival time 
 	 * 
