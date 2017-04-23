@@ -512,7 +512,7 @@ public class GUI extends JFrame {
 			formatedTime = Integer.toString(convertInt);
 		}
 		return formatedTime;
-	}
+	} 
 /**
  * populates GUI trip details
  * @param flightList list of list of flights(list of trips) 

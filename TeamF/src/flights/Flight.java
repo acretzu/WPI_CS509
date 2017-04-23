@@ -255,7 +255,7 @@ public class Flight {
 			formatedTime = Integer.toString(convertInt);
 		}
 		return formatedTime;
-	}
+	} 
 	/**
 	 * Get this flight's local arrival time 
 	 * 
