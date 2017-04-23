@@ -96,9 +96,6 @@ public class Trip {
 		if (Integer.valueOf(dep_time[2]) > Integer.valueOf(arr_time[2]))
 			dep_time_num += 24;
 		time_between = dep_time_num - arr_time_num;
-		/*
-		 * year, month, day, hour, minute, time type
-		 */
 		
 		if (!(departing.get_dep_code().equals(arriving.get_arr_code())))
 			return false; // not at the right airport
@@ -223,6 +220,104 @@ public class Trip {
 		return (parsed[0] + "_" + parsed[1] + "_" +parsed[2]);
 	}
 	
+	private int getDepDayInt(Flight current)
+	{
+		int day;
+		String[] parseDate = current.get_dep_day_only().split(" ");
+		day = Integer.valueOf(parseDate[2]);		
+		return day;
+	}
+	
+	private int getDepHourInt(Flight current)
+	{
+		int hour;
+		String[] parseTime = current.get_dep_time_only().split("[ :]");
+		hour = Integer.valueOf(parseTime[1]);
+		return hour;
+	}
+	
+	/*
+	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
+	 * 
+	 * 
+	 */
+	private ArrayList<Flight> getFlightsFromLocalDayDeparting(ArrayList<Flight> options, String date)
+	{
+		ArrayList<Flight> rightDayList;
+		rightDayList = new ArrayList<Flight>();
+		String[] parsed = date.split("_");
+		int hourOffset = (options.get(0).getOffSetTime(options.get(0).get_dep_code()) + 1),
+				day = Integer.valueOf(parsed[2]), GMTDay, GMTHour;
+		
+		for (int i = 0; i < options.size(); i++) // add to list if departs during the local day
+		{
+			GMTDay = getDepDayInt(options.get(i));
+			GMTHour = getDepHourInt(options.get(i));
+
+			if (GMTDay == day) 
+			{
+				if (GMTHour <= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+			else if (GMTDay == (day - 1))
+			{
+				if (GMTHour >= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+		}
+		
+		return rightDayList;
+	}
+	
+	private int getArrDayInt(Flight current)
+	{
+		int day;
+		String[] parseDate = current.get_arr_day_only().split(" ");
+		day = Integer.valueOf(parseDate[2]);		
+		return day;
+	}
+	
+	private int getArrHourInt(Flight current)
+	{
+		int hour;
+		String[] parseTime = current.get_arr_time_only().split("[ :]");
+		hour = Integer.valueOf(parseTime[1]);
+		return hour;
+	}
+	
+	/*
+	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
+	 * 
+	 * 
+	 */
+	private ArrayList<Flight> getFlightsFromLocalDayArriving(ArrayList<Flight> options, String date)
+	{
+		ArrayList<Flight> rightDayList;
+		rightDayList = new ArrayList<Flight>();
+		String[] parsed = date.split("_");
+		int hourOffset = (options.get(0).getOffSetTime(options.get(0).get_arr_code()) + 1),
+				day = Integer.valueOf(parsed[2]), GMTDay, GMTHour;
+		
+		for (int i = 0; i < options.size(); i++) // add to list if departs during the local day
+		{
+			GMTDay = getArrDayInt(options.get(i));
+			GMTHour = getArrHourInt(options.get(i));
+
+			if (GMTDay == day) 
+			{
+				if (GMTHour <= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+			else if (GMTDay == (day - 1))
+			{
+				if (GMTHour >= (24 - hourOffset))
+					rightDayList.add(options.get(i));
+			}
+		}
+		
+		return rightDayList;
+	}
+	
 	/*
 	 * Query the server for a list of flights leaving on a given day
 	 *  and then return a list of Flights with seats left
@@ -288,9 +383,9 @@ public class Trip {
 		
 		ArrayList<ArrayList<Flight>> flightOptions, optionsToBuildFrom,  // return data and a placeholder list to keep track of options that are not complete yet
 			optionsToBuildFromNew;
-		ArrayList<String> queryAirports, queryAirportsNextDay, alreadyQueried, alreadyQueriedNextDay;
+		ArrayList<String> queryAirports, queryAirportsNextDay, alreadyQueried, alreadyQueriedNextDay, queryAirportsYesterday, alreadyQueriedYesterday;
 		ArrayList<Flight> currentOptions;
-		String tomorrow = nextDay(date);
+		String tomorrow = nextDay(date), yesterday = previousDay(date);
 		int i, j, k;
 		
 		flightOptions = new ArrayList<ArrayList<Flight>>();
@@ -300,6 +395,8 @@ public class Trip {
 		queryAirportsNextDay = new ArrayList<String>();
 		alreadyQueried = new ArrayList<String>();
 		alreadyQueriedNextDay = new ArrayList<String>();
+		queryAirportsYesterday = new ArrayList<String>(); // account for GMT to local transition
+		alreadyQueriedYesterday = new ArrayList<String>();
 		currentOptions = new ArrayList<Flight>();
 		
 		queryAirports.add(departureAirport);
@@ -317,9 +414,18 @@ public class Trip {
 				currentOptions.addAll(getDepartingFlights(queryAirportsNextDay.get(j), tomorrow));
 				alreadyQueriedNextDay.add(queryAirportsNextDay.get(j));
 			}
+			for (j = 0; j < queryAirportsYesterday.size(); j++)
+			{
+				currentOptions.addAll(getDepartingFlights(queryAirportsYesterday.get(j), yesterday));
+				alreadyQueriedYesterday.add(queryAirportsYesterday.get(j));
+			}
 			
 			queryAirports.clear(); // clear to prep for next query
 			queryAirportsNextDay.clear();
+			queryAirportsYesterday.clear();
+			
+			if (i == 0)
+				currentOptions = getFlightsFromLocalDayDeparting(currentOptions, date);
 			
 			// go through current list
 			for (j = 0; j < currentOptions.size(); j++)
@@ -340,7 +446,7 @@ public class Trip {
 				}
 				for (k = 0; k < optionsToBuildFrom.size(); k++) // next stop
 				{
-					if (!flightCanBeStopover(optionsToBuildFrom.get(k).get(optionsToBuildFrom.get(k).size() - 1), currentOptions.get(j)))//optionsToBuildFrom.get(k).size() - 1)))
+					if (!flightCanBeStopover(optionsToBuildFrom.get(k).get(optionsToBuildFrom.get(k).size() - 1), currentOptions.get(j)))
 						continue;
 					
 					if (currentOptions.get(j).get_arr_code().equals(destinationAirport)) // valid result
@@ -358,7 +464,7 @@ public class Trip {
 			
 			if (Integer.valueOf(numStops) == i)
 				return flightOptions;
-			
+
 			// else prep for next query
 			optionsToBuildFrom.clear();
 			optionsToBuildFrom.addAll(optionsToBuildFromNew);
@@ -378,6 +484,13 @@ public class Trip {
 						!queryAirportsNextDay.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()))
 				{
 					queryAirportsNextDay.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());  // add airport to list that will need to be queried on next run
+				}
+				//experimental
+				if (doSameDay(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_time(), yesterday, true) && // adjust for GMT offset
+						!alreadyQueriedYesterday.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() -1).get_arr_code()) &&
+						!queryAirportsYesterday.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()))
+				{
+					queryAirportsYesterday.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());
 				}
 			}
 			
@@ -429,7 +542,9 @@ public class Trip {
 		currentOptions = new ArrayList<Flight>();
 		
 		queryAirports.add(destinationAirport);
-		alreadyQueriedPreviousDay.add(destinationAirport); // dont need to query for a flight that arrives at the destination airport the day before the target
+		//alreadyQueriedPreviousDay.add(destinationAirport); // dont need to query for a flight that arrives at the destination airport the day before the target
+		queryAirportsPreviousDay.add(destinationAirport);
+		
 		
 		for (i = 0; i <= Integer.valueOf(numStops); i++) // breadth first loop -- num stops should never be greater than 2
 		{
@@ -446,6 +561,9 @@ public class Trip {
 			
 			queryAirports.clear(); // clear to prep for next query
 			queryAirportsPreviousDay.clear();
+			
+			if (i == 0)
+				currentOptions = getFlightsFromLocalDayArriving(currentOptions, date); // take the two GMT days queried and translate to one local day
 			
 			// go through current list
 			for (j = 0; j < currentOptions.size(); j++)
