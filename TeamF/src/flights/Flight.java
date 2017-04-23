@@ -230,13 +230,31 @@ public class Flight {
 		Double flightTime = Double.parseDouble(this.flight_time);
 		String flight_time_string;
 		int flight_time_hours;
-		String flight_time_min;
+		int flight_time_min;
 		
 		flight_time_hours = (int) (flightTime / 60);
-		flight_time_min = Integer.toString((int) (flightTime % 60));
-		flight_time_string = flight_time_hours + ":" + flight_time_min;
+		flight_time_min = (int) (flightTime % 60);
+		flight_time_string = getFormated(flight_time_hours) + ":" + getFormated(flight_time_min);
 		
 		return flight_time_string;
+	}
+	/**
+	 * 
+	 * @param convertInt integer to be converted to string 
+	 * @return formatedTime integer converted to string with 0 added at the front if less than 10
+	 */
+	private String getFormated(int convertInt)
+	{
+		String formatedTime;
+		
+		if(convertInt < 10)
+		{
+			formatedTime = "0" + Integer.toString(convertInt);
+		}else
+		{
+			formatedTime = Integer.toString(convertInt);
+		}
+		return formatedTime;
 	}
 	/**
 	 * Get this flight's local arrival time 

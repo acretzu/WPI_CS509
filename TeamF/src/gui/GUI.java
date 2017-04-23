@@ -494,16 +494,22 @@ public class GUI extends JFrame {
 		
 	}
 	
-	private String getFormated(int intTime)
+	/**
+	 * 
+	 * @param convertInt integer to be converted to string 
+	 * @return formatedTime, integer converted to string with 0 added at 
+	 * the front if integer is less than 10
+	 */
+	private String getFormated(int convertInt)
 	{
 		String formatedTime;
 		
-		if(intTime < 10)
+		if(convertInt < 10)
 		{
-			formatedTime = "0" + Integer.toString(intTime);
+			formatedTime = "0" + Integer.toString(convertInt);
 		}else
 		{
-			formatedTime = Integer.toString(intTime);
+			formatedTime = Integer.toString(convertInt);
 		}
 		return formatedTime;
 	}
