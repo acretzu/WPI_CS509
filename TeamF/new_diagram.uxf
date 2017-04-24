@@ -1,0 +1,942 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2.0">
+  <zoom_level>2</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>308</x>
+      <y>46</y>
+      <w>42</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>_Flights_
+--
+-Departure: Airport
+-DepartureDate:Date
+--
+depLatLon()
+arrLatLon()
+localDepTime()
+localDepTime()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>226</x>
+      <y>120</y>
+      <w>52</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>_MyTime_
+--
+-dataTime: DateTime
+--
+toLocal(lat: float, lon:float): DateTime
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>236</x>
+      <y>56</y>
+      <w>42</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>_Airport_
+--
+-Code: Char[3]
+-Name: char
+-Lattitude: float
+-Longitude: float
+--
++GetFlightTo(string destination dateTime departure)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>308</x>
+      <y>108</y>
+      <w>42</w>
+      <h>46</h>
+    </coordinates>
+    <panel_attributes>_Flight_
+--
+-Departure: Airport
+-DepartureTime: MyTime
+-Arrival: Airport
+-ArrivalTime: MyTime
+-SeatFc: int
+-PriceFc: float
+-SeatEco: int
+-PriceEco: Price
+-PlaneModel
+--
+GetEmptyFc(int SeatFc)
+GetEmptyEco(int SeatFc)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>326</x>
+      <y>86</y>
+      <w>10</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+1
+0..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>276</x>
+      <y>124</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>1                       2</panel_attributes>
+    <additional_attributes>10.0;20.0;160.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>226</x>
+      <y>144</y>
+      <w>52</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>_Planes_
+--
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>226</x>
+      <y>184</y>
+      <w>52</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>_Plane_
+--
+-ModelNumber: String
+-SeatFc
+-SeatEcp</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>250</x>
+      <y>164</y>
+      <w>10</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+1
+0..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>276</x>
+      <y>140</y>
+      <w>36</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>m2=2
+m1=1      </panel_attributes>
+    <additional_attributes>10.0;90.0;80.0;90.0;80.0;10.0;160.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>276</x>
+      <y>68</y>
+      <w>36</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..n
+m2=1</panel_attributes>
+    <additional_attributes>160.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>308</x>
+      <y>0</y>
+      <w>42</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>_Airports_
+--
+
+--
+populate()
+getAirports()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>254</x>
+      <y>20</y>
+      <w>58</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>m2=0..n
+m1=1</panel_attributes>
+    <additional_attributes>270.0;10.0;10.0;10.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>24</y>
+      <w>70</w>
+      <h>46</h>
+    </coordinates>
+    <panel_attributes>_Server_
+--
+-url:String
+--
+GetAirports(team: String): Airports
+GetFlights(team: String departing: Airport): Flights
+--
+Responsibilities
+----Interface with server
+----Convert to/from XML</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>404</x>
+      <y>68</y>
+      <w>10</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..n
+m2=1</panel_attributes>
+    <additional_attributes>10.0;180.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>444</x>
+      <y>66</y>
+      <w>10</w>
+      <h>38</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..n
+m2=1</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>374</x>
+      <y>104</y>
+      <w>46</w>
+      <h>26</h>
+    </coordinates>
+    <panel_attributes>_ParserXML_
+--
+
+--
+parseAirports(xml:String):Airports
+parseFlights(xml:String):Flights
+--
+Responsibilities
+----Parse XML strings</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>424</x>
+      <y>102</y>
+      <w>58</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>_BuildQueries_
+--
+
+--
+getAirports(url:String, team:String):String
+getFlights(url:String, team:String, 
+airportCode:String, date:DateTime):String
+--
+Responsibilities
+----Build HTTP queries</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>348</x>
+      <y>56</y>
+      <w>46</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>m2=0..n
+m1=1</panel_attributes>
+    <additional_attributes>210.0;10.0;70.0;10.0;70.0;130.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>348</x>
+      <y>10</y>
+      <w>46</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>m2=0..n
+m1=1</panel_attributes>
+    <additional_attributes>210.0;120.0;70.0;120.0;70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>554</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_Aiports_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>580</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_Aiport_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>606</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_Flights_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>632</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_Flight_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>658</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_MyTime_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>684</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_Server_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>710</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_ParserXML_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>736</x>
+      <y>38</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>_BuildQueries_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>586</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>638</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>612</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>742</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>716</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>690</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>664</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>560</x>
+      <y>42</y>
+      <w>8</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;740.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>562</x>
+      <y>56</y>
+      <w>136</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+getAirports()</panel_attributes>
+    <additional_attributes>660.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>692</x>
+      <y>64</y>
+      <w>58</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+getAirports()</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>692</x>
+      <y>72</y>
+      <w>32</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+parseAirports()</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>692</x>
+      <y>84</y>
+      <w>58</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+getFlights()</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>692</x>
+      <y>90</y>
+      <w>32</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+parseAirports()</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>588</x>
+      <y>108</y>
+      <w>30</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+localTime()</panel_attributes>
+    <additional_attributes>130.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>588</x>
+      <y>114</y>
+      <w>30</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+depLatLon()</panel_attributes>
+    <additional_attributes>10.0;20.0;130.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>586</x>
+      <y>122</y>
+      <w>32</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+arrLatLon()</panel_attributes>
+    <additional_attributes>10.0;20.0;140.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>614</x>
+      <y>98</y>
+      <w>30</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+localDepTime()</panel_attributes>
+    <additional_attributes>130.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>614</x>
+      <y>92</y>
+      <w>56</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+convDepTime()</panel_attributes>
+    <additional_attributes>260.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>614</x>
+      <y>138</y>
+      <w>30</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+localDepTime()</panel_attributes>
+    <additional_attributes>130.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>614</x>
+      <y>132</y>
+      <w>56</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+convDepTime()</panel_attributes>
+    <additional_attributes>260.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>588</x>
+      <y>80</y>
+      <w>110</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+getFlights()</panel_attributes>
+    <additional_attributes>530.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>336</x>
+      <y>384</y>
+      <w>16</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>Customer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>532</x>
+      <y>398</y>
+      <w>12</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>Server</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>368</x>
+      <y>386</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>SearchFlights</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>390</x>
+      <y>386</y>
+      <w>22</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>90.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>408</x>
+      <y>386</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>BookFlight</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>386</y>
+      <w>32</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>458</x>
+      <y>386</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>GetAirports</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>458</x>
+      <y>410</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ParseAirports</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>468</x>
+      <y>392</y>
+      <w>18</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>468</x>
+      <y>438</y>
+      <w>18</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>458</x>
+      <y>456</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ParseFlights</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>458</x>
+      <y>432</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>GetFlights</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>428</x>
+      <y>390</y>
+      <w>36</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>160.0;220.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>388</y>
+      <w>26</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>110.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>406</y>
+      <w>28</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>492</x>
+      <y>400</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ServerInterface</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>514</x>
+      <y>400</y>
+      <w>22</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>10.0;20.0;90.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>426</x>
+      <y>456</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ConvertTime</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>436</x>
+      <y>436</y>
+      <w>26</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;100.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>494</x>
+      <y>432</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>BuildQuery</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>504</x>
+      <y>406</y>
+      <w>18</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>494</x>
+      <y>456</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>ReserveSeat</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>504</x>
+      <y>438</y>
+      <w>18</w>
+      <h>22</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>368</x>
+      <y>408</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes>SortFlight</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>378</x>
+      <y>392</y>
+      <w>18</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;include&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>348</x>
+      <y>386</y>
+      <w>24</w>
+      <h>8</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>10.0;20.0;100.0;20.0</additional_attributes>
+  </element>
+</diagram>
