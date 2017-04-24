@@ -220,6 +220,14 @@ public class Trip {
 		return (parsed[0] + "_" + parsed[1] + "_" +parsed[2]);
 	}
 	
+	/*
+	 * Returns the integer value of the departure day of the current flight
+	 * 
+	 * @param Flight
+	 * 
+	 * @return integer value of the day in the departure date
+	 * 
+	 */
 	private int getDepDayInt(Flight current)
 	{
 		int day;
@@ -228,6 +236,14 @@ public class Trip {
 		return day;
 	}
 	
+	/*
+	 * Returns the integer value of the departure hour of the current flight
+	 * 
+	 * @param Flight
+	 * 
+	 * @return integer value of the hour in the departure date
+	 * 
+	 */
 	private int getDepHourInt(Flight current)
 	{
 		int hour;
@@ -239,7 +255,11 @@ public class Trip {
 	/*
 	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
 	 * 
+	 * @param ArrayList<Flight> options -- a list of flights from the departure airport
 	 * 
+	 * @param String date -- departure date
+	 * 
+	 * @return ArrayList<Flight> flights that depart from the airport on the local date
 	 */
 	private ArrayList<Flight> getFlightsFromLocalDayDeparting(ArrayList<Flight> options, String date)
 	{
@@ -269,6 +289,14 @@ public class Trip {
 		return rightDayList;
 	}
 	
+	/*
+	 * Returns the integer value of the arrival day of the current flight
+	 * 
+	 * @param Flight
+	 * 
+	 * @return integer value of the day in the arrival date
+	 * 
+	 */
 	private int getArrDayInt(Flight current)
 	{
 		int day;
@@ -277,6 +305,14 @@ public class Trip {
 		return day;
 	}
 	
+	/*
+	 * Returns the integer value of the arrival hour of the current flight
+	 * 
+	 * @param Flight
+	 * 
+	 * @return integer value of the hour in the arrival date
+	 * 
+	 */
 	private int getArrHourInt(Flight current)
 	{
 		int hour;
@@ -286,9 +322,13 @@ public class Trip {
 	}
 	
 	/*
-	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
+	 * Look at a list of flights with GMT times and return a list of flights that arrive on the target date in local time
 	 * 
+	 * @param ArrayList<Flight> options -- a list of flights to the arrival airport
 	 * 
+	 * @param String date -- arrival date
+	 * 
+	 * @return ArrayList<Flight> flights that arrive at the airport on the local date
 	 */
 	private ArrayList<Flight> getFlightsFromLocalDayArriving(ArrayList<Flight> options, String date)
 	{
