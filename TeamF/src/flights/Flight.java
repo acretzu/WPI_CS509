@@ -166,7 +166,7 @@ public class Flight {
 			e.printStackTrace();
 		}
 	}
-	private int getOffSetTime(String coder){
+	public int getOffSetTime(String coder){
 		HashMap<String, Integer> map = new HashMap<>();
 		AirportCodeTimeZone p = new AirportCodeTimeZone();
 		try {
