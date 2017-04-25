@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 import org.joda.time.Seconds;
 /**
  * 
@@ -108,10 +110,12 @@ public class SortingClass {
 						earliestDep2 = arg1.get(i).get_dep_time_local();
 				    }
 				}
-		        if (Integer.parseInt(Seconds.secondsBetween(earliestDep1, latestArr1).toString()) > Integer.parseInt(Seconds.secondsBetween(earliestDep2, latestArr2).toString())) {
+				Interval interval1 = new Interval(earliestDep1,latestArr1);
+				Interval interval2 = new Interval(earliestDep2,latestArr2);
+				if (interval1.toDurationMillis() > interval2.toDurationMillis()) {
 		             return 1;
 		         }
-		        else if (Integer.parseInt(Seconds.secondsBetween(earliestDep1, latestArr1).toString()) < Integer.parseInt(Seconds.secondsBetween(earliestDep2, latestArr2).toString())) {
+		        else if (interval1.toDurationMillis() < interval2.toDurationMillis()) {
 		            return -1;
 		        }
 				return 0;
