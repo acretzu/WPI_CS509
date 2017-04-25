@@ -10,7 +10,8 @@ import java.util.ArrayList;
 
 /**
  * 
- * @author acretzu
+ * @author Cretzu, Adrian
+ * @since 2017-02-01
  *
  */
 public class AirportContainer extends XmlParser {
@@ -29,6 +30,7 @@ public class AirportContainer extends XmlParser {
 	/**
 	 *  Creates an airport from the given XML node
 	 *  
+	 *  @param The node of the airport
 	 *  @return The airport class that was created from the XML node
 	 */
 	private Airport createAirport(Node nodeAirport) {
@@ -67,7 +69,9 @@ public class AirportContainer extends XmlParser {
 	}
 	
 	/**
+	 * 
 	 * Populates the list of valid airports from the WPI server.
+	 * 
 	 */
 	public void parseAirportsFromSever() throws NullPointerException {		
 		

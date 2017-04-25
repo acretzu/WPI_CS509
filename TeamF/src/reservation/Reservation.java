@@ -26,31 +26,53 @@ import query.QueryClass;
  * This class is used to lock the server, reserve a flight, and then unlock the server
  * 
  * @author Cretzu, Adrian
+ * @since 2017-04-10
  *
  */
 public class Reservation extends QueryClass{
 	
+	/**
+	 * Calls the reserveFlight() method with First Class seating
+	 * 
+	 * @param flights An array list of flights to reserve
+	 * @return True if successful, else false
+	 */
 	public boolean reserveFirstClass(ArrayList<String> flights) {
 		return reserveFlight(flights, "FirstClass");
 	}
 	
+	/**
+	 * Calls the reserveFlight() method with Coach seating
+	 * 
+	 * @param flights An array list of flights to reserve
+	 * @return True if successful, else false
+	 */
 	public boolean reserveCoach(ArrayList<String> flights) {
 		return reserveFlight(flights, "Coach");
 	}
 	
 	/**
+	 * Converts flights parameter into XML, locks the server, reserves the flight,
+	 * and then unlocks the server.
 	 * 
+	 * @param flights An array of flights to reserve
+	 * @param seat First Class or Coach seat
+	 * @retrun True if successful, else false
 	 */
 	private boolean reserveFlight(ArrayList<String> flights, String seat) {
-	//public boolean reserve() {
+		// Local variables
+		boolean success = true;
+		boolean lock_success = false;
+		
 		try {
-
+			// XML builder setup
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
 			Element rootFlights = document.createElement("Flights");
 			document.appendChild(rootFlights);
 			
+			// Loop thru the list and assemble the XML
 			for (String flight : flights) {
 				Element childFlight = document.createElement("Flight");
 				rootFlights.appendChild(childFlight);
@@ -64,34 +86,50 @@ public class Reservation extends QueryClass{
 				childFlight.setAttributeNode(seating);
 			}
 			
-			System.out.println("XML:\n" + getStringFromDocument(document));
-			
-			lock();
-			sendHTTPReservation(getStringFromDocument(document));
-			unlock();
+			// Attempt to lock
+			success = lock();
+			lock_success = success;
+			// Only reserve if locking was successful
+			if(success)
+				success = sendHTTPReservation(getStringFromDocument(document));
+			// Only unlock if locking was successful
+			if(lock_success)
+				success = unlock();
 
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
 			return false;
 		}
-		return true;
+		
+		return success;
 	}
 	
+	
+	/**
+	 * Resets the server
+	 * 	 
+	 */
 	public void resetServer() {
 		doQuery("?team=" + teamName + "&action=resetDB");
 	}
 	 
-	
+	/**
+	 * Returns the DOM document in string form. 
+	 * 
+	 * @param doc The DOM document
+	 * @return A string representing of the XML within the document
+	 */
 	private String getStringFromDocument(Document doc) {
 		try
 	    {
-	       DOMSource domSource = new DOMSource(doc);
-	       StringWriter writer = new StringWriter();
-	       StreamResult result = new StreamResult(writer);
-	       TransformerFactory tf = TransformerFactory.newInstance();
-	       Transformer transformer = tf.newTransformer();
-	       transformer.transform(domSource, result);
-	       return writer.toString();
+			// Transform the document XML into a String
+			DOMSource domSource = new DOMSource(doc);
+			StringWriter writer = new StringWriter();
+			StreamResult result = new StreamResult(writer);
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.transform(domSource, result);
+			return writer.toString();
 	    }
 	    catch(TransformerException ex)
 	    {
@@ -100,8 +138,13 @@ public class Reservation extends QueryClass{
 	    }
 	}
 	
-	
-	private void sendHTTPReservation(String xml) {
+	/**
+	 * Makes a flight reservation to the server
+	 * 
+	 * @param xml The XML with included flights for reservation
+	 * @return True if successful, else false
+	 */
+	private boolean sendHTTPReservation(String xml) {
 		try {
 			URL obj = new URL(mUrlBase);
 			HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
@@ -121,38 +164,26 @@ public class Reservation extends QueryClass{
 			writer.close();
 	
 			int responseCode = connection.getResponseCode();
-			System.out.println("Reserve Response Code : " + responseCode);
 			
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-	
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+			// Only print if we have an issue
+			if(responseCode != 202) {
+				System.out.println("Warning! Erroneous response code(sendHTTPReservation): " + responseCode);
+				return false;
 			}
-			in.close();
-	
-			//print result
-			//System.out.println(response.toString());
+			else
+				return true;
 	
 			}
+		
+			// Catch exceptions
 			catch (IOException e) {
 				e.printStackTrace();
+				return false;
 			} catch (Exception e) {
 				e.printStackTrace();
+				return false;
 			}
-		
-		
+
 	}
 	
-	public static void main(String[] args) {
-		ArrayList<String> list = new ArrayList<String>();
-		//list.add("12345");
-		//list.add("54321");
-		list.add("3487");
-		
-		Reservation reservation = new Reservation();
-		reservation.reserveFlight(list, "FirstClass");
-		//reservation.resetServer();
-	}
 }

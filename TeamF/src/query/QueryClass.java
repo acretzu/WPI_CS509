@@ -44,7 +44,8 @@ public abstract class QueryClass {
 			
 			int responseCode = connection.getResponseCode();
 			//System.out.println("\nSending 'POST' to lock database");
-			System.out.println(("Lock Response Code : " + responseCode));
+			if(responseCode != 202)
+				System.out.println(("Warning! Erroneous response code(lock): " + responseCode));
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -54,8 +55,7 @@ public abstract class QueryClass {
 				response.append(line);
 			}
 			in.close();
-			
-			//System.out.println(response.toString());
+					
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -92,7 +92,9 @@ public abstract class QueryClass {
 		    
 			int responseCode = connection.getResponseCode();
 			//System.out.println("\nSending 'POST' to unlock database");
-			System.out.println(("Unlock Response Code : " + responseCode));
+			if(responseCode != 202)
+				System.out.println(("Warning! Erroneous response code(unlock): " + responseCode));
+				
 
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -103,8 +105,6 @@ public abstract class QueryClass {
 					response.append(line);
 				}
 				in.close();
-
-				System.out.println(response.toString());
 			}
 		}
 		catch (IOException ex) {

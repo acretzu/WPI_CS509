@@ -35,17 +35,17 @@ public class Trip {
 		firstClassSearch = firstClass;
 	}
 	
-	/*
+	/**
 	 * check if there are seats left on a given flight
-	 * <p>
-	 * Looks at total seats of a particular class on the given airplane the flight uses 
+	 * 
+	 * <p>Looks at total seats of a particular class on the given airplane the flight uses 
 	 * 	and compares it to the total seats already booked to see if there are seats of the
 	 * 	particular class remaining
 	 * 
-	 * @param Flight currentFlight -- The flight we are examining for available seats
+	 * @param currentFlight -- The flight we are examining for available seats
 	 * 
-	 * @return Boolean -- true if there is an available seat on the current flight in the requested class
-	 * 	-- false otherwise
+	 * @return true if there is an available seat on the current flight in
+	 * the requested class, else false
 	 */
 	public Boolean seatsLeft(Flight currentFlight)
 	{
@@ -72,19 +72,19 @@ public class Trip {
 			return false;
 	}
 	
-	/*
+	/**
 	 * checks to see if two flights lie within the layover time range
-	 * <p>
-	 * 	looks at two flights that are landing and taking off from the same airport
+	 * 
+	 * <p>looks at two flights that are landing and taking off from the same airport
 	 * 	to see if the departing flight leaves within the acceptable layover times 
 	 * 	based on the arriving flights landing time.
 	 * 
-	 *  @param Flight arriving -- the flight incoming into current airport
+	 *  @param arriving The flight incoming into current airport
 	 *  
-	 *  @param Flight departing -- the flight leaving the current airport
+	 *  @param departing The flight leaving the current airport
 	 *  
-	 *  @return -- Boolean -- true if the departing flight takes off within 
-	 *  	the layover range from the arriving flight's landing. False if not
+	 *  @return true if the departing flight takes off within the layover range
+	 *   from the arriving flight's landing, else false
 	 */
 	public Boolean flightCanBeStopover(Flight arriving, Flight departing)
 	{
@@ -104,17 +104,17 @@ public class Trip {
 		return false;
 	}
 	
-	/*
+	/**
 	 * Looks at a given arrival or departure time to see if there is a possibility of
 	 * 	a valid stopover on the same day as was originally collected
 	 * 
-	 * @param String time -- time the flight lands if searchByDepartingDate or takes off if not
+	 * @param time Time the flight lands if searchByDepartingDate or takes off if not
 	 * 
-	 * @param String original_time -- original date that we queried on
+	 * @param original_time Original date that we queried on
 	 * 
-	 * @param Boolean searchByDepartingDate -- true if we are searching by departing date, false if by arrival date
+	 * @param searchByDepartingDate True if we are searching by departing date, false if by arrival date
 	 * 
-	 * @return true if there is a possibility of a valid layover on the same day, false if not
+	 * @return true if there is a possibility of a valid layover on the same day, else false
 	 */
 	public Boolean doSameDay(String time, String original_time, Boolean searchByDepartingDate)
 	{
@@ -142,15 +142,15 @@ public class Trip {
 		return true;
 	}
 	
-	/*
+	/**
 	 * checks to see if the day after the original departure needs to be queried for the next leg
 	 * 	of the flight based on stopover times
 	 * 
-	 * @param String arrivalTime -- arrival time from a Flight
+	 * @param arrivalTime Arrival time from a Flight
 	 * 
-	 * @param String originalTime -- departure date year_month_day
+	 * @param originalTime Departure date year_month_day
 	 * 
-	 * @return Boolean true if the stopover suggests we should query for the next day, false if not
+	 * @return true if the stopover suggests we should query for the next day, else false
 	 */
 	public Boolean goToNextDay(String arrivalTime, String originalTime) // should we query for the next day as well
 	{
@@ -165,15 +165,15 @@ public class Trip {
 		return false;
 	}
 	
-	/*
+	/**
 	 * checks to see if the day after the original departure needs to be queried for the next leg
 	 * 	of the flight based on stopover times
 	 * 
-	 * @param String arrivalTime -- arrival time from a Flight
+	 * @param arrivalTime Arrival time from a Flight
 	 * 
-	 * @param String originalTime -- departure date year_month_day
+	 * @param originalTime Departure date of trip year_month_day
 	 * 
-	 * @return Boolean true if the stopover suggests we should query for the next day, false if not
+	 * @return true if the stopover suggests we should query for the next day, else false
 	 */
 	public Boolean goToPreviousDay(String departureTime, String originalTime) // should we query for the next day as well
 	{
@@ -188,12 +188,12 @@ public class Trip {
 		return false;
 	}
 	
-	/*
+	/**
 	 * Returns the next day for an xml query in the case that the total trip lasts into the day after departure
 	 * 
-	 * @param String date from a Flight
+	 * @param date Date from a Flight
 	 * 
-	 * @return String date of the next day in the correct format for XML query
+	 * @return date Date of the next day in the correct format for XML query
 	 */
 	public String nextDay(String date)
 	{
@@ -204,12 +204,12 @@ public class Trip {
 		return (parsed[0] + "_" + parsed[1] + "_" +parsed[2]);
 	}
 	
-	/*
+	/**
 	 * Returns the previous day for an xml query in the case that the total trip lasts into the day after departure
 	 * 
-	 * @param String date from a Flight
+	 * @param date Date from a Flight
 	 * 
-	 * @return String date of the previous day in the correct format for XML query
+	 * @return date Date of the previous day in the correct format for XML query
 	 */
 	public String previousDay(String date)
 	{
@@ -220,6 +220,14 @@ public class Trip {
 		return (parsed[0] + "_" + parsed[1] + "_" +parsed[2]);
 	}
 	
+	/**
+	 * Returns the integer value of the departure day of the current flight
+	 * 
+	 * @param current Flight being looked at
+	 * 
+	 * @return integer value of the day in the departure date
+	 * 
+	 */
 	private int getDepDayInt(Flight current)
 	{
 		int day;
@@ -228,6 +236,14 @@ public class Trip {
 		return day;
 	}
 	
+	/**
+	 * Returns the integer value of the departure hour of the current flight
+	 * 
+	 * @param current Flight being looked at
+	 * 
+	 * @return integer value of the hour in the departure date
+	 * 
+	 */
 	private int getDepHourInt(Flight current)
 	{
 		int hour;
@@ -236,10 +252,14 @@ public class Trip {
 		return hour;
 	}
 	
-	/*
+	/**
 	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
 	 * 
+	 * @param options List of flights from the departure airport
 	 * 
+	 * @param date Departure date
+	 * 
+	 * @return list of flights that depart from the airport on the local date
 	 */
 	private ArrayList<Flight> getFlightsFromLocalDayDeparting(ArrayList<Flight> options, String date)
 	{
@@ -269,6 +289,14 @@ public class Trip {
 		return rightDayList;
 	}
 	
+	/**
+	 * Returns the integer value of the arrival day of the current flight
+	 * 
+	 * @param current Flight being looked at
+	 * 
+	 * @return integer value of the day in the arrival date
+	 * 
+	 */
 	private int getArrDayInt(Flight current)
 	{
 		int day;
@@ -277,6 +305,14 @@ public class Trip {
 		return day;
 	}
 	
+	/**
+	 * Returns the integer value of the arrival hour of the current flight
+	 * 
+	 * @param current Flight being looked at
+	 * 
+	 * @return integer value of the hour in the arrival date
+	 * 
+	 */
 	private int getArrHourInt(Flight current)
 	{
 		int hour;
@@ -285,10 +321,14 @@ public class Trip {
 		return hour;
 	}
 	
-	/*
-	 * Look at a list of flights with GMT times and return a list of flights that depart on the target date in local time
+	/**
+	 * Look at a list of flights with GMT times and return a list of flights that arrive on the target date in local time
 	 * 
+	 * @param options List of flights to the arrival airport
 	 * 
+	 * @param date Arrival date
+	 * 
+	 * @return list of flights that arrive at the airport on the local date
 	 */
 	private ArrayList<Flight> getFlightsFromLocalDayArriving(ArrayList<Flight> options, String date)
 	{
@@ -318,9 +358,13 @@ public class Trip {
 		return rightDayList;
 	}
 	
-	/*
+	/**
 	 * Query the server for a list of flights leaving on a given day
 	 *  and then return a list of Flights with seats left
+	 *  
+	 *  @param airport The three character airport string
+	 *  @param date GMT date of the departure
+	 *  @return list of flights leaving the departure airport on the given date
 	 */
 	public ArrayList<Flight> getDepartingFlights(String airport, String date) {
 		ArrayList<Flight> results = new ArrayList<Flight>();
@@ -337,9 +381,13 @@ public class Trip {
 		return results;
 	}
 	
-	/*
+	/**
 	 * Query the server for a list of flights arriving on a given day
 	 *  and then return a list of flights with seats left
+	 *  
+	 *  @param airport The three character airport string
+	 *  @param date GMT date of the arrival
+	 *  @return list of flights landing at the arrival airport on the given date
 	 */
 	public ArrayList<Flight> getArrivingFlights(String airport, String date) {
 		ArrayList<Flight> results = new ArrayList<Flight>();
@@ -359,21 +407,21 @@ public class Trip {
 	/**
 	 * Query the server for an appropriate list of flights 
 	 *   
-	 *   Performs a breadth first search for flights that fulfill the input parameters
-	 *   	 specifically while leaving the departure airport by the given date and
-	 *   	while trying to limit the number of unnecessary queries on the server
+	 *  <p> Performs a breadth first search for flights that fulfill the input parameters
+	 *   specifically while leaving the departure airport by the given date and
+	 *   while trying to limit the number of unnecessary queries on the server
 	 *   
-	 * @param String departureAirport -- code of the airport the trip is leaving from
+	 * @param departureAirport Code of the airport the trip is leaving from
 	 * 
-	 * @param String destinationAirport -- code of the airport the trip is arriving at
+	 * @param destinationAirport code of the airport the trip is arriving at
 	 * 
-	 * @param String date -- that the trip will leave in the form year_month_day
+	 * @param date Date that the trip will leave in the form year_month_day
 	 * 
-	 * @param String numStops -- number from 0 to 2 that gives the maximum number of stopovers allowed
+	 * @param numStops Number from 0 to 2 that gives the maximum number of stopovers allowed
 	 * 
-	 * @param Boolean firstClass -- true if we are looking for first class flights, false if coach
+	 * @param firstClass True if we are looking for first class flights, false if coach
 	 * 
-	 * @return ArrayList<ArrayList> of flights that fulfill the request
+	 * @return List of flights that fulfill the request
 	 */
 	public ArrayList<ArrayList<Flight>> getFlightOptionsByDeparting(String departureAirport,
 				String destinationAirport, String date, String numStops,
@@ -503,21 +551,21 @@ public class Trip {
 	/**
 	 * Query the server for an appropriate list of flights 
 	 *   
-	 *   Performs a breadth first search for flights that fulfill the input parameters
-	 *   	specifically while trying to get to the destination by the given date and
-	 *   	while trying to limit the number of unnecessary queries on the server
+	 *   <p>Performs a breadth first search for flights that fulfill the input parameters
+	 *   specifically while trying to get to the destination by the given date and
+	 *   while trying to limit the number of unnecessary queries on the server
 	 *   
-	 * @param String departureAirport -- code of the airport the trip is leaving from
+	 * @param departureAirport Code of the airport the trip is leaving from
 	 * 
-	 * @param String destinationAirport -- code of the airport the trip is arriving at
+	 * @param destinationAirport Code of the airport the trip is arriving at
 	 * 
-	 * @param String date -- that the trip will leave in the form year_month_day
+	 * @param date Date that the trip will leave in the form year_month_day
 	 * 
-	 * @param String numStops -- number from 0 to 2 that gives the maximum number of stopovers allowed
+	 * @param numStops Number from 0 to 2 that gives the maximum number of stopovers allowed
 	 * 
-	 * @param Boolean firstClass -- true if we are looking for first class flights, false if coach
+	 * @param firstClass True if we are looking for first class flights, false if coach
 	 * 
-	 * @return ArrayList<ArrayList> of flights that fulfill the request
+	 * @return List of flights that fulfill the request
 	 */
 	public ArrayList<ArrayList<Flight>> getFlightOptionsByArrival(String departureAirport,
 				String destinationAirport, String date, String numStops,
