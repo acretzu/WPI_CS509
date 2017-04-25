@@ -146,7 +146,7 @@ public class Flight {
 	
 	private void arrTimeStringToDate(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
-		System.out.println(dateStr);
+		//System.out.println(dateStr);
 		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.US);
 		try {
 			Date localDate = df.parse(dateStr);
@@ -157,7 +157,7 @@ public class Flight {
 	}
 	private void depTimeStringToDate(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
-		System.out.println(dateStr);
+		//System.out.println(dateStr);
 		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.forLanguageTag("english"));
 		try {
 			Date localDate = df.parse(dateStr);

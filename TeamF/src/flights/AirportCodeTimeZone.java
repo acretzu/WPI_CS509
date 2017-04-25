@@ -18,7 +18,7 @@ public class AirportCodeTimeZone {
 	        for (String line; (line = br.readLine()) != null;) {
 	            // processing the line.
 	             String[] Contents = line.split(COMMA_DELIMETER);
-	             System.out.printf("%s %s \n", Contents[0], Contents[1]);
+	             //System.out.printf("%s %s \n", Contents[0], Contents[1]);
 	             keyHolder.put(Contents[0], Integer.parseInt(Contents[1]));
 	             
 	        }
