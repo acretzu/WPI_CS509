@@ -93,6 +93,9 @@ public class Trip {
 		double arr_time_num, dep_time_num, time_between = 0; // resolve to integers for easy comparison
 		arr_time_num = Double.valueOf(arr_time[3]) + Double.valueOf(arr_time[4])/60;
 		dep_time_num = Double.valueOf(dep_time[3]) + Double.valueOf(dep_time[4])/60;
+
+		if (Integer.valueOf(arr_time[2]) > Integer.valueOf(dep_time[2])) // departing flight leaves before arriving gets in
+			return false;
 		if (Integer.valueOf(dep_time[2]) > Integer.valueOf(arr_time[2]))
 			dep_time_num += 24;
 		time_between = dep_time_num - arr_time_num;
@@ -276,12 +279,14 @@ public class Trip {
 
 			if (GMTDay == day) 
 			{
-				if (GMTHour <= (24 - hourOffset))
+				if (GMTHour + hourOffset >= 0)
+				{
 					rightDayList.add(options.get(i));
+				}
 			}
-			else if (GMTDay == (day - 1))
+			else if (GMTDay == (day + 1))
 			{
-				if (GMTHour >= (24 - hourOffset))
+				if ((GMTHour + hourOffset) < 0)
 					rightDayList.add(options.get(i));
 			}
 		}
@@ -345,12 +350,14 @@ public class Trip {
 
 			if (GMTDay == day) 
 			{
-				if (GMTHour <= (24 - hourOffset))
+				if (GMTHour + hourOffset >= 0)
+				{
 					rightDayList.add(options.get(i));
+				}
 			}
-			else if (GMTDay == (day - 1))
+			else if (GMTDay == (day + 1))
 			{
-				if (GMTHour >= (24 - hourOffset))
+				if ((GMTHour + hourOffset) < 0)
 					rightDayList.add(options.get(i));
 			}
 		}
@@ -431,9 +438,9 @@ public class Trip {
 		
 		ArrayList<ArrayList<Flight>> flightOptions, optionsToBuildFrom,  // return data and a placeholder list to keep track of options that are not complete yet
 			optionsToBuildFromNew;
-		ArrayList<String> queryAirports, queryAirportsNextDay, alreadyQueried, alreadyQueriedNextDay, queryAirportsYesterday, alreadyQueriedYesterday;
+		ArrayList<String> queryAirports, queryAirportsNextDay, alreadyQueried, alreadyQueriedNextDay;
 		ArrayList<Flight> currentOptions;
-		String tomorrow = nextDay(date), yesterday = previousDay(date);
+		String tomorrow = nextDay(date);
 		int i, j, k;
 		
 		flightOptions = new ArrayList<ArrayList<Flight>>();
@@ -443,12 +450,10 @@ public class Trip {
 		queryAirportsNextDay = new ArrayList<String>();
 		alreadyQueried = new ArrayList<String>();
 		alreadyQueriedNextDay = new ArrayList<String>();
-		queryAirportsYesterday = new ArrayList<String>(); // account for GMT to local transition
-		alreadyQueriedYesterday = new ArrayList<String>();
 		currentOptions = new ArrayList<Flight>();
 		
 		queryAirports.add(departureAirport);
-		alreadyQueriedNextDay.add(departureAirport); // dont need to query for a flight that leaves at the departure airport the day after the target
+		queryAirportsNextDay.add(departureAirport);//alreadyQueriedNextDay.add(departureAirport); // dont need to query for a flight that leaves at the departure airport the day after the target
 		
 		for (i = 0; i <= Integer.valueOf(numStops); i++) // breadth first loop -- num stops should never be greater than 2
 		{
@@ -462,15 +467,9 @@ public class Trip {
 				currentOptions.addAll(getDepartingFlights(queryAirportsNextDay.get(j), tomorrow));
 				alreadyQueriedNextDay.add(queryAirportsNextDay.get(j));
 			}
-			for (j = 0; j < queryAirportsYesterday.size(); j++)
-			{
-				currentOptions.addAll(getDepartingFlights(queryAirportsYesterday.get(j), yesterday));
-				alreadyQueriedYesterday.add(queryAirportsYesterday.get(j));
-			}
 			
 			queryAirports.clear(); // clear to prep for next query
 			queryAirportsNextDay.clear();
-			queryAirportsYesterday.clear();
 			
 			if (i == 0)
 				currentOptions = getFlightsFromLocalDayDeparting(currentOptions, date);
@@ -533,13 +532,6 @@ public class Trip {
 				{
 					queryAirportsNextDay.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());  // add airport to list that will need to be queried on next run
 				}
-				//experimental
-				if (doSameDay(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_time(), yesterday, true) && // adjust for GMT offset
-						!alreadyQueriedYesterday.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() -1).get_arr_code()) &&
-						!queryAirportsYesterday.contains(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code()))
-				{
-					queryAirportsYesterday.add(optionsToBuildFrom.get(j).get(optionsToBuildFrom.get(j).size() - 1).get_arr_code());
-				}
 			}
 			
 			if (i == 0)
@@ -575,9 +567,9 @@ public class Trip {
 		
 		ArrayList<ArrayList<Flight>> flightOptions, optionsToBuildFrom,  // return data and a placeholder list to keep track of options that are not complete yet
 			optionsToBuildFromNew;
-		ArrayList<String> queryAirports, queryAirportsPreviousDay, alreadyQueried, alreadyQueriedPreviousDay;
+		ArrayList<String> queryAirports, queryAirportsPreviousDay, alreadyQueried, alreadyQueriedPreviousDay, queryAirportsNextDay, alreadyQueriedNextDay;
 		ArrayList<Flight> currentOptions;
-		String yesterday = previousDay(date);
+		String yesterday = previousDay(date), tomorrow = nextDay(date);
 		int i, j, k;
 		
 		flightOptions = new ArrayList<ArrayList<Flight>>();
@@ -585,13 +577,15 @@ public class Trip {
 		optionsToBuildFromNew = new ArrayList<ArrayList<Flight>> ();
 		queryAirports = new ArrayList<String>();
 		queryAirportsPreviousDay = new ArrayList<String>();
+		queryAirportsNextDay = new ArrayList<String>(); // deal with GMT offset
 		alreadyQueried = new ArrayList<String>();
 		alreadyQueriedPreviousDay = new ArrayList<String>();
+		alreadyQueriedNextDay = new ArrayList<String>();
 		currentOptions = new ArrayList<Flight>();
 		
 		queryAirports.add(destinationAirport);
-		//alreadyQueriedPreviousDay.add(destinationAirport); // dont need to query for a flight that arrives at the destination airport the day before the target
-		queryAirportsPreviousDay.add(destinationAirport);
+		alreadyQueriedPreviousDay.add(destinationAirport); // dont need to query for a flight that arrives at the destination airport the day before the target
+		queryAirportsNextDay.add(destinationAirport);
 		
 		
 		for (i = 0; i <= Integer.valueOf(numStops); i++) // breadth first loop -- num stops should never be greater than 2
@@ -606,9 +600,15 @@ public class Trip {
 				currentOptions.addAll(getArrivingFlights(queryAirportsPreviousDay.get(j), yesterday));
 				alreadyQueriedPreviousDay.add(queryAirportsPreviousDay.get(j));
 			}
+			for (j = 0; j < queryAirportsNextDay.size(); j++) //deal with GMT offset
+			{
+				currentOptions.addAll(getArrivingFlights(queryAirportsNextDay.get(j), tomorrow));
+				alreadyQueriedNextDay.add(queryAirportsNextDay.get(j));
+			}
 			
 			queryAirports.clear(); // clear to prep for next query
 			queryAirportsPreviousDay.clear();
+			queryAirportsNextDay.clear();
 			
 			if (i == 0)
 				currentOptions = getFlightsFromLocalDayArriving(currentOptions, date); // take the two GMT days queried and translate to one local day
@@ -670,6 +670,12 @@ public class Trip {
 						!queryAirportsPreviousDay.contains(optionsToBuildFrom.get(j).get(0).get_dep_code()))
 				{
 					queryAirportsPreviousDay.add(optionsToBuildFrom.get(j).get(0).get_dep_code());  // add airport to list that will need to be queried on next run
+				}
+				if (doSameDay(optionsToBuildFrom.get(j).get(0).get_dep_time(), tomorrow, false) &&
+						!alreadyQueriedNextDay.contains(optionsToBuildFrom.get(j).get(0).get_dep_code()) &&
+						!queryAirportsNextDay.contains(optionsToBuildFrom.get(j).get(0).get_dep_code()))
+				{
+					queryAirportsNextDay.add(optionsToBuildFrom.get(j).get(0).get_dep_code());
 				}
 			}
 			
