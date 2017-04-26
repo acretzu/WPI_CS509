@@ -47,7 +47,7 @@ public class Reservation extends QueryClass{
 	 * @param flights An array list of flights to reserve
 	 * @return True if successful, else false
 	 */
-	public boolean reserveCoach(ArrayList<String> flights) {
+	public boolean reserveCoach(ArrayList<String> flights) {		
 		return reserveFlight(flights, "Coach");
 	}
 	
@@ -61,7 +61,7 @@ public class Reservation extends QueryClass{
 	 */
 	private boolean reserveFlight(ArrayList<String> flights, String seat) {
 		// Local variables
-		boolean success = true;
+		boolean success = false;
 		boolean lock_success = false;
 		
 		try {
@@ -89,13 +89,15 @@ public class Reservation extends QueryClass{
 			// Attempt to lock
 			success = lock();
 			lock_success = success;
+		
 			// Only reserve if locking was successful
-			if(success)
-				success = sendHTTPReservation(getStringFromDocument(document));
+			if(success) {
+				success = success & sendHTTPReservation(getStringFromDocument(document));	
+			}
 			// Only unlock if locking was successful
-			if(lock_success)
-				success = unlock();
-
+			if(lock_success) {
+				success =  success & unlock();
+			}
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
 			return false;
