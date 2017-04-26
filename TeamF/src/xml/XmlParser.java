@@ -31,7 +31,7 @@ public class XmlParser extends QueryClass{
 	 * @param xmlString XML String containing set of objects
 	 * @return DOM tree from parsed XML or null if exception is caught
 	 */
-	public Document buildDocument (String xmlString) {
+	protected Document buildDocument (String xmlString) {
 		/**
 		 * load the xml string into a DOM document and return the Document
 		 */

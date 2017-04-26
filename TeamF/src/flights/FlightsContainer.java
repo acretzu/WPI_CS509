@@ -11,6 +11,8 @@ import xml.XmlParser;
  *
  */
 public class FlightsContainer extends XmlParser {
+	// Class variables
+	protected ArrayList<Flight> list;
 	
 	public Flight createFlight(Element elementFlight){
 		 String flight_model;
