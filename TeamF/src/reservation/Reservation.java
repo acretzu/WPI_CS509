@@ -41,7 +41,7 @@ public class Reservation extends QueryClass{
 		return reserveFlight(flights, "FirstClass");
 	}
 	
-	/**
+	/** 
 	 * Calls the reserveFlight() method with Coach seating
 	 * 
 	 * @param flights An array list of flights to reserve
