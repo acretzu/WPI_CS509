@@ -156,6 +156,9 @@ public class SortingClass {
 	public static String get_total_travel_time (ArrayList<Flight> flights){
 		DateTime earliestDep1 = flights.get(0).get_dep_time_local();
 		DateTime latestArr1 = flights.get(0).get_arr_time_local();
+		String hoursString = "";
+		String minString = "";
+		
 		for (int i = 0; i < flights.size(); i++) {
 		    if(flights.get(i).get_arr_time_local().compareTo(latestArr1) > 0){
 		    	latestArr1 = flights.get(i).get_arr_time_local();
@@ -166,8 +169,24 @@ public class SortingClass {
 		}
 		Interval interval1 = new Interval(earliestDep1,latestArr1);
 		Integer hours = (int) interval1.toDuration().getStandardMinutes() / 60;
+		if(hours < 10)
+		{
+			hoursString = "0" + Integer.toString(hours);
+		}
+		else
+		{
+			minString = Integer.toString(hours);
+		}
 		Integer mins = (int) interval1.toDuration().getStandardMinutes() % 60;
-		return  Integer.toString(hours) + ":" +  Integer.toString(mins);
+		if(mins < 10)
+		{
+			minString = "0" + Integer.toString(mins);
+		}else
+		{
+			minString = Integer.toString(mins);
+		}
+		
+		return  hoursString + ":" +  minString;
 	}
 	
 }
