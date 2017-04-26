@@ -11,7 +11,13 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-
+/**
+ * This class is used to save the flight information, such as flight number, airport code, flight time.
+ * 
+ * @author Yupeng Su
+ * @since 2017-03-20
+ *
+ */
 
 public class Flight {
 	 String flight_model;
@@ -28,6 +34,9 @@ public class Flight {
 	 Date arr_local_time;
 	 Date dep_local_time;
 	 
+	 /**
+		 * Construct a no value flight
+	 */
 	 public Flight(){
 		 flight_model = "";
 		 flight_time = "";
@@ -41,6 +50,10 @@ public class Flight {
 		 price_first = 0.0;
 		 price_coach = 0.0;
 	 }
+	 /**
+		 * Construct a flight with input argument
+		 * @param string type information of flight
+	 */
 	 public Flight(String f_model, String f_time, String f_number, 
 			 String d_code, String d_time, String a_code, String a_time, String n_first, 
 			 String p_first, String n_coach, String p_coach){
@@ -58,7 +71,10 @@ public class Flight {
 		 price_coach = Integer.parseInt(p_coach);
 		
 	 }
-	 
+	 /**
+		 * Construct a flight with input argument
+		 * @param string type information of flight except number
+	 */
 	 public Flight(String f_model, String f_time, String f_number, 
 			 String d_code, String d_time, String a_code, String a_time, int n_first, 
 			 double p_first, int n_coach, double p_coach){
@@ -66,10 +82,6 @@ public class Flight {
 		 flight_model = f_model;
 		 flight_time = f_time;
 		 flight_number = f_number;
-		 if (!isValidCode(d_code)) 
-				throw new IllegalArgumentException(d_code);
-		 if (!isValidCode(a_code)) 
-				throw new IllegalArgumentException(a_code);
 		 dep_code = d_code;
 		 dep_time = d_time;
 		 arr_code = a_code;
@@ -79,14 +91,11 @@ public class Flight {
 		 num_coach_seats = n_coach;
 		 price_coach = p_coach;
 	 }
-	 
-	 public boolean isValidCode (String code) {
-			// If we don't have a 3 character code it can't be valid valid
-			if ((code == null) || (code.length() != 3))
-				return false;
-			return true;
-	}
 	
+	 /**
+	  * Set up the flight model
+	  * @param string type information of flight_model
+	 */
 	
 	public void set_flight_model(String model){
 		this.flight_model = model;
@@ -122,6 +131,10 @@ public class Flight {
 	public void set_coach_price(double price){
 		this.price_coach = price;
 	}
+	/**
+	  * change flight type to string to be easy to print
+	  * 
+	 */
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("FlightNumber: " + flight_number).append(", ");
@@ -134,7 +147,11 @@ public class Flight {
 		
 		return sb.toString();
 	}
-	public void converAllTimeToLocal(){
+	/**
+	  * convert both the departure time and arrival time to local time
+	  * 
+	 */
+	private void converAllTimeToLocal(){
 		arrTimeStringToDate(this.arr_time);
 		depTimeStringToDate(this.dep_time);
 		long arr_offset = getOffSetTime(this.arr_code);
@@ -144,6 +161,10 @@ public class Flight {
 		this.dep_local_time.setTime(this.dep_local_time.getTime() + p * (dep_offset + 1));
 	}
 	
+	/**
+	  * convert string type of date to Java date type
+	  * @param String type of java dateStr with format yyyy/MMM/dd/HH:mm
+	 */
 	private void arrTimeStringToDate(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
 //		System.out.println(dateStr);
@@ -155,6 +176,10 @@ public class Flight {
 			e.printStackTrace();
 		}
 	}
+	/**
+	  * convert string type of date to Java date type
+	  * @param String type of java dateStr with format yyyy/MMM/dd/HH:mm
+	 */
 	private void depTimeStringToDate(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
 //		System.out.println(dateStr);
@@ -166,6 +191,11 @@ public class Flight {
 			e.printStackTrace();
 		}
 	}
+	/**
+	  * get OffSetTime based on input airport code
+	  * @param String type of airport code
+	  * @return integer of offset 
+	 */ 
 	public int getOffSetTime(String coder){
 		HashMap<String, Integer> map = new HashMap<>();
 		AirportCodeTimeZone p = new AirportCodeTimeZone();
@@ -226,6 +256,10 @@ public class Flight {
 	public double get_flight_time(){
 		return Double.parseDouble(this.flight_time);
 	}
+	/**
+	  * convert string type of date to Java date type
+	  * @param String type of java dateStr with format yyyy/MMM/dd/HH:mm
+	 */
 	public String get_flight_time_hour_min(){
 		Double flightTime = Double.parseDouble(this.flight_time);
 		String flight_time_string;

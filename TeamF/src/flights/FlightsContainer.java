@@ -83,6 +83,7 @@ public class FlightsContainer extends XmlParser {
 		flight.set_first_price(price_first);
 		flight.set_coach(num_coach_seats);
 		flight.set_coach_price(price_coach);
+		
 		return flight;
 	}
 
