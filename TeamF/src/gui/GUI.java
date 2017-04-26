@@ -1,39 +1,22 @@
 package gui;
 
-import java.util.Scanner;
-import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Container;
-
 import javax.swing.*;//JOptionPane;
-
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
 import javax.swing.JOptionPane;
 import airport.AirportContainer;
-import controller.Controller;
-import flights.DepartingFlightsContainer;
-import flights.ArrivingFlightsContainer;
-import flights.Flight;
-import airplane.AirplaneContainer;
-import airplane.Airplane;
-import userinput.UserInput;
-import java.util.ArrayList;
 import airport.Airport;
+import flights.Flight;
+import java.util.ArrayList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import org.joda.time.DateTime;
-
-import sorting.SortingClass;
-
 import Trip.Trip;
-import flights.FlightsContainer;
+
 /**
  * 
  * @author Ilya Lifshits
@@ -47,8 +30,6 @@ public class GUI extends JFrame {
 	sorting.SortingClass sort= new sorting.SortingClass();
 	
 	//GUI object initialisation 
-    private JTextField desField = new JTextField("BOS");
-    private JTextField depField = new JTextField("SFO");
     private JTextField depDateTF = new JTextField("05/15/2017");
     private JTextField retDateTF = new JTextField("05/16/2017");
     private JTextField depTimeMin = new JTextField("12:00pm");
@@ -67,8 +48,7 @@ public class GUI extends JFrame {
     private JRadioButton  SortByTravelTimeRb= new JRadioButton("Travel Time");
     private JRadioButton  SearchByArrDate = new JRadioButton("Search by Arrival Date");
     private JRadioButton  SearchByDepDate = new JRadioButton("Search by Departure Date");
-     
-   
+    
     private JButton searchButton = new JButton("Search");
     private JButton clearSearchButton = new JButton("Restart Search");
     private JButton sortButton =  new JButton("Sort");
@@ -76,8 +56,6 @@ public class GUI extends JFrame {
     private JButton detailsButton = new JButton("Details");;
     private JLabel depFlightsLabel = new JLabel("Departure Flights");
     private JLabel retFlightsLabel = new JLabel("Return Flights");
-    
-    
     
     private JLabel deplb = new JLabel("Departure Airport    ");
     private JLabel destlb = new JLabel("Destination Airport    ");
@@ -88,7 +66,6 @@ public class GUI extends JFrame {
     private JLabel arrTimeMinlb = new JLabel("Arr. Time  Min  ");
     private JLabel arrTimeMaxlb = new JLabel("Arr. Time  Max  ");
 	
-    
     //panel1 holds dept/arr airport and dept/return date controls 
     private JPanel panel1 = new JPanel(new GridBagLayout());
 	private JPanel panel2 = new JPanel(new GridBagLayout());
@@ -97,13 +74,7 @@ public class GUI extends JFrame {
 	private JPanel panel4 = new JPanel(new GridBagLayout());
 	
     private boolean roundTrip = true;
-    private String numStops = "1";
-	
-    
-    Controller controller = new Controller();
     Trip trip = new Trip();
-   // private String[] userInput;
-   
     private ArrayList<String> airportNames;
     private ArrayList<String> airportCodes;
    
@@ -124,11 +95,9 @@ public class GUI extends JFrame {
     ArrayList<Airport> airports;
     ArrayList<ArrayList<Flight>> flightListDep = new ArrayList<ArrayList<Flight>>();
     ArrayList<ArrayList<Flight>> flightListRet = new ArrayList<ArrayList<Flight>>();
-	
-    
+	    
     JScrollPane searchResultsDepScrollPane;
     JScrollPane searchResultsRetScrollPane;
-    
     JScrollPane detailsDepScrollPane;
     JScrollPane detailsRetScrollPane;
     
@@ -140,7 +109,8 @@ public class GUI extends JFrame {
 	ArrayList<Flight> reserveDepFlightList = new ArrayList<Flight>();
 	ArrayList<Flight> reserveRetFlightList = new ArrayList<Flight>();
 	flights.FlightsContainer flightContrainer = new flights.FlightsContainer();
-	reservation.Reservation reserve = new reservation.Reservation();
+	reservation.Reservation reserve = new reservation.Reservation();	
+	private AirportContainer airport_container;
 	
 	public GUI(){
 		
@@ -160,7 +130,9 @@ public class GUI extends JFrame {
 		airportCodes = new ArrayList<String>();
 		
 		airports = new ArrayList<Airport>();
-		airports = controller.getAirports();
+		airport_container = new AirportContainer();
+		airport_container.parseAirportsFromSever();
+		airports = airport_container.getContainer();
 		depFlights = new ArrayList<Flight>();
 		
 		
@@ -432,7 +404,6 @@ public class GUI extends JFrame {
 		String stopNumberS = "";
 		double totalPrice = 0;
 		String totalPriceS = "";
-		String departTime;
 		DateTime depDateTime = new DateTime();
 		DateTime retDateTime = new DateTime();
 		for(int i = 0; i<flightList.size(); i++)
@@ -806,7 +777,7 @@ public class GUI extends JFrame {
 				disableAllSearchControls();
 				
 				System.out.println("Searching for flights from... \n" + departureAirport
-						+ " tp " +  destinationAirport);
+						+ " to " +  destinationAirport);
 			
 				if(SearchByDepDate.isSelected())
 				{
@@ -819,8 +790,7 @@ public class GUI extends JFrame {
 							destinationAirport, depdate, Integer.toString(numberOfStops),
 							firstClass);
 				}
-				
-				sorting.SortingClass sorts;
+								
 				populateSeachResultsList(flightListDep, false);
 				
 				if(roundTrip)
