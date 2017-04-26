@@ -404,6 +404,7 @@ public class GUI extends JFrame {
 		String stopNumberS = "";
 		double totalPrice = 0;
 		String totalPriceS = "";
+		String totalTravelTime = "";
 		DateTime depDateTime = new DateTime();
 		DateTime retDateTime = new DateTime();
 		for(int i = 0; i<flightList.size(); i++)
@@ -415,14 +416,14 @@ public class GUI extends JFrame {
 			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
 			depDateTime = flightList.get(i).get(0).get_dep_time_local();
 			retDateTime = flightList.get(i).get(stopNumber).get_arr_time_local();
-				
+			totalTravelTime =  	sort.get_total_travel_time(flightList.get(i));
 				builtFlightString = "Stops #: " + stopNumberS +
 						" Total Price: " + totalPriceS +
 						"  Leave at: " + getFormated(depDateTime.getHourOfDay()) + ":" 
 						+ getFormated(depDateTime.getMinuteOfHour()) + 
 						"  Arrive at: " + getFormated(retDateTime.getHourOfDay()) + ":" 
 						+ getFormated(retDateTime.getMinuteOfHour()) + 
-						" Total travel time...";
+						" Total travel time: " + totalTravelTime;
 			for(int j = 0; j < flightList.get(i).size(); j++)
 			{
 			//	System.out.println(flightList.get(i).get(j).toString());
@@ -549,12 +550,14 @@ public class GUI extends JFrame {
 		if(!populateReturnDetailsList)
 		{
 			flightDetailModel.addElement("Total price: $" + Double.toString(Math.round(sort.get_total_price(DepFlightTrip, firstClass)*100D)/100D));
+			flightDetailModel.addElement("Total travel time: " + sort.get_total_travel_time(DepFlightTrip));
 			
 			System.out.println("Selection Made: " + searchResultsDep.getSelectedValue());
 			flightDepDetails.setModel(flightDetailModel);
 		}else
 		{
 			flightDetailModel.addElement("Total price: $" + Double.toString(Math.round(sort.get_total_price(RetFlightTrip, firstClass)*100D)/100D));
+			flightDetailModel.addElement("Total travel time: " + sort.get_total_travel_time(RetFlightTrip));
 			
 			System.out.println("Selection Made: " + searchResultsRet.getSelectedValue());
 			flightRetDetails.setModel(flightDetailModel);
