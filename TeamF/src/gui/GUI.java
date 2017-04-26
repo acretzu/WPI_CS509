@@ -598,7 +598,17 @@ public class GUI extends JFrame {
 				
 		return reserveList;
 	}
-	
+	private String getReserveListAsString(ArrayList<String> reserveList)
+	{
+		String reserveListString="";
+		
+		for(int i = 0; i<reserveList.size();i++)
+		{
+			reserveListString=reserveListString + "flight #: " + reserveList.get(i)+"\n";
+		}
+		
+		return reserveListString;
+	}
 	/**
 	 * disables all gui controls used for changing search parameters enables 
 	 * clearSearchButton
@@ -642,6 +652,7 @@ public class GUI extends JFrame {
 		arrList.setEnabled(true);
 		SearchByArrDate.setEnabled(true);
 		SearchByDepDate.setEnabled(true);
+		reserveButton.setEnabled(true);
 		clearSearchButton.setEnabled(false);
 		
 	}
@@ -933,8 +944,13 @@ public class GUI extends JFrame {
 							
 						}else
 						{
-							reserve.reserveFirstClass(getReserveFlightList(roundTrip));
 							
+							reserve.reserveFirstClass(getReserveFlightList(roundTrip));
+							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
+									+ getReserveListAsString(getReserveFlightList(roundTrip)),
+											"Reserved",JOptionPane.WARNING_MESSAGE);
+									
+							reserveButton.setEnabled(false);
 						}
 					}else
 					{
@@ -955,7 +971,14 @@ public class GUI extends JFrame {
 							
 						}else
 						{
+							
 							reserve.reserveCoach(getReserveFlightList(roundTrip));
+							
+							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
+							+ getReserveListAsString(getReserveFlightList(roundTrip)),
+									"Reserved",JOptionPane.WARNING_MESSAGE);
+							
+							reserveButton.setEnabled(false);
 						}
 					}else
 					{
