@@ -123,7 +123,13 @@ public class SortingClass {
 		});
 		return flights;
 	}
-	
+	/**
+	 *  Takes in a list of flights and a bool indicating whether it is first class. Returns a
+	 *  double for the total price of the flights.   
+	 *   
+	 * @param ArrayList of lists of flights 
+	 * @return ArrayList of lists of flights
+	 */
 	public static double get_total_price(ArrayList<Flight> flights, boolean firstClass){
 		double total_coach_price = 0.0;
 		double total_first_price = 0.0;
@@ -141,6 +147,27 @@ public class SortingClass {
 		}
 		
 	}
-	
+	/**
+	 *  Takes in a list flights and return a string for the total travel time.  
+	 *   
+	 * @param ArrayList of lists of flights 
+	 * @return ArrayList of lists of flights
+	 */
+	public static String get_total_travel_time (ArrayList<Flight> flights){
+		DateTime earliestDep1 = flights.get(0).get_dep_time_local();
+		DateTime latestArr1 = flights.get(0).get_arr_time_local();
+		for (int i = 0; i < flights.size(); i++) {
+		    if(flights.get(i).get_arr_time_local().compareTo(latestArr1) > 0){
+		    	latestArr1 = flights.get(i).get_arr_time_local();
+		    }
+		    if(flights.get(i).get_dep_time_local().compareTo(earliestDep1) < 0){
+		    	earliestDep1 = flights.get(i).get_dep_time_local();
+		    }
+		}
+		Interval interval1 = new Interval(earliestDep1,latestArr1);
+		Integer hours = (int) interval1.toDuration().getStandardMinutes() / 60;
+		Integer mins = (int) interval1.toDuration().getStandardMinutes() % 60;
+		return  Integer.toString(hours) + ":" +  Integer.toString(mins);
+	}
 	
 }
