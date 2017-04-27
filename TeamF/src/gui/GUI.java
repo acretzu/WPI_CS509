@@ -959,7 +959,7 @@ public class GUI extends JFrame {
 						return;
 					}
 					
-				}
+				} 
 				else
 				{
 					if(!searchResultsDep.isSelectionEmpty())
