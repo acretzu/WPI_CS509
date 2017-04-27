@@ -85,10 +85,8 @@ public class GUI extends JFrame {
     JList flightDepDetails;
     JList flightRetDetails;
     
-    DefaultListModel<String> modelDep;
-    DefaultListModel<String> modelRet;
-    DefaultListModel<String> flightSearchResultModel;
-    DefaultListModel<String> flightDetailModel;
+    DefaultListModel<String> flightSearchResultModel;//model to hold search result information
+    DefaultListModel<String> flightDetailModel; //model to hold flight detail information 
     
     ArrayList<Flight> depFlights;
     ArrayList<Airport> airports;
@@ -145,8 +143,6 @@ public class GUI extends JFrame {
 		//searchResultsDep.setPreferredSize(new Dimension(250, 80));
 		searchResultsDep.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		
-		modelDep = new DefaultListModel<String>();
-		modelRet = new DefaultListModel<String>();
 		flightSearchResultModel = new DefaultListModel<String>();
 		searchResultsDep.setModel(flightSearchResultModel);
 		searchResultsRet.setModel(flightSearchResultModel);
@@ -398,8 +394,6 @@ public class GUI extends JFrame {
 	{
 		int stopNumber=0;
 		String builtFlightString="";
-		modelDep = new DefaultListModel<String>(); 
-		modelRet = new DefaultListModel<String>(); 
 		flightSearchResultModel = new DefaultListModel<String>(); 
 		String stopNumberS = "";
 		double totalPrice = 0;
@@ -419,11 +413,12 @@ public class GUI extends JFrame {
 			totalTravelTime =	sort.get_total_travel_time(flightList.get(i));
 				builtFlightString = "Stops #: " + stopNumberS +
 						" Total Price: " + totalPriceS +
-						"  Leave at: " + getFormated(depDateTime.getHourOfDay()) + ":" 
-						+ getFormated(depDateTime.getMinuteOfHour()) + 
-						"  Arrive at: " + getFormated(retDateTime.getHourOfDay()) + ":" 
-						+ getFormated(retDateTime.getMinuteOfHour()) + 
-						" Total travel time: " + totalTravelTime;
+						" Total travel time: " + totalTravelTime +
+						"  Leave at: " + getFormated(depDateTime.getHourOfDay()) + ":" +
+						getFormated(depDateTime.getMinuteOfHour()) + 
+						"  Arrive at: " + getFormated(retDateTime.getHourOfDay()) + ":" +
+						getFormated(retDateTime.getMinuteOfHour());
+						
 			for(int j = 0; j < flightList.get(i).size(); j++)
 			{
 			//	System.out.println(flightList.get(i).get(j).toString());
@@ -769,8 +764,6 @@ public class GUI extends JFrame {
 			{
 				searchResultsDep.clearSelection();
 				flightDepDetails.clearSelection();
-				modelDep = new DefaultListModel<String>();
-				modelRet = new DefaultListModel<String>();
 				flightSearchResultModel = new DefaultListModel<String>();
 				searchResultsDep.setModel(flightSearchResultModel);
 				searchResultsRet.setModel(flightSearchResultModel);
@@ -800,7 +793,7 @@ public class GUI extends JFrame {
 				}
 				if(Integer.parseInt(parseRetDate[1]) < Integer.parseInt(parseDepDate[1]))
 				{
-					JOptionPane.showMessageDialog(null,"Departure date must be after return date",
+					JOptionPane.showMessageDialog(null,"Departure date cannot be before return date",
 															"Error",JOptionPane.WARNING_MESSAGE);
 					return;
 				}
