@@ -793,7 +793,7 @@ public class GUI extends JFrame {
 				}
 				if(Integer.parseInt(parseRetDate[1]) < Integer.parseInt(parseDepDate[1]))
 				{
-					JOptionPane.showMessageDialog(null,"Departure date cannot be before return date",
+					JOptionPane.showMessageDialog(null,"Departure date cannot be after return date",
 															"Error",JOptionPane.WARNING_MESSAGE);
 					return;
 				}
@@ -953,8 +953,7 @@ public class GUI extends JFrame {
 		         		{
 							JOptionPane.showMessageDialog(null,"No flights to reserve \n",
 									"Error",JOptionPane.WARNING_MESSAGE);
-							
-		         			return;
+							return;
 		         		}
 		         		
 						if(roundTrip && searchResultsRet.isSelectionEmpty())
@@ -963,16 +962,14 @@ public class GUI extends JFrame {
 									"Error",JOptionPane.WARNING_MESSAGE);
 							return;
 							
-						}else
-						{ 
-							
-							reserve.reserveFirstClass(getReserveFlightList(roundTrip));
-							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
-									+ getReserveListAsString(getReserveFlightList(roundTrip)),
-											"Reserved",JOptionPane.WARNING_MESSAGE);
-									
-					 		reserveButton.setEnabled(false);
 						}
+						
+			 			reserve.reserveFirstClass(getReserveFlightList(roundTrip));
+							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
+							+ getReserveListAsString(getReserveFlightList(roundTrip)),
+							"Reserved",JOptionPane.WARNING_MESSAGE);
+						reserveButton.setEnabled(false);
+			         	return;
 					}else
 					{
 						JOptionPane.showMessageDialog(null,"Departing trip must be selcted",
@@ -989,18 +986,21 @@ public class GUI extends JFrame {
 						{
 							JOptionPane.showMessageDialog(null,"Returning trip must be selcted \n",
 									"Error",JOptionPane.WARNING_MESSAGE);
-							
-						}else
-						{
-							
-							reserve.reserveCoach(getReserveFlightList(roundTrip));
-							
+							return;
+						}
+						if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+		         		{
+							JOptionPane.showMessageDialog(null,"No flights to reserve \n",
+									"Error",JOptionPane.WARNING_MESSAGE);
+							return;
+		         		}
+						reserve.reserveCoach(getReserveFlightList(roundTrip));
 							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
 							+ getReserveListAsString(getReserveFlightList(roundTrip)),
-									"Reserved",JOptionPane.WARNING_MESSAGE);
+							"Reserved",JOptionPane.WARNING_MESSAGE);
 							
-							reserveButton.setEnabled(false);
-						}
+						reserveButton.setEnabled(false);
+						return;
 					}else
 					{
 						JOptionPane.showMessageDialog(null,"Departing trip must be selcted",
