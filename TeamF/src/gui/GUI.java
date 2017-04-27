@@ -943,7 +943,7 @@ public class GUI extends JFrame {
 							return;
 							
 						}else
-						{
+						{ 
 							
 							reserve.reserveFirstClass(getReserveFlightList(roundTrip));
 							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
