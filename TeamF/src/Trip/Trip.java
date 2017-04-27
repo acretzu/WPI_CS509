@@ -337,6 +337,8 @@ public class Trip {
 		ArrayList<Flight> rightDayList;
 		rightDayList = new ArrayList<Flight>();
 		String[] parsed = date.split("_");
+		if (options.size() < 1) // no flight options departing at all on required day -- day likely outside range of allowable dates
+			return rightDayList;
 		int hourOffset = (options.get(0).getOffSetTime(options.get(0).get_arr_code()) + 1),
 				day = Integer.valueOf(parsed[2]), GMTDay, GMTHour;
 		
