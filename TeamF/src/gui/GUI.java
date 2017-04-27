@@ -87,8 +87,7 @@ public class GUI extends JFrame {
     
     DefaultListModel<String> modelDep;
     DefaultListModel<String> modelRet;
-    DefaultListModel<String> flightDepDetailModel;
-    DefaultListModel<String> flightRetDetailModel;
+    DefaultListModel<String> flightSearchResultModel;
     DefaultListModel<String> flightDetailModel;
     
     ArrayList<Flight> depFlights;
@@ -148,12 +147,12 @@ public class GUI extends JFrame {
 		
 		modelDep = new DefaultListModel<String>();
 		modelRet = new DefaultListModel<String>();
+		flightSearchResultModel = new DefaultListModel<String>();
+		searchResultsDep.setModel(flightSearchResultModel);
+		searchResultsRet.setModel(flightSearchResultModel);
 		
-		searchResultsDep.setModel(modelDep);
-		searchResultsRet.setModel(modelRet);
-		
-		flightDepDetails.setModel(modelDep);
-		flightRetDetails.setModel(modelRet);
+		flightDepDetails.setModel(flightSearchResultModel);
+		flightRetDetails.setModel(flightSearchResultModel);
 		
 		String holdName = new String();
 		for(int i = 0; i < airports.size();i++)
@@ -401,6 +400,7 @@ public class GUI extends JFrame {
 		String builtFlightString="";
 		modelDep = new DefaultListModel<String>(); 
 		modelRet = new DefaultListModel<String>(); 
+		flightSearchResultModel = new DefaultListModel<String>(); 
 		String stopNumberS = "";
 		double totalPrice = 0;
 		String totalPriceS = "";
@@ -430,10 +430,10 @@ public class GUI extends JFrame {
 			}
 			if(!populateReturnList)
 			{
-				modelDep.addElement(builtFlightString);
+				flightSearchResultModel.addElement(builtFlightString);
 			}else
 			{
-				modelRet.addElement(builtFlightString);
+				flightSearchResultModel.addElement(builtFlightString);
 			}
 			builtFlightString = "";
 		}
@@ -444,21 +444,21 @@ public class GUI extends JFrame {
 		if(!populateReturnList)
 		{
 			searchResultsDep.removeAll();
-			if(modelDep.isEmpty())
+			if(flightSearchResultModel.isEmpty())
 			{
-				modelDep.addElement("No flights found");
+				flightSearchResultModel.addElement("No flights found");
 			}
-			searchResultsDep.setModel(modelDep);	
+			searchResultsDep.setModel(flightSearchResultModel);	
 			System.out.println("Number of departing flights found " 
 			+ Integer.toString(flightList.size()) + "\n");
 		}else
 		{
 			searchResultsRet.removeAll();
-			if(modelRet.isEmpty())
+			if(flightSearchResultModel.isEmpty())
 			{
-				modelRet.addElement("No flights found");
+				flightSearchResultModel.addElement("No flights found");
 			}
-			searchResultsRet.setModel(modelRet);
+			searchResultsRet.setModel(flightSearchResultModel);
 			
 			System.out.println("Number of return flirghts found " 
 					+ Integer.toString(flightList.size()) + "\n");
@@ -731,12 +731,12 @@ public class GUI extends JFrame {
          			JList source = (JList)event.getSource();
             		if(!searchResultsRet.isSelectionEmpty())
                     {
-            			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+            			if(searchResultsRet.getSelectedValue().toString() == "No flights found")
 		         		{
 		         			return;
 		         		}
 		         		
-            			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+            			if(searchResultsRet.getSelectedValue().toString() == "No flights found")
     	         		{
     	         			return;
     	         		}
@@ -771,8 +771,9 @@ public class GUI extends JFrame {
 				flightDepDetails.clearSelection();
 				modelDep = new DefaultListModel<String>();
 				modelRet = new DefaultListModel<String>();
-				searchResultsDep.setModel(modelDep);
-				searchResultsRet.setModel(modelDep);
+				flightSearchResultModel = new DefaultListModel<String>();
+				searchResultsDep.setModel(flightSearchResultModel);
+				searchResultsRet.setModel(flightSearchResultModel);
 				String[] parseArrAirport;
 				String destinationAirport;
 				String depdate;
@@ -848,13 +849,13 @@ public class GUI extends JFrame {
 					
 					if(flightListDep.isEmpty() || flightListRet.isEmpty())
 					{
-						modelDep.removeAllElements();
-						modelDep.addElement("No flights found");
-						searchResultsDep.setModel(modelDep);
+						flightSearchResultModel.removeAllElements();
+						flightSearchResultModel.addElement("No flights found");
+						searchResultsDep.setModel(flightSearchResultModel);
 						
-						modelRet.removeAllElements();
-						modelRet.addElement("No flights found");
-						searchResultsRet.setModel(modelRet);
+						flightSearchResultModel.removeAllElements();
+						flightSearchResultModel.addElement("No flights found");
+						searchResultsRet.setModel(flightSearchResultModel);
 						
 						
 					}
