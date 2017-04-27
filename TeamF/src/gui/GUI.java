@@ -416,7 +416,7 @@ public class GUI extends JFrame {
 			totalPriceS = Double.toString((Math.round(totalPrice*100D))/100D);
 			depDateTime = flightList.get(i).get(0).get_dep_time_local();
 			retDateTime = flightList.get(i).get(stopNumber).get_arr_time_local();
-			totalTravelTime =  	sort.get_total_travel_time(flightList.get(i));
+			totalTravelTime =	sort.get_total_travel_time(flightList.get(i));
 				builtFlightString = "Stops #: " + stopNumberS +
 						" Total Price: " + totalPriceS +
 						"  Leave at: " + getFormated(depDateTime.getHourOfDay()) + ":" 
@@ -682,12 +682,17 @@ public class GUI extends JFrame {
 					"Error",JOptionPane.WARNING_MESSAGE);
 			return false;
 
-		}if(date > 31 || date < 1)
+		}else if((date > 22 || date < 5) && SearchByDepDate.isSelected())
 		{
-			JOptionPane.showMessageDialog(null,"Date must be between 1 and 30",
+			JOptionPane.showMessageDialog(null,"Date must be between 5 and 22 inclusive",
 					"Error",JOptionPane.WARNING_MESSAGE);
 			return false;
 
+		}else if((date > 23 || date < 5) && !SearchByDepDate.isSelected())
+		{
+			JOptionPane.showMessageDialog(null,"Date must be between 5 and 23 inclusive",
+					"Error",JOptionPane.WARNING_MESSAGE);
+			return false;
 		}
 		return true;
 	}
@@ -707,6 +712,11 @@ public class GUI extends JFrame {
 	         		JList source = (JList)event.getSource();
 	         		if(!searchResultsDep.isSelectionEmpty())
 	                 {
+	         			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+		         		{
+		         			return;
+		         		}
+		         		
 	                 
 		            		String selected = source.getSelectedValue().toString();
 		                    flightDetailModel = new DefaultListModel<String>();
@@ -721,7 +731,16 @@ public class GUI extends JFrame {
          			JList source = (JList)event.getSource();
             		if(!searchResultsRet.isSelectionEmpty())
                     {
-                    
+            			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+		         		{
+		         			return;
+		         		}
+		         		
+            			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+    	         		{
+    	         			return;
+    	         		}
+    	         		
 	            		String selected = source.getSelectedValue().toString();
 	                    flightDetailModel = new DefaultListModel<String>();
 	    				
@@ -830,11 +849,11 @@ public class GUI extends JFrame {
 					if(flightListDep.isEmpty() || flightListRet.isEmpty())
 					{
 						modelDep.removeAllElements();
-						modelDep.addElement("No round trip flights found");
+						modelDep.addElement("No flights found");
 						searchResultsDep.setModel(modelDep);
 						
 						modelRet.removeAllElements();
-						modelRet.addElement("No round trip flights found");
+						modelRet.addElement("No flights found");
 						searchResultsRet.setModel(modelRet);
 						
 						
@@ -936,6 +955,14 @@ public class GUI extends JFrame {
 				{
 					if(!searchResultsDep.isSelectionEmpty())
 					{
+						if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+		         		{
+							JOptionPane.showMessageDialog(null,"No flights to reserve \n",
+									"Error",JOptionPane.WARNING_MESSAGE);
+							
+		         			return;
+		         		}
+		         		
 						if(roundTrip && searchResultsRet.isSelectionEmpty())
 						{
 							JOptionPane.showMessageDialog(null,"Returning trip must be selcted \n",
