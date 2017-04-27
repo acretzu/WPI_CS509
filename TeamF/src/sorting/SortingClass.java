@@ -90,24 +90,24 @@ public class SortingClass {
 			@Override
 			public int compare(ArrayList<Flight> arg0, ArrayList<Flight> arg1) {
 				// TODO Auto-generated method stub
-				DateTime earliestDep1 = arg0.get(0).get_dep_time_local();
-				DateTime earliestDep2 = arg1.get(0).get_dep_time_local();
-				DateTime latestArr1 = arg0.get(0).get_arr_time_local();
-				DateTime latestArr2 = arg1.get(0).get_arr_time_local();
+				DateTime earliestDep1 = arg0.get(0).get_dep_time_GMT();
+				DateTime earliestDep2 = arg1.get(0).get_dep_time_GMT();
+				DateTime latestArr1 = arg0.get(0).get_arr_time_GMT();
+				DateTime latestArr2 = arg1.get(0).get_arr_time_GMT();
 				for (int i = 0; i < arg0.size(); i++) {
-				    if(arg0.get(i).get_arr_time_local().compareTo(latestArr1) > 0){
-				    	latestArr1 = arg0.get(i).get_arr_time_local();
+				    if(arg0.get(i).get_arr_time_GMT().compareTo(latestArr1) > 0){
+				    	latestArr1 = arg0.get(i).get_arr_time_GMT();
 				    }
-				    if(arg0.get(i).get_dep_time_local().compareTo(earliestDep1) < 0){
-				    	earliestDep1 = arg0.get(i).get_dep_time_local();
+				    if(arg0.get(i).get_dep_time_GMT().compareTo(earliestDep1) < 0){
+				    	earliestDep1 = arg0.get(i).get_dep_time_GMT();
 				    }
 				}
 				for (int i = 0; i < arg1.size(); i++) {
-					if(arg1.get(i).get_arr_time_local().compareTo(latestArr2) > 0){
-				    	latestArr2 = arg1.get(i).get_arr_time_local();
+					if(arg1.get(i).get_arr_time_GMT().compareTo(latestArr2) > 0){
+				    	latestArr2 = arg1.get(i).get_arr_time_GMT();
 				    }
-					if(arg1.get(i).get_dep_time_local().compareTo(earliestDep2) < 0){
-						earliestDep2 = arg1.get(i).get_dep_time_local();
+					if(arg1.get(i).get_dep_time_GMT().compareTo(earliestDep2) < 0){
+						earliestDep2 = arg1.get(i).get_dep_time_GMT();
 				    }
 				}
 				Interval interval1 = new Interval(earliestDep1,latestArr1);
@@ -154,28 +154,29 @@ public class SortingClass {
 	 * @return ArrayList of lists of flights
 	 */
 	public static String get_total_travel_time (ArrayList<Flight> flights){
-		DateTime earliestDep1 = flights.get(0).get_dep_time_local();
-		DateTime latestArr1 = flights.get(0).get_arr_time_local();
+		DateTime earliestDep1 = flights.get(0).get_dep_time_GMT();
+		DateTime latestArr1 = flights.get(0).get_arr_time_GMT();
 		String hoursString = "";
 		String minString = "";
 		
 		for (int i = 0; i < flights.size(); i++) {
-		    if(flights.get(i).get_arr_time_local().compareTo(latestArr1) > 0){
-		    	latestArr1 = flights.get(i).get_arr_time_local();
+		    if(flights.get(i).get_arr_time_GMT().compareTo(latestArr1) > 0){
+		    	latestArr1 = flights.get(i).get_arr_time_GMT();
 		    }
-		    if(flights.get(i).get_dep_time_local().compareTo(earliestDep1) < 0){
-		    	earliestDep1 = flights.get(i).get_dep_time_local();
+		    if(flights.get(i).get_dep_time_GMT().compareTo(earliestDep1) < 0){
+		    	earliestDep1 = flights.get(i).get_dep_time_GMT();
 		    }
 		}
 		Interval interval1 = new Interval(earliestDep1,latestArr1);
 		Integer hours = (int) interval1.toDuration().getStandardMinutes() / 60;
+	
 		if(hours < 10)
 		{
 			hoursString = "0" + Integer.toString(hours);
 		}
 		else
 		{
-			minString = Integer.toString(hours);
+			hoursString = Integer.toString(hours);
 		}
 		Integer mins = (int) interval1.toDuration().getStandardMinutes() % 60;
 		if(mins < 10)

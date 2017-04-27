@@ -85,11 +85,8 @@ public class GUI extends JFrame {
     JList flightDepDetails;
     JList flightRetDetails;
     
-    DefaultListModel<String> modelDep;
-    DefaultListModel<String> modelRet;
-    DefaultListModel<String> flightDepDetailModel;
-    DefaultListModel<String> flightRetDetailModel;
-    DefaultListModel<String> flightDetailModel;
+    DefaultListModel<String> flightSearchResultModel;//model to hold search result information
+    DefaultListModel<String> flightDetailModel; //model to hold flight detail information 
     
     ArrayList<Flight> depFlights;
     ArrayList<Airport> airports;
@@ -146,14 +143,12 @@ public class GUI extends JFrame {
 		//searchResultsDep.setPreferredSize(new Dimension(250, 80));
 		searchResultsDep.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		
-		modelDep = new DefaultListModel<String>();
-		modelRet = new DefaultListModel<String>();
+		flightSearchResultModel = new DefaultListModel<String>();
+		searchResultsDep.setModel(flightSearchResultModel);
+		searchResultsRet.setModel(flightSearchResultModel);
 		
-		searchResultsDep.setModel(modelDep);
-		searchResultsRet.setModel(modelRet);
-		
-		flightDepDetails.setModel(modelDep);
-		flightRetDetails.setModel(modelRet);
+		flightDepDetails.setModel(flightSearchResultModel);
+		flightRetDetails.setModel(flightSearchResultModel);
 		
 		String holdName = new String();
 		for(int i = 0; i < airports.size();i++)
@@ -399,8 +394,7 @@ public class GUI extends JFrame {
 	{
 		int stopNumber=0;
 		String builtFlightString="";
-		modelDep = new DefaultListModel<String>(); 
-		modelRet = new DefaultListModel<String>(); 
+		flightSearchResultModel = new DefaultListModel<String>(); 
 		String stopNumberS = "";
 		double totalPrice = 0;
 		String totalPriceS = "";
@@ -419,21 +413,22 @@ public class GUI extends JFrame {
 			totalTravelTime =	sort.get_total_travel_time(flightList.get(i));
 				builtFlightString = "Stops #: " + stopNumberS +
 						" Total Price: " + totalPriceS +
-						"  Leave at: " + getFormated(depDateTime.getHourOfDay()) + ":" 
-						+ getFormated(depDateTime.getMinuteOfHour()) + 
-						"  Arrive at: " + getFormated(retDateTime.getHourOfDay()) + ":" 
-						+ getFormated(retDateTime.getMinuteOfHour()) + 
-						" Total travel time: " + totalTravelTime;
+						" Total travel time: " + totalTravelTime +
+						"  Leave at: " + getFormated(depDateTime.getHourOfDay()) + ":" +
+						getFormated(depDateTime.getMinuteOfHour()) + 
+						"  Arrive at: " + getFormated(retDateTime.getHourOfDay()) + ":" +
+						getFormated(retDateTime.getMinuteOfHour());
+						
 			for(int j = 0; j < flightList.get(i).size(); j++)
 			{
 			//	System.out.println(flightList.get(i).get(j).toString());
 			}
 			if(!populateReturnList)
 			{
-				modelDep.addElement(builtFlightString);
+				flightSearchResultModel.addElement(builtFlightString);
 			}else
 			{
-				modelRet.addElement(builtFlightString);
+				flightSearchResultModel.addElement(builtFlightString);
 			}
 			builtFlightString = "";
 		}
@@ -444,21 +439,21 @@ public class GUI extends JFrame {
 		if(!populateReturnList)
 		{
 			searchResultsDep.removeAll();
-			if(modelDep.isEmpty())
+			if(flightSearchResultModel.isEmpty())
 			{
-				modelDep.addElement("No flights found");
+				flightSearchResultModel.addElement("No flights found");
 			}
-			searchResultsDep.setModel(modelDep);	
+			searchResultsDep.setModel(flightSearchResultModel);	
 			System.out.println("Number of departing flights found " 
 			+ Integer.toString(flightList.size()) + "\n");
 		}else
 		{
 			searchResultsRet.removeAll();
-			if(modelRet.isEmpty())
+			if(flightSearchResultModel.isEmpty())
 			{
-				modelRet.addElement("No flights found");
+				flightSearchResultModel.addElement("No flights found");
 			}
-			searchResultsRet.setModel(modelRet);
+			searchResultsRet.setModel(flightSearchResultModel);
 			
 			System.out.println("Number of return flirghts found " 
 					+ Integer.toString(flightList.size()) + "\n");
@@ -731,12 +726,12 @@ public class GUI extends JFrame {
          			JList source = (JList)event.getSource();
             		if(!searchResultsRet.isSelectionEmpty())
                     {
-            			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+            			if(searchResultsRet.getSelectedValue().toString() == "No flights found")
 		         		{
 		         			return;
 		         		}
 		         		
-            			if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+            			if(searchResultsRet.getSelectedValue().toString() == "No flights found")
     	         		{
     	         			return;
     	         		}
@@ -769,10 +764,9 @@ public class GUI extends JFrame {
 			{
 				searchResultsDep.clearSelection();
 				flightDepDetails.clearSelection();
-				modelDep = new DefaultListModel<String>();
-				modelRet = new DefaultListModel<String>();
-				searchResultsDep.setModel(modelDep);
-				searchResultsRet.setModel(modelDep);
+				flightSearchResultModel = new DefaultListModel<String>();
+				searchResultsDep.setModel(flightSearchResultModel);
+				searchResultsRet.setModel(flightSearchResultModel);
 				String[] parseArrAirport;
 				String destinationAirport;
 				String depdate;
@@ -799,7 +793,7 @@ public class GUI extends JFrame {
 				}
 				if(Integer.parseInt(parseRetDate[1]) < Integer.parseInt(parseDepDate[1]))
 				{
-					JOptionPane.showMessageDialog(null,"Departure date must be after return date",
+					JOptionPane.showMessageDialog(null,"Departure date cannot be after return date",
 															"Error",JOptionPane.WARNING_MESSAGE);
 					return;
 				}
@@ -848,13 +842,13 @@ public class GUI extends JFrame {
 					
 					if(flightListDep.isEmpty() || flightListRet.isEmpty())
 					{
-						modelDep.removeAllElements();
-						modelDep.addElement("No flights found");
-						searchResultsDep.setModel(modelDep);
+						flightSearchResultModel.removeAllElements();
+						flightSearchResultModel.addElement("No flights found");
+						searchResultsDep.setModel(flightSearchResultModel);
 						
-						modelRet.removeAllElements();
-						modelRet.addElement("No flights found");
-						searchResultsRet.setModel(modelRet);
+						flightSearchResultModel.removeAllElements();
+						flightSearchResultModel.addElement("No flights found");
+						searchResultsRet.setModel(flightSearchResultModel);
 						
 						
 					}
@@ -959,8 +953,7 @@ public class GUI extends JFrame {
 		         		{
 							JOptionPane.showMessageDialog(null,"No flights to reserve \n",
 									"Error",JOptionPane.WARNING_MESSAGE);
-							
-		         			return;
+							return;
 		         		}
 		         		
 						if(roundTrip && searchResultsRet.isSelectionEmpty())
@@ -969,16 +962,14 @@ public class GUI extends JFrame {
 									"Error",JOptionPane.WARNING_MESSAGE);
 							return;
 							
-						}else
-						{ 
-							
-							reserve.reserveFirstClass(getReserveFlightList(roundTrip));
-							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
-									+ getReserveListAsString(getReserveFlightList(roundTrip)),
-											"Reserved",JOptionPane.WARNING_MESSAGE);
-									
-					 		reserveButton.setEnabled(false);
 						}
+						
+			 			reserve.reserveFirstClass(getReserveFlightList(roundTrip));
+							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
+							+ getReserveListAsString(getReserveFlightList(roundTrip)),
+							"Reserved",JOptionPane.WARNING_MESSAGE);
+						reserveButton.setEnabled(false);
+			         	return;
 					}else
 					{
 						JOptionPane.showMessageDialog(null,"Departing trip must be selcted",
@@ -995,18 +986,21 @@ public class GUI extends JFrame {
 						{
 							JOptionPane.showMessageDialog(null,"Returning trip must be selcted \n",
 									"Error",JOptionPane.WARNING_MESSAGE);
-							
-						}else
-						{
-							
-							reserve.reserveCoach(getReserveFlightList(roundTrip));
-							
+							return;
+						}
+						if(searchResultsDep.getSelectedValue().toString() == "No flights found")
+		         		{
+							JOptionPane.showMessageDialog(null,"No flights to reserve \n",
+									"Error",JOptionPane.WARNING_MESSAGE);
+							return;
+		         		}
+						reserve.reserveCoach(getReserveFlightList(roundTrip));
 							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
 							+ getReserveListAsString(getReserveFlightList(roundTrip)),
-									"Reserved",JOptionPane.WARNING_MESSAGE);
+							"Reserved",JOptionPane.WARNING_MESSAGE);
 							
-							reserveButton.setEnabled(false);
-						}
+						reserveButton.setEnabled(false);
+						return;
 					}else
 					{
 						JOptionPane.showMessageDialog(null,"Departing trip must be selcted",

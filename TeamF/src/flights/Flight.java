@@ -33,6 +33,8 @@ public class Flight {
 	 double price_coach;
 	 Date arr_local_time;
 	 Date dep_local_time;
+	 Date arr_GMT_time;
+	 Date dep_GMT_time;
 	 
 	 /**
 		 * Construct a no value flight
@@ -154,6 +156,8 @@ public class Flight {
 	private void converAllTimeToLocal(){
 		arrTimeStringToDate(this.arr_time);
 		depTimeStringToDate(this.dep_time);
+		arrTimeStringToDateGMT(this.arr_time);
+		depTimeStringToDateGMT(this.dep_time);
 		long arr_offset = getOffSetTime(this.arr_code);
 		long dep_offset = getOffSetTime(this.dep_code);
 		long p = 3600000;
@@ -176,6 +180,17 @@ public class Flight {
 			e.printStackTrace();
 		}
 	}
+	private void arrTimeStringToDateGMT(String dateStr){
+		dateStr = dateStr.replaceAll("\\s", "/");
+//		System.out.println(dateStr);
+		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.US);
+		try {
+			Date localDate = df.parse(dateStr);
+			this.arr_GMT_time = localDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	  * convert string type of date to Java date type
 	  * @param String type of java dateStr with format yyyy/MMM/dd/HH:mm
@@ -187,6 +202,18 @@ public class Flight {
 		try {
 			Date localDate = df.parse(dateStr);
 			this.dep_local_time = localDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void depTimeStringToDateGMT(String dateStr){
+		dateStr = dateStr.replaceAll("\\s", "/");
+//		System.out.println(dateStr);
+		DateFormat df = new SimpleDateFormat("yyyy/MMM/dd/HH:mm",Locale.forLanguageTag("english"));
+		try {
+			Date localDate = df.parse(dateStr);
+			this.dep_GMT_time = localDate;
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -301,6 +328,12 @@ public class Flight {
 		DateTime arrLocalTime = new DateTime(this.arr_local_time);
 		return arrLocalTime;
 	}
+	
+	public DateTime get_arr_time_GMT(){
+		converAllTimeToLocal();
+		DateTime arrLocalTime = new DateTime(this.arr_GMT_time);
+		return arrLocalTime;
+	}
 	/**
 	 * Get this flight's local departure time 
 	 * 
@@ -310,6 +343,11 @@ public class Flight {
 	public DateTime get_dep_time_local(){
 		converAllTimeToLocal();
 		DateTime depLocalTime = new DateTime(this.dep_local_time);
+		return depLocalTime;
+	}
+	public DateTime get_dep_time_GMT(){
+		converAllTimeToLocal();
+		DateTime depLocalTime = new DateTime(this.dep_GMT_time);
 		return depLocalTime;
 	}
 	/**
