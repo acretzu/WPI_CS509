@@ -12,6 +12,15 @@ import xml.XmlParser;
  */
 public class FlightsContainer extends XmlParser {
 	
+	// Class variables
+	protected ArrayList<Flight> list;
+	
+	/**
+	 * Creates a flight from the element parameter
+	 * 
+	 * @param elementFlight The XML element
+	 * @return Flight The created flight based on the element XML
+	 */
 	public Flight createFlight(Element elementFlight){
 		 String flight_model;
 		 String flight_time;
@@ -86,7 +95,6 @@ public class FlightsContainer extends XmlParser {
 		
 		return flight;
 	}
-
 
 
 }
