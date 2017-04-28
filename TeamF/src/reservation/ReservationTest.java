@@ -1,6 +1,7 @@
 package reservation;
 
 import static org.junit.Assert.*;
+import flights.*;
 import org.junit.*;
 import java.util.ArrayList;
 
@@ -9,10 +10,10 @@ import org.junit.Test;
 public class ReservationTest {
 
 	// Class variables
+	DepartingFlightsContainer dep;
 	ArrayList<String> list;
 	Reservation reservation;
 	String test_flight;
-	int max_available_seats;
 	
 	@BeforeClass
 	public static void start() {
@@ -23,8 +24,7 @@ public class ReservationTest {
 	public void initializeVariables() {
 		list = new ArrayList<String>();
 		reservation = new Reservation();
-		test_flight = "6362"; // Known good flight
-		max_available_seats = 17;
+		dep = new DepartingFlightsContainer();
 	}
 	
 	@After
@@ -33,8 +33,8 @@ public class ReservationTest {
 	}
 	
 	@Test
-	public void ReserveBadCoach() {								
-		list.add("thisisbad"); 	
+	public void ReserveBadCoach() {
+		list.add("thisisbad");
 		assertFalse("Known bad flight has been incorrectly reserved!", reservation.reserveCoach(list));
 	}
 	
@@ -45,25 +45,45 @@ public class ReservationTest {
 	}
 
 	@Test
-	public void ReserveCoach() {
-		list.add(test_flight);
-		assertTrue("Coach seat on flight " +test_flight + " has not been successfully reserved!", reservation.reserveCoach(list));
+	public void ReserveCoach() {		
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		Flight temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of coach seats before = " + temp.get_coach());
+		list.add(temp.get_flight_number());
+		assertTrue("Coach seat on flight " + temp.get_flight_number() + " has not been successfully reserved!", reservation.reserveCoach(list));
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of coach seats after = " + temp.get_coach());
 	}
 	
 	@Test
 	public void ReserveFirstClass() {
-		list.add(test_flight);
-		assertTrue("FirstClass seat on flight " + test_flight + " has not been successfully reserved!", reservation.reserveFirstClass(list));
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		Flight temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of first class seats before = " + temp.get_first_class());
+		list.add(temp.get_flight_number());
+		assertTrue("FirstClass seat on flight " + temp.get_flight_number() + " has not been successfully reserved!", reservation.reserveFirstClass(list));
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of first class seats after = " + temp.get_first_class());
 	}
 	
 	@Test
 	public void ReserveUntilFull() {
-		list.add(test_flight);
-		
-		for(int i = 0; i < max_available_seats; i++) {
-			assertTrue("FirstClass seat on flight " + test_flight + " has not been successfully reserved!", reservation.reserveFirstClass(list));
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		Flight temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of first class seats before = " + temp.get_first_class());
+		list.add(temp.get_flight_number());
+		for(int i = 0; i < 23; i++) {
+			assertTrue("FirstClass seat on flight " + temp.get_flight_number() + " has not been successfully reserved!", reservation.reserveFirstClass(list));
 		}
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of first class seats at maximum = " + temp.get_first_class());
 		assertFalse("Reserving more seats than available!", reservation.reserveFirstClass(list));
+		dep.parseDepartingFlightsFromSever("BOS", "2017_05_10");
+		temp = dep.getFlightByNumber("3311");
+		System.out.println("Number of first class seats after maximum = " + temp.get_first_class());
 	}
 	
 	@AfterClass

@@ -11,9 +11,7 @@ import java.util.ArrayList;
  * @author Yupeng Su
  *
  */
-public class DepartingFlightsContainer extends FlightsContainer {
-	// Class variables
-	private ArrayList<Flight> list;
+public class DepartingFlightsContainer extends FlightsContainer {	
 	
 	/*
 	 * Constructor

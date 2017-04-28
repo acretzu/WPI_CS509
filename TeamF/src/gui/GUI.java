@@ -1005,7 +1005,7 @@ public class GUI extends JFrame {
 		 					}else
 		 					{
 		 						JOptionPane.showMessageDialog(null,"Flights failed to book please try again \n", 
-										"Filed to reserve!",JOptionPane.WARNING_MESSAGE);
+										"Failed to reserve!",JOptionPane.WARNING_MESSAGE);
 				 						return;
 		 					}
 							
