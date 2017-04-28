@@ -206,7 +206,10 @@ public class Flight {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	  * convert string type of date to Java date type
+	  * @param String type of java dateStr with format yyyy/MMM/dd/HH:mm
+	 */
 	private void depTimeStringToDateGMT(String dateStr){
 		dateStr = dateStr.replaceAll("\\s", "/");
 //		System.out.println(dateStr);
@@ -328,7 +331,12 @@ public class Flight {
 		DateTime arrLocalTime = new DateTime(this.arr_local_time);
 		return arrLocalTime;
 	}
-	
+	/**
+	 * Get this flight's GMT arrival time 
+	 * 
+	 * 
+	 * @return DateTime (joda time), so you can use getHourOfDay()to get hour, and e.t.c
+	 */
 	public DateTime get_arr_time_GMT(){
 		converAllTimeToLocal();
 		DateTime arrLocalTime = new DateTime(this.arr_GMT_time);
@@ -345,6 +353,12 @@ public class Flight {
 		DateTime depLocalTime = new DateTime(this.dep_local_time);
 		return depLocalTime;
 	}
+	/**
+	 * Get this flight's GMT departure time 
+	 * 
+	 * 
+	 * @return DateTime (joda time), so you can use getHourOfDay()to get hour, and e.t.c
+	 */
 	public DateTime get_dep_time_GMT(){
 		converAllTimeToLocal();
 		DateTime depLocalTime = new DateTime(this.dep_GMT_time);
