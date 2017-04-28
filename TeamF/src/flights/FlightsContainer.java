@@ -41,9 +41,6 @@ public class FlightsContainer extends XmlParser {
 		
 
 		// The Flight element has attributes of "Airplane" , FlightTime and Number
-
-
-
 		flight_model = elementFlight.getAttributeNode("Airplane").getValue();
 		flight_number = elementFlight.getAttributeNode("Number").getValue();
 		flight_time = elementFlight.getAttributeNode("FlightTime").getValue();
@@ -96,5 +93,17 @@ public class FlightsContainer extends XmlParser {
 		return flight;
 	}
 
-
+	/**
+	 * Returns the flight from the given specified flight number or null 
+	 * @param number The flight number
+	 * @return The flight with the associated flight number
+	 */
+	public Flight getFlightByNumber(String number){
+		for (int i = 0; i < list.size(); i++){
+			if (list.get(i).get_flight_number().equals(number))
+				return list.get(i);
+		}
+		return null;
+	}
+	
 }
