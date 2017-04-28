@@ -18,6 +18,8 @@ import org.joda.time.DateTime;
 import Trip.Trip;
 
 /**
+ * Creates the GUI and all the gui objects, passes user information to trip class for 
+ * flight searches, uses sorting class to sort search results and display them
  * 
  * @author Ilya Lifshits
  * @version 1.0
@@ -65,10 +67,10 @@ public class GUI extends JFrame {
     private JLabel depTimeMaxlb = new JLabel("Dept. Time Max   ");
     private JLabel arrTimeMinlb = new JLabel("Arr. Time  Min  ");
     private JLabel arrTimeMaxlb = new JLabel("Arr. Time  Max  ");
-	
+    private JLabel statuslb = new JLabel("");
+    
     //panel1 holds dept/arr airport and dept/return date controls 
     private JPanel panel1 = new JPanel(new GridBagLayout());
-	private JPanel panel2 = new JPanel(new GridBagLayout());
 	private JPanel panel3 = new JPanel(new GridBagLayout());
     private JPanel panelRb = new JPanel(new GridBagLayout());
 	private JPanel panel4 = new JPanel(new GridBagLayout());
@@ -119,7 +121,6 @@ public class GUI extends JFrame {
 		sortByTime = true;
 		
 		numberOfStops = 1;
-		panel2.setSize(400, 400);
 		panel1.setSize(400, 400);
 		panelRb.setSize(400, 400);
 		
@@ -132,15 +133,12 @@ public class GUI extends JFrame {
 		airports = airport_container.getContainer();
 		depFlights = new ArrayList<Flight>();
 		
-		
-		
 		depList = new JComboBox();
 		arrList = new JComboBox();
 		searchResultsDep = new JList();
 		searchResultsRet = new JList();
 		flightDepDetails = new JList();
 		flightRetDetails = new JList();
-		//searchResultsDep.setPreferredSize(new Dimension(250, 80));
 		searchResultsDep.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		
 		flightSearchResultModel = new DefaultListModel<String>();
@@ -159,10 +157,10 @@ public class GUI extends JFrame {
 		}
 		
 		GridBagConstraints c = new GridBagConstraints();
-///////////Radio button panel
-    
-   
+
 		
+///////////Radio button panel
+    	
     c.gridx = 0; 
     c.gridy = 5;
     panel3.add(depList, c);
@@ -191,40 +189,11 @@ public class GUI extends JFrame {
     c.gridy = 35;
     panelRb.add(EconomyClassRb,c);
     EconomyClassRb.setSelected(true);
-    //////////Panel2        
-        
-        c.anchor=GridBagConstraints.WEST;//left align components after this point
-        c.gridx = 0; 
-        c.gridy = 10;
-        panel2.add(depTimeMinlb,c);
-
-        c.gridx = 0; 
-        c.gridy = 15;
-        panel2.add(depTimeMaxlb,c);
-     
-        c.gridx = 0; 
-        c.gridy = 20;
-        panel2.add(arrTimeMinlb,c);
-     
-        c.gridx = 0; 
-        c.gridy = 25;
-        panel2.add(arrTimeMaxlb,c);
-     
-        
-        c.gridx = 20;
-        c.gridy = 10;
-        panel2.add(depTimeMin,c);
-        
-        c.gridy = 15;//change the y location
-        panel2.add(depTimeMax,c);
-
-        c.gridy = 20;//change the y location
-        panel2.add(arrTimeMin,c);
-
-        c.gridy = 25;//change the y location
-        panel2.add(arrTimeMax,c);
-/////////Panel1
-        c.gridx = 0; 
+    
+/////////Panel1 hold user input fields and labels 
+    
+    	c.anchor=GridBagConstraints.WEST;//left align components after this point
+    	c.gridx = 0; 
         c.gridy = 10;
         panel1.add(deplb,c);
 
@@ -240,15 +209,17 @@ public class GUI extends JFrame {
         c.gridy = 25;
         panel1.add(retDateTFlb,c);
      
-        
+        c.gridx = 0; 
+        c.gridy = 26;
+        panel1.add(statuslb,c);
+       
         c.gridx = 20;
         c.gridy = 10;
         panel1.add(depList,c);
 
         c.gridy = 15;
         panel1.add(arrList,c);
-        
-
+ 
         c.gridx = 0;
         c.gridy = 21;
         SearchByDepDate.setSelected(true);
@@ -265,8 +236,7 @@ public class GUI extends JFrame {
         c.gridx = 20;
         c.gridy = 25;
         panel1.add(retDateTF,c);
-
-        /////////////////PANEL 3
+        
         c.gridx = 0;
         c.gridy = 0;
         panel3.add(searchButton, c);
@@ -349,15 +319,11 @@ public class GUI extends JFrame {
         thehandler handler = new thehandler();
         SelectionListener selectionListener = new SelectionListener();
         this.getContentPane().add(panel1, BorderLayout.WEST);
-        //this.getContentPane().add(panel2, BorderLayout.EAST);
         this.getContentPane().add(panelRb, BorderLayout.CENTER);
         
         this.getContentPane().add(panel3, BorderLayout.SOUTH);
         this.getContentPane().add(panel4, BorderLayout.EAST);
          
-        
-
-        
         OneWayRb.addActionListener(handler);
         RndTripRb.addActionListener(handler);
         TwoStopRb.addActionListener(handler);
@@ -377,6 +343,7 @@ public class GUI extends JFrame {
         clearSearchButton.addActionListener(handler);
         searchResultsDep.addListSelectionListener(selectionListener);
         searchResultsRet.addListSelectionListener(selectionListener);
+        
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1150, 850);
         
@@ -384,8 +351,8 @@ public class GUI extends JFrame {
 	}
 	
 	/**
-	 * populates GUI departurelist or returnlist object with summary of each trip
-	 * flightList which is returned from search results
+	 * populates GUI searchResultsDep or searchResultsRet object with summary of each trip
+	 * that's returned from search results
 	 * @param flightList list of flights to populate departureList or returnList with
 	 * @param populateReturnList true if returnList is to be populated,
 	 * false if departureList is to be populated
@@ -463,6 +430,7 @@ public class GUI extends JFrame {
 	
 	/**
 	 * 
+	 * converts integer to string with 0 added at the front if integer is less than 10
 	 * @param convertInt integer to be converted to string 
 	 * @return formatedTime, integer converted to string with 0 added at 
 	 * the front if integer is less than 10
@@ -480,16 +448,20 @@ public class GUI extends JFrame {
 		}
 		return formatedTime;
 	} 
+	
 /**
- * populates GUI trip details
- * @param flightList list of list of flights(list of trips) 
- * @param flightListIndex index of the trip to display details about
+ * populates either flightDepDetails or flightRetDetails gui list objects with 
+ * details about the singleTrip that was selected by the user in 
+ * searchResultsDep or searchResultsRet lists.
+ * @param singleTrip list of flights representing the trip about which
+ * details are to be displayed
  * @param populateReturnDetailsList true if populating details about return flight
  * falls if populating details about departure flights
  */
-	private void populateDetailsList(ArrayList<ArrayList<Flight>>  flightList, 
-			int flightListIndex,boolean populateReturnDetailsList)
+	private void populateDetailsList(ArrayList<Flight>  singleTrip, 
+			boolean populateReturnDetailsList)
 	{
+		
 		String Depart = "Depart: ";
 		String TimeDep = "at: ";
 		String DateDep = "on: ";
@@ -502,43 +474,44 @@ public class GUI extends JFrame {
 		String NumberOfFistClassSeats = "Number of first class seats left: ";
 		String NumberOfCouachSeats = "Number of coach seats left: ";
 						
+		
 		ArrayList<Flight> DepFlightTrip =  new ArrayList<Flight>();
 		ArrayList<Flight> RetFlightTrip =  new ArrayList<Flight>();
 		
-		for(int j = 0; j < flightList.get(flightListIndex).size(); j++)
+		for(int j = 0; j < singleTrip.size(); j++)
 		{
-			 Depart = "Depart: " + flightList.get(flightListIndex).get(j).get_dep_code();
+			 Depart = "Depart: " + singleTrip.get(j).get_dep_code();
 			 flightDetailModel.addElement(Depart);
-			 TimeDep = "at: " + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getHourOfDay())
-					 +":" + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getMinuteOfHour());
+			 TimeDep = "at: " + getFormated(singleTrip.get(j).get_dep_time_local().getHourOfDay())
+					 +":" + getFormated(singleTrip.get(j).get_dep_time_local().getMinuteOfHour());
 			 flightDetailModel.addElement(TimeDep);
-			 DateDep = "on: " + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getMonthOfYear())
-					 + "/" + getFormated(flightList.get(flightListIndex).get(j).get_dep_time_local().getDayOfMonth()) 
-					 +  "/" + flightList.get(flightListIndex).get(j).get_dep_time_local().getYear(); 		 
+			 DateDep = "on: " + getFormated(singleTrip.get(j).get_dep_time_local().getMonthOfYear())
+					 + "/" + getFormated(singleTrip.get(j).get_dep_time_local().getDayOfMonth()) 
+					 +  "/" + singleTrip.get(j).get_dep_time_local().getYear(); 		 
 			 flightDetailModel.addElement(DateDep);
-			 Arive = "Arrive: " + flightList.get(flightListIndex).get(j).get_arr_code();
+			 Arive = "Arrive: " + singleTrip.get(j).get_arr_code();
 			 flightDetailModel.addElement(Arive);
-			 TimeArr = "at: " + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getHourOfDay())
-					 + ":" + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getMinuteOfHour());
+			 TimeArr = "at: " + getFormated(singleTrip.get(j).get_arr_time_local().getHourOfDay())
+					 + ":" + getFormated(singleTrip.get(j).get_arr_time_local().getMinuteOfHour());
 			 flightDetailModel.addElement(TimeArr);
-			 DateArr = "on: " + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getMonthOfYear())
-				 + "/" + getFormated(flightList.get(flightListIndex).get(j).get_arr_time_local().getDayOfMonth()) 
-				 +  "/" + flightList.get(flightListIndex).get(j).get_arr_time_local().getYear(); 		 
+			 DateArr = "on: " + getFormated(singleTrip.get(j).get_arr_time_local().getMonthOfYear())
+				 + "/" + getFormated(singleTrip.get(j).get_arr_time_local().getDayOfMonth()) 
+				 +  "/" + singleTrip.get(j).get_arr_time_local().getYear(); 		 
 				 flightDetailModel.addElement(DateDep);
 		
-			 PlaneType = "Plane type: " + flightList.get(flightListIndex).get(j).get_flight_model();
+			 PlaneType = "Plane type: " + singleTrip.get(j).get_flight_model();
 			 flightDetailModel.addElement(PlaneType);
-			 FlightTime = "Flight time: " + flightList.get(flightListIndex).get(j).get_flight_time_hour_min();
+			 FlightTime = "Flight time: " + singleTrip.get(j).get_flight_time_hour_min();
 			 flightDetailModel.addElement(FlightTime);
-			 FlightNumber = "Flight number: " + flightList.get(flightListIndex).get(j).get_flight_number();
+			 FlightNumber = "Flight number: " + singleTrip.get(j).get_flight_number();
 			 flightDetailModel.addElement(FlightNumber);
 			 flightDetailModel.addElement("      ");
 			 if(!populateReturnDetailsList)
 			 {  
-				 DepFlightTrip.add(flightList.get(flightListIndex).get(j));
+				 DepFlightTrip.add(singleTrip.get(j));
 			 }else
 			 {
-				 RetFlightTrip.add(flightList.get(flightListIndex).get(j));		 
+				 RetFlightTrip.add(singleTrip.get(j));		 
 			 }
 		}
 		
@@ -651,6 +624,9 @@ public class GUI extends JFrame {
 		clearSearchButton.setEnabled(false);
 		
 	}
+	/**
+	 * clears all search result list objects in the GUI
+	 */
 	private void clearSearchResults()
 	{
 		searchResultsDep.setModel(new  DefaultListModel<String>());
@@ -658,7 +634,11 @@ public class GUI extends JFrame {
 		flightDepDetails.setModel(new  DefaultListModel<String>());
 		flightRetDetails.setModel(new  DefaultListModel<String>());
 	}
-	
+	/**
+	 * receives a date in form of String[3] checks that the date,month,and year are valid
+	 * @param checkDate String[3] where String[0] is month String[1] is date String[2] is year
+	 * @return true if dates are valid false if not
+	 */
 	private boolean isDateValid(String[] checkDate)
 	{
 		int month = Integer.parseInt(checkDate[0]);
@@ -671,28 +651,28 @@ public class GUI extends JFrame {
 					"Error",JOptionPane.WARNING_MESSAGE);
 			return false;
 
-		}else if(month != 5)
+		}else if(month > 12 || month < 1 )
 		{
-			JOptionPane.showMessageDialog(null,"Month must be 5",
+			JOptionPane.showMessageDialog(null,"Month must be between 1 and 12 inclusive",
 					"Error",JOptionPane.WARNING_MESSAGE);
 			return false;
 
-		}else if((date > 22 || date < 5) && SearchByDepDate.isSelected())
+		}else if((date > 31 || date < 1) && SearchByDepDate.isSelected())
 		{
-			JOptionPane.showMessageDialog(null,"Date must be between 5 and 22 inclusive",
+			JOptionPane.showMessageDialog(null,"Date must be between 1 and 31 inclusive",
 					"Error",JOptionPane.WARNING_MESSAGE);
 			return false;
 
-		}else if((date > 23 || date < 5) && !SearchByDepDate.isSelected())
+		}else if((date > 31 || date < 1) && !SearchByDepDate.isSelected())
 		{
-			JOptionPane.showMessageDialog(null,"Date must be between 5 and 23 inclusive",
+			JOptionPane.showMessageDialog(null,"Date must be between 1 and 31 inclusive",
 					"Error",JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
 		return true;
 	}
 	/**
-	 * 
+	 * handler for list selection change
 	 * @author Ilya Lifshits
 	 *
 	 */
@@ -718,7 +698,7 @@ public class GUI extends JFrame {
 		    				
 		                    int selectionIndex = searchResultsDep.getSelectedIndex();
 		                	
-		                    populateDetailsList(flightListDep, selectionIndex, false);
+		                    populateDetailsList(flightListDep.get(selectionIndex), false);
 		                    
 	                 }
          		}else if(event.getSource() == searchResultsRet)
@@ -742,7 +722,7 @@ public class GUI extends JFrame {
 	                    
 	                    int selectionIndex = searchResultsRet.getSelectedIndex();
 	                	
-	                    populateDetailsList(flightListRet, selectionIndex, true);
+	                    populateDetailsList(flightListRet.get(selectionIndex), true);
 	                    
                     }
          		}
@@ -807,6 +787,7 @@ public class GUI extends JFrame {
 				
 				
 				disableAllSearchControls();
+				statuslb.setText("Searching...");
 				
 				System.out.println("Searching for flights from... \n" + departureAirport
 						+ " to " +  destinationAirport);
@@ -854,6 +835,7 @@ public class GUI extends JFrame {
 					}
 				}
 				
+				statuslb.setText("Done Searching");
 				
 
 			}else if(event.getSource() == OneWayRb)
@@ -945,6 +927,7 @@ public class GUI extends JFrame {
 				
 			}else if(event.getSource() == reserveButton)
 			{
+				Object[] options = {"Confirm", "Cancel"};
 				if(firstClass)
 				{
 					if(!searchResultsDep.isSelectionEmpty())
@@ -964,12 +947,26 @@ public class GUI extends JFrame {
 							
 						}
 						
-			 			reserve.reserveFirstClass(getReserveFlightList(roundTrip));
-							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
-							+ getReserveListAsString(getReserveFlightList(roundTrip)),
-							"Reserved",JOptionPane.WARNING_MESSAGE);
-						reserveButton.setEnabled(false);
-			         	return;
+			 				if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, 
+			 						"Would you like to confirm booking of the following flights? \n" + 
+			 				getReserveFlightList(roundTrip), "Confirm",JOptionPane.YES_NO_OPTION))
+			 				{
+			 					if(reserve.reserveFirstClass(getReserveFlightList(roundTrip)))
+			 					{
+			 						JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
+									+ getReserveListAsString(getReserveFlightList(roundTrip)),
+									"Reserved",JOptionPane.INFORMATION_MESSAGE);
+			 						reserveButton.setEnabled(false);
+			 						
+			 					}else
+			 					{
+			 						JOptionPane.showMessageDialog(null,"Flights failed to book please try again \n", 
+											"Filed to reserve!",JOptionPane.WARNING_MESSAGE);
+					 						reserveButton.setEnabled(true);
+					 						return;
+			 					}
+								
+			 				}
 					}else
 					{
 						JOptionPane.showMessageDialog(null,"Departing trip must be selcted",
@@ -994,24 +991,37 @@ public class GUI extends JFrame {
 									"Error",JOptionPane.WARNING_MESSAGE);
 							return;
 		         		}
-						reserve.reserveCoach(getReserveFlightList(roundTrip));
-							JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
-							+ getReserveListAsString(getReserveFlightList(roundTrip)),
-							"Reserved",JOptionPane.WARNING_MESSAGE);
+						if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, 
+		 						"Would you like to confirm booking of the following flights? \n" + 
+		 				getReserveFlightList(roundTrip), "Confirm",JOptionPane.YES_NO_OPTION))
+		 				{
+		 					if(reserve.reserveCoach(getReserveFlightList(roundTrip)))
+		 					{
+		 						JOptionPane.showMessageDialog(null,"The following flights have been reserved \n" 
+								+ getReserveListAsString(getReserveFlightList(roundTrip)),
+								"Reserved",JOptionPane.INFORMATION_MESSAGE);
+		 						reserveButton.setEnabled(false);
+		 						
+		 					}else
+		 					{
+		 						JOptionPane.showMessageDialog(null,"Flights failed to book please try again \n", 
+										"Filed to reserve!",JOptionPane.WARNING_MESSAGE);
+				 						return;
+		 					}
 							
-						reserveButton.setEnabled(false);
-						return;
+		 				}
+		 				
 					}else
 					{
 						JOptionPane.showMessageDialog(null,"Departing trip must be selcted",
 								"Error",JOptionPane.WARNING_MESSAGE);
 						return;
-					}
+					} 
 					
 				}
 			}else if(event.getSource() == SearchByArrDate)
 			{
-				depDateTFlb.setText("Arrival Date");
+				depDateTFlb.setText("Departure Date");
 				SearchByDepDate.setSelected(false);
 			}else if(event.getSource() == SearchByDepDate)
 			{
